@@ -312,43 +312,52 @@ body {
     font-size: 14px;
 }
 
+/* Estilos para el color de los iconos */
 .icons-color {
     color: #495057;
 }
 
+/* Clase para contenedor con iconos */
 .input-with-icon {
     position: relative;
 }
 
+/* Posicionamiento absoluto de los iconos dentro del contenedor */
 .input-with-icon i {
     position: absolute;
-    left: 10px; /* Ajusta esta distancia según sea necesario */
     top: 50%;
     transform: translateY(-50%);
 }
 
+.input-with-icon .fa-lock {
+    left: 10px; /* Ajusta esta distancia según sea necesario */
+}
+
+.input-with-icon .fa-eye,
+.input-with-icon .fa-eye-slash {
+    right: 10px; /* Ajusta esta distancia según sea necesario */
+}
+
+/* Estilo para el campo de entrada con espacio para los iconos */
 .input-with-icon input {
-    padding-left: 30px; /* Ajusta esta distancia según sea necesario */
-}
-
-
-.form-control {
-    padding-left: 2rem; /* Espacio para el icono de la izquierda */
+    padding-left: 2.5rem; /* Espacio para el icono de la izquierda */
     padding-right: 2.5rem; /* Espacio para el icono de la derecha */
-}
-
-.pointer {
-    cursor: pointer;
-}
-
-input[type="text"] {
-    padding-left: 5px; /* Ajusta este valor según tus necesidades */
     margin: 0;
     border: 1px solid #ccc; /* Para mantener el borde */
     box-shadow: none; /* Para evitar sombras */
 }
 
-input[type="text"]:focus {
+.input-with-icon input:focus {
     outline: none;
     border: 1px solid #666; /* Cambia el color del borde cuando está enfocado */
 }
+
+/* Clase para cambiar el cursor al pasar sobre el icono */
+.pointer {
+    cursor: pointer;
+}
+
+.placeholder-login {
+    padding-left: 30px; /* Ajusta el valor según sea necesario */
+}
+

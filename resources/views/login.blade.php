@@ -31,7 +31,7 @@
             @endif
 
             <div class="form-group position-relative">
-                <input name="username" class="form-control uper" placeholder="Usuario" value="{{ old('username') }}">
+                <input name="username" class="form-control uper placeholder-login" placeholder="Usuario" value="{{ old('username') }}">
                 <i class="fas fa-user position-absolute start-0 top-50 translate-middle-y ms-2 icons-color"></i>
             </div>
             @error('username')
@@ -41,10 +41,10 @@
             <br>
 
             <div class="form-group position-relative">
-                <input type="password" name="password" class="form-control" id="password" placeholder="CONTRASEÑA" required>
-                <i class="fas fa-lock position-absolute start-0 top-50 translate-middle-y ms-2 icons-color"></i>
-                <i class="fas fa-eye position-absolute end-0 top-50 translate-middle-y me-2 pointer icons-color" id="togglePassword"></i>
-            </div>
+    <input type="password" name="password" class="form-control placeholder-login" id="password" placeholder="CONTRASEÑA" required>
+    <i class="fas fa-lock position-absolute start-0 top-50 translate-middle-y ms-2 icons-color"></i>
+    <i class="fas fa-eye position-absolute end-0 top-50 translate-middle-y me-2 pointer icons-color" id="togglePassword"></i>
+</div>
 
 
             <br>

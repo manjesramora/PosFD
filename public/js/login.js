@@ -204,5 +204,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-
