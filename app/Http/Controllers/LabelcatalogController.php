@@ -87,17 +87,22 @@ class LabelcatalogController extends Controller
     {
         $sku = $request->input('sku');
         $description = $request->input('description');
-
+        $quantity = $request->input('quantity', 1);
+    
         $generator = new BarcodeGeneratorHTML();
         $barcodeHtml = $generator->getBarcode($sku, $generator::TYPE_CODE_128);
-
+    
         $data = [
             'sku' => $sku,
             'description' => $description,
             'barcode' => $barcodeHtml
         ];
-
-        $pdf = Pdf::loadView('label', $data);
-        return $pdf->download('label.pdf');
+    
+        $labels = array_fill(0, $quantity, $data);
+    
+        $pdf = Pdf::loadView('label', ['labels' => $labels]);
+        $pdfOutput = $pdf->output();
+    
+        return response($pdfOutput, 200)->header('Content-Type', 'application/pdf');
     }
 }
