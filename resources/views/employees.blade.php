@@ -3,7 +3,7 @@
 
 <head>
 
-<meta charset="utf-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -24,21 +24,23 @@
             <div id="content">
                 @include('navbar')
                 <div class="container-fluid">
-                <h1 class="mt-5" style="text-align: center;">EMPLEADOS</h1>
-                     <!-- Add Employe Button -->
+                    <h1 class="mt-5" style="text-align: center;">EMPLEADOS</h1>
+                    <!-- Add Employe Button -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#addEmployeeModal">
+                        <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
                             <i class="fas fa-plus-circle mr-2"></i>Agregar Empleado
                         </a>
                     </div>
                     <!-- /.container-fluid -->
 
                     <!-- Begin Page Content -->
+
                     <div class="container-fluid">
+                        <!-- Filtro buscar nombre -->
                         <div class="input-group mb-3 col-3">
                             <input type="text" class="form-control uper" placeholder="Buscar empleado" id="searchEmployee" onkeyup="filterEmployees()">
                         </div>
+                        <!-- Filtro activos inactivos -->
                         <div class="input-group mb-3 col-3">
                             <select id="statusFilter" class="form-select" onchange="filterEmployees()">
                                 <option value="">Todos</option>
@@ -57,186 +59,202 @@
                                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th class="col-1 text-center align-middle">NOMBRE(S)</th>
-                                                <th class="col-1 text-center align-middle">APELLIDO PATERNO</th>
-                                                <th class="col-1 text-center align-middle">APELLIDO MATERNO</th>
-                                                <th class="col-1 text-center align-middle">CURP</th>
-                                                <th class="col-1 text-center align-middle">RFC</th>
-                                                <th class="col-1 text-center align-middle">COLONIA</th>
-                                                <th class="col-1 text-center align-middle">CALLE</th>
-                                                <th class="col-1 text-center align-middle">NUM EXTERNO</th>
-                                                <th class="col-1 text-center align-middle">NUM INTERNO</th>
-                                                <th class="col-1 text-center align-middle">CP</th>
-                                                <th class="col-1 text-center align-middle">TELEFONO</th>
-                                                <th class="col-1 text-center align-middle">TELEFONO 2</th>
-                                                <th class="col-1 text-center align-middle">FECHA NACIMIENTO</th>
-                                                <th class="col-1 text-center align-middle">ESTADO</th>
                                                 <th class="col-1 text-center align-middle">ACCIONES</th>
+                                                <th class="col-1 text-center align-middle sortable">NOMBRE(S)</th>
+                                                <th class="col-1 text-center align-middle sortable">A.PATERNO</th>
+                                                <th class="col-1 text-center align-middle sortable">A.MATERNO</th>
+                                                <th class="col-1 text-center align-middle sortable">CURP</th>
+                                                <th class="col-1 text-center align-middle sortable">RFC</th>
+                                                <th class="col-1 text-center align-middle sortable">COLONIA</th>
+                                                <th class="col-1 text-center align-middle sortable">CALLE</th>
+                                                <th class="col-1 text-center align-middle sortable">NUM EXT</th>
+                                                <th class="col-1 text-center align-middle sortable">NUM INT</th>
+                                                <th class="col-1 text-center align-middle sortable">CP</th>
+                                                <th class="col-1 text-center align-middle sortable">TELEFONO</th>
+                                                <th class="col-1 text-center align-middle sortable">TELEFONO 2</th>
+                                                <th class="col-1 text-center align-middle sortable">FECHA NACIMIENTO</th>
+                                                <th class="col-1 text-center align-middle sortable">ESTADO</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($employees as $employee)
-                                                <tr>
-                                                    <td class="text-center align-middle">{{ $employee->first_name }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->last_name }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->middle_name }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->curp }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->rfc }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->colony }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->street }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->external_number }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->internal_number }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->postal_code }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->phone }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->phone2 }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->birth }}</td>
-                                                    <td class="text-center align-middle">{{ $employee->status == 1 ? 'ACTIVO' : 'INACTIVO' }}</td>
-                                                    <td class="text-center align-middle">
-                                                        <!-- Editar -->
-                                                        <div class="d-inline-block">
-                                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                                                data-bs-target="#editEmployeeModal{{ $employee->id }}">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
+                                            <tr>
+                                                <td class="text-center align-middle">
+                                                    <!-- Editar -->
+                                                    <div class="d-inline-block">
+                                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editEmployeeModal{{ $employee->id }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    </div>
+                                                    <!-- Modal de Edición de Empleado -->
+                                                    <div class="modal fade text-left" id="editEmployeeModal{{ $employee->id }}" tabindex="-1" aria-labelledby="editEmployeeModalLabel{{ $employee->id }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="editEmployeeModalLabel{{ $employee->id }}">
+                                                                        Editar Empleado</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form id="editEmployeeForm{{ $employee->id }}" method="POST" action="{{ route('employees.update', $employee->id) }}">
+                                                                        @csrf
+                                                                        @method('PUT')
+
+                                                                        <!-- Campos del formulario -->
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_first_name{{ $employee->id }}" class="form-label">Nombre(s)</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_first_name{{ $employee->id }}" name="first_name" value="{{ $employee->first_name }}" required maxlength="50">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_last_name{{ $employee->id }}" class="form-label">Apellido
+                                                                                        paterno</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_last_name{{ $employee->id }}" name="last_name" value="{{ $employee->last_name }}" required maxlength="50">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_middle_name{{ $employee->id }}" class="form-label">Apellido
+                                                                                        materno</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_middle_name{{ $employee->id }}" name="middle_name" value="{{ $employee->middle_name }}" maxlength="50">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_curp{{ $employee->id }}" class="form-label">CURP</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_curp{{ $employee->id }}" name="curp" value="{{ $employee->curp }}" required pattern="^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]{2}$" maxlength="18" title="El CURP debe tener el formato AAAA000000HAAAAA00 y consistir de 18 caracteres.">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_rfc{{ $employee->id }}" class="form-label">RFC</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_rfc{{ $employee->id }}" name="rfc" value="{{ $employee->rfc }}" required pattern="^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{3}$" maxlength="13" title="El RFC debe tener el formato AAAA000000AAA y consistir de 13 caracteres.">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_colony{{ $employee->id }}" class="form-label">Colonia</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_colony{{ $employee->id }}" name="colony" value="{{ $employee->colony }}" maxlength="50">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_street{{ $employee->id }}" class="form-label">Calle</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_street{{ $employee->id }}" name="street" value="{{ $employee->street }}" maxlength="50">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_external_number{{ $employee->id }}" class="form-label">Número
+                                                                                        externo</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_external_number{{ $employee->id }}" name="external_number" value="{{ $employee->external_number }}" maxlength="10">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_internal_number{{ $employee->id }}" class="form-label">Número
+                                                                                        interno</label>
+                                                                                    <input type="text" class="form-control uper" id="edit_internal_number{{ $employee->id }}" name="internal_number" value="{{ $employee->internal_number }}" maxlength="10">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_postal_code{{ $employee->id }}" class="form-label">Código
+                                                                                        postal</label>
+                                                                                    <input type="text" class="form-control" id="edit_postal_code{{ $employee->id }}" name="postal_code" value="{{ $employee->postal_code }}" pattern="\d{5}" maxlength="5" title="El código postal debe consistir de 5 dígitos.">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_phone{{ $employee->id }}" class="form-label">Teléfono</label>
+                                                                                    <input type="text" class="form-control" id="edit_phone{{ $employee->id }}" name="phone" value="{{ $employee->phone }}" pattern="\d{10}" maxlength="10" title="El teléfono debe consistir de 10 dígitos.">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_phone2{{ $employee->id }}" class="form-label">Teléfono
+                                                                                        2</label>
+                                                                                    <input type="text" class="form-control" id="edit_phone2{{ $employee->id }}" name="phone2" value="{{ $employee->phone2 }}" pattern="\d{10}" maxlength="10" title="El teléfono 2 debe consistir de 10 dígitos.">
+                                                                                    <span class="error mensaje" aria-live="polite"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-3">
+                                                                                    <label for="edit_birth{{ $employee->id }}" class="form-label">Fecha de
+                                                                                        nacimiento</label>
+                                                                                    <input type="date" class="form-control" id="edit_birth{{ $employee->id }}" name="birth" value="{{ date('Y-m-d', strtotime($employee->birth)) }}">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <label for="edit_status{{ $employee->id }}" class="form-label">Estado</label>
+                                                                                <select class="form-control" id="edit_status{{ $employee->id }}" name="status">
+                                                                                    <option value="1" {{ $employee->status == 1 ? 'selected' : '' }}>ACTIVO
+                                                                                    </option>
+                                                                                    <option value="0" {{ $employee->status == 0 ? 'selected' : '' }}>INACTIVO
+                                                                                    </option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                            <button type="submit" class="btn btn-primary">Guardar
+                                                                                Cambios</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
                                                         </div>
- <!-- Modal de Edición de Empleado -->
- <div class="modal fade text-left" id="editEmployeeModal{{ $employee->id }}" tabindex="-1" aria-labelledby="editEmployeeModalLabel{{ $employee->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editEmployeeModalLabel{{ $employee->id }}">Editar Empleado</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="editEmployeeForm{{ $employee->id }}" method="POST" action="{{ route('employees.update', $employee->id) }}">
-                                @csrf
-                                @method('PUT')
-
-                                <!-- Campos del formulario -->
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_first_name{{ $employee->id }}" class="form-label">Nombre(s)</label>
-                                            <input type="text" class="form-control uper" id="edit_first_name{{ $employee->id }}" name="first_name" value="{{ $employee->first_name }}" required maxlength="50">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_last_name{{ $employee->id }}" class="form-label">Apellido paterno</label>
-                                            <input type="text" class="form-control uper" id="edit_last_name{{ $employee->id }}" name="last_name" value="{{ $employee->last_name }}" required maxlength="50">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_middle_name{{ $employee->id }}" class="form-label">Apellido materno</label>
-                                            <input type="text" class="form-control uper" id="edit_middle_name{{ $employee->id }}" name="middle_name" value="{{ $employee->middle_name }}" maxlength="50">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                            <label for="edit_curp{{ $employee->id }}" class="form-label">CURP</label>
-                                            <input type="text" class="form-control uper" id="edit_curp{{ $employee->id }}" name="curp" value="{{ $employee->curp }}" required pattern="^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]{2}$" maxlength="18" title="El CURP debe tener el formato AAAA000000HAAAAA00 y consistir de 18 caracteres.">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_rfc{{ $employee->id }}" class="form-label">RFC</label>
-                                            <input type="text" class="form-control uper" id="edit_rfc{{ $employee->id }}" name="rfc" value="{{ $employee->rfc }}" required pattern="^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{3}$" maxlength="13" title="El RFC debe tener el formato AAAA000000AAA y consistir de 13 caracteres.">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_colony{{ $employee->id }}" class="form-label">Colonia</label>
-                                            <input type="text" class="form-control uper" id="edit_colony{{ $employee->id }}" name="colony" value="{{ $employee->colony }}" maxlength="50">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_street{{ $employee->id }}" class="form-label">Calle</label>
-                                            <input type="text" class="form-control uper" id="edit_street{{ $employee->id }}" name="street" value="{{ $employee->street }}" maxlength="50">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_external_number{{ $employee->id }}" class="form-label">Número externo</label>
-                                            <input type="text" class="form-control uper" id="edit_external_number{{ $employee->id }}" name="external_number" value="{{ $employee->external_number }}" maxlength="10">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_internal_number{{ $employee->id }}" class="form-label">Número interno</label>
-                                            <input type="text" class="form-control uper" id="edit_internal_number{{ $employee->id }}" name="internal_number" value="{{ $employee->internal_number }}" maxlength="10">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="edit_postal_code{{ $employee->id }}" class="form-label">Código postal</label>
-                                        <input type="text" class="form-control" id="edit_postal_code{{ $employee->id }}" name="postal_code" value="{{ $employee->postal_code }}" pattern="\d{5}" maxlength="5" title="El código postal debe consistir de 5 dígitos.">
-                                        <span class="error mensaje" aria-live="polite"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label for="edit_phone{{ $employee->id }}" class="form-label">Teléfono</label>
-                                        <input type="text" class="form-control" id="edit_phone{{ $employee->id }}" name="phone" value="{{ $employee->phone }}" pattern="\d{10}" maxlength="10" title="El teléfono debe consistir de 10 dígitos.">
-                                        <span class="error mensaje" aria-live="polite"></span>
-                                    </div>
-                                </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_phone2{{ $employee->id }}" class="form-label">Teléfono 2</label>
-                                            <input type="text" class="form-control" id="edit_phone2{{ $employee->id }}" name="phone2" value="{{ $employee->phone2 }}" pattern="\d{10}" maxlength="10" title="El teléfono 2 debe consistir de 10 dígitos.">
-                                            <span class="error mensaje" aria-live="polite"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="edit_birth{{ $employee->id }}" class="form-label">Fecha de nacimiento</label>
-                                            <input type="date" class="form-control" id="edit_birth{{ $employee->id }}" name="birth" value="{{ date('Y-m-d', strtotime($employee->birth)) }}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label for="edit_status{{ $employee->id }}" class="form-label">Estado</label>
-                                        <select class="form-control" id="edit_status{{ $employee->id }}" name="status">
-                                            <option value="1" {{ $employee->status == 1 ? 'selected' : '' }}>ACTIVO</option>
-                                            <option value="0" {{ $employee->status == 0 ? 'selected' : '' }}>INACTIVO</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Fin Modal de Edición de Empleado -->
-                                                    </td>
-                                                </tr>
+                                                    </div>
+                                                    <!-- Fin Modal de Edición de Empleado -->
+                                                </td>
+                                                <td class="text-center align-middle">{{ $employee->first_name }}</td>
+                                                <td class="text-center align-middle">{{ $employee->last_name }}</td>
+                                                <td class="text-center align-middle">{{ $employee->middle_name }}</td>
+                                                <td class="text-center align-middle">{{ $employee->curp }}</td>
+                                                <td class="text-center align-middle">{{ $employee->rfc }}</td>
+                                                <td class="text-center align-middle">{{ $employee->colony }}</td>
+                                                <td class="text-center align-middle">{{ $employee->street }}</td>
+                                                <td class="text-center align-middle">{{ $employee->external_number }}
+                                                </td>
+                                                <td class="text-center align-middle">{{ $employee->internal_number }}
+                                                </td>
+                                                <td class="text-center align-middle">{{ $employee->postal_code }}</td>
+                                                <td class="text-center align-middle">{{ $employee->phone }}</td>
+                                                <td class="text-center align-middle">{{ $employee->phone2 }}</td>
+                                                <td class="text-center align-middle">{{ $employee->birth }}</td>
+                                                <td class="text-center align-middle">
+                                                    {{ $employee->status == 1 ? 'ACTIVO' : 'INACTIVO' }}
+                                                </td>
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
+                                    <div class="d-flex justify-content-center mt-3">
+                                        {{ $employees->links() }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -249,8 +267,7 @@
         <!-- End of Page Wrapper -->
 
         <!-- Add Employee Modal -->
-        <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -295,14 +312,14 @@
                                     <div class="mb-3">
                                         <label for="rfc" class="form-label">RFC</label>
                                         <input type="text" class="form-control uper" id="rfc" name="rfc" required pattern="^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{3}$" maxlength="13" title="El RFC debe tener el formato AAAA000000AAA">
-                                        <span class="error mensaje" aria-live="polite"></span>                
+                                        <span class="error mensaje" aria-live="polite"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="colony" class="form-label">Colonia</label>
                                         <input type="text" class="form-control uper" id="colony" name="colony" required maxlength="50">
-                                        <span class="error mensaje" aria-live="polite"></span>                
+                                        <span class="error mensaje" aria-live="polite"></span>
                                     </div>
                                 </div>
                             </div>
@@ -311,21 +328,21 @@
                                     <div class="mb-3">
                                         <label for="street" class="form-label">Calle</label>
                                         <input type="text" class="form-control uper" id="street" name="street" required maxlength="50">
-                                        <span class="error mensaje" aria-live="polite"></span>                
+                                        <span class="error mensaje" aria-live="polite"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="external_number" class="form-label">Numero externo</label>
                                         <input type="text" class="form-control uper" id="external_number" name="external_number" required maxlength="10">
-                                        <span class="error mensaje" aria-live="polite"></span>                
+                                        <span class="error mensaje" aria-live="polite"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="internal_number" class="form-label">Numero interno</label>
                                         <input type="text" class="form-control uper" id="internal_number" name="internal_number" maxlength="10">
-                                        <span class="error mensaje" aria-live="polite"></span>                
+                                        <span class="error mensaje" aria-live="polite"></span>
                                     </div>
                                 </div>
                             </div>
@@ -334,7 +351,7 @@
                                     <div class="mb-3">
                                         <label for="postal_code" class="form-label">Codigo postal</label>
                                         <input type="text" class="form-control" id="postal_code" name="postal_code" required pattern="\d{5}" maxlength="5" title="El código postal debe consistir de 5 dígitos.">
-                                        <span class="error mensaje" aria-live="polite"></span>                
+                                        <span class="error mensaje" aria-live="polite"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">

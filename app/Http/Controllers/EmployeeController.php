@@ -29,7 +29,7 @@ class EmployeeController extends Controller
     // Método para mostrar la lista de empleados
     public function employees()
     {
-        $employees = Employee::all(); // Obtener todos los empleados
+        $employees = Employee::paginate(10); // Obtener 10 empleados por página
         return view('employees', compact('employees'));
     }
 
