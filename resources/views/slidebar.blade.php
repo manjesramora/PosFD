@@ -52,15 +52,6 @@
         </li>
         @endif
 
-        <!-- Boton Ordenes de Compra -->
-        @if(auth()->user()->hasPermission('ORDENES'))
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('orders.search') }}">
-                <i class="fa fa-truck"></i>
-                <span>Ordenes de Compra</span>
-            </a>
-        </li>
-        @endif
 
         <!-- Boton Etiquetas y Catalogo -->
         @if(auth()->user()->hasPermission('ETIQUETAS'))
