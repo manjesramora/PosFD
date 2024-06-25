@@ -59,7 +59,7 @@
                         <div class="card shadow mb-4">
                             <div class="card-body">
                                 <div class="table-responsive small-font">
-                                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered text-center table-striped" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="col-1 text-center align-middle sortable">NOMBRE(S)</th>
@@ -98,8 +98,12 @@
                                                 <td class="text-center align-middle">{{ $employee->phone }}</td>
                                                 <td class="text-center align-middle">{{ $employee->phone2 }}</td>
                                                 <td class="text-center align-middle">{{ $employee->birth }}</td>
-                                                <td class="text-center align-middle">
-                                                    {{ $employee->status == 1 ? 'ACTIVO' : 'INACTIVO' }}
+                                                <td>
+                                                    @if ($employee->status == 1)
+                                                    <span class="badge bg-success">ACTIVO</span>
+                                                    @else
+                                                    <span class="badge bg-danger">INACTIVO</span>
+                                                    @endif
                                                 </td>
                                                 <td class="text-center align-middle sticky-col">
                                                     <!-- Acciones -->

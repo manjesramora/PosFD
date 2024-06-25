@@ -79,14 +79,14 @@
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div class="table-responsive small-font">
-                                <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered text-center table-striped" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th class="col-1 sortable">USUARIOS</th>
                                             <th class="col-2 sortable">NOMBRE EMPLEADO</th>
                                             <th class="col-1 sortable">ROL</th>
                                             <th class="col-1 sortable">ESTADO</th>
-                                            <th class="col-3 sortable">CENTRO DE COSTO</th>
+                                            <th class="col-4 sortable">CENTRO DE COSTO</th>
                                             <th class="col-1 ">ACCIONES</th>
                                         </tr>
                                     </thead>
@@ -109,7 +109,11 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                {{ $user->status == 1 ? 'ACTIVO' : 'INACTIVO' }}
+                                                @if ($user->status == 1)
+                                                <span class="badge bg-success">ACTIVO</span>
+                                                @else
+                                                <span class="badge bg-danger">INACTIVO</span>
+                                                @endif
                                             </td>
                                             <td>
                                                 @foreach($user->costCenters as $center)
