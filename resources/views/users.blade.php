@@ -36,7 +36,7 @@
                                 </button>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <input type="text" class="form-control" placeholder="Buscar usuario o empleado" id="searchUser" onkeyup="filterUsers()" style="margin-top: 32px;">
+                                <input type="text" class="form-control uper" placeholder="Buscar usuario o empleado" id="searchUser" onkeyup="filterUsers()" style="margin-top: 32px;">
                             </div>
                             <div class="col-md-1-5 mb-3">
                                 <label for="statusFilter" class="form-label">Estado</label>
@@ -80,12 +80,12 @@
                                 <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th class="col-1 text-center align-middle">ACCIONES</th>
                                             <th class="col-1 text-center align-middle sortable">USUARIOS</th>
                                             <th class="col-1 text-center align-middle sortable">NOMBRE EMPLEADO</th>
                                             <th class="col-1 text-center align-middle sortable">ROL</th>
                                             <th class="col-1 text-center align-middle sortable">ESTADO</th>
                                             <th class="col-1 text-center align-middle sortable">CENTRO DE COSTO</th>
+                                            <th class="col-1 text-center align-middle">ACCIONES</th>
                                         </tr>
                                     </thead>
 
@@ -93,6 +93,28 @@
 
                                         @foreach($users as $user)
                                         <tr>
+                                            <td>{{ $user->username }}</td>
+                                            <td>
+                                                @if ($user->employee)
+                                                {{ $user->employee->first_name }} {{ $user->employee->last_name }}
+                                                {{ $user->employee->middle_name }}
+                                                @else
+                                                Ningún empleado asignado
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @foreach($user->roles ?? [] as $role)
+                                                {{ $role->name }}@if(!$loop->last), @endif
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                {{ $user->status == 1 ? 'ACTIVO' : 'INACTIVO' }}
+                                            </td>
+                                            <td>
+                                                @foreach($user->costCenters as $center)
+                                                {{ $center->cost_center_id }}@if(!$loop->last), @endif
+                                                @endforeach
+                                            </td>
                                             <td> <!-- Editar -->
                                                 <div class="d-inline-block">
                                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">
@@ -169,29 +191,6 @@
                                                     </div>
                                                 </div>
                                                 <!-- Fin Modal de Edición de Usuario -->
-
-                                            </td>
-                                            <td>{{ $user->username }}</td>
-                                            <td>
-                                                @if ($user->employee)
-                                                {{ $user->employee->first_name }} {{ $user->employee->last_name }}
-                                                {{ $user->employee->middle_name }}
-                                                @else
-                                                Ningún empleado asignado
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @foreach($user->roles ?? [] as $role)
-                                                {{ $role->name }}@if(!$loop->last), @endif
-                                                @endforeach
-                                            </td>
-                                            <td>
-                                                {{ $user->status == 1 ? 'ACTIVO' : 'INACTIVO' }}
-                                            </td>
-                                            <td>
-                                                @foreach($user->costCenters as $center)
-                                                {{ $center->cost_center_id }}@if(!$loop->last), @endif
-                                                @endforeach
                                             </td>
                                         </tr>
                                         @endforeach
@@ -348,6 +347,7 @@
             <i class="fas fa-angle-up"></i>
         </a>
         <!-- Bootstrap core JavaScript -->
+        <script src="{{ asset('js/users.js') }}"></script>
         <script src="assets/vendor/jquery/jquery.min.js"></script>
         <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -355,7 +355,6 @@
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="{{ asset('js/users.js') }}"></script>
 </body>
 
 </html>

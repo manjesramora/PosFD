@@ -36,7 +36,7 @@
                             </div>
                             <!-- Filtro buscar nombre -->
                             <div class="col-md-3 mb-3">
-                                <input type="text" class="form-control" placeholder="Buscar empleado" id="searchEmployee" onkeyup="filterEmployees()" style="margin-top: 32px;">
+                                <input type="text" class="form-control uper" placeholder="Buscar empleado" id="searchEmployee" onkeyup="filterEmployees()" style="margin-top: 32px;">
                             </div>
                             <!-- Filtro activos/inactivos -->
                             <div class="col-md-2 mb-3">
