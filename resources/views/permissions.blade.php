@@ -25,22 +25,26 @@
                 @include('navbar')
                 <div class="container-fluid">
                 <h1 class="mt-5" style="text-align: center;">PERMISOS</h1>
-                     <!-- Add Employe Button -->
-                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                                <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+                    <!-- Add Employe Button -->
+                    <div class="container">
+                        <div class="row align-items-center justify-content-center mb-4">
+                            <!-- Botón para agregar rol -->
+                            <div class="col-md-2 mb-3">
+                                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addPermissionModal" style="margin-top: 32px;">
                                     <i class="fas fa-plus-circle mr-2"></i>Agregar Permiso
-                                </a>
+                                </button>
                             </div>
-                      <!-- /.container-fluid -->
+                            <!-- Filtro buscar nombre -->
+                            <div class="col-md-3 mb-3">
+                                <input type="text" class="form-control uper" placeholder="Buscar permiso" id="searchPermission" onkeyup="filterRoles()" style="margin-top: 32px;">
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.container-fluid -->
 
                     <!-- Begin Page Content -->
                     <div class="container-fluid">
-
-                    <!-- Antes de la tabla de permisos -->
-                    <div class="input-group mb-3 col-3">
-                        <input type="text" class="form-control uper" placeholder="Buscar permiso" id="searchPermission">
-                    </div>
-
 
                     <div class="card shadow mb-4">
                         <div class="card-body">
@@ -123,11 +127,11 @@
         </div>
 
         <!-- Modal para agregar permiso -->
-        <div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addPermissionModal" tabindex="-1" aria-labelledby="addPermissionModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addRoleModalLabel">Agregar Permiso</h5>
+                        <h5 class="modal-title" id="addPermissionModalLabel">Agregar Permiso</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
