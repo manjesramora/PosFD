@@ -25,8 +25,9 @@ class LabelcatalogController extends Controller
 
             return $next($request);
         });
-    }
 
+    }
+ 
     public function labelscatalog(Request $request)
     {
         $skuFilter = $request->input('sku');
@@ -34,12 +35,14 @@ class LabelcatalogController extends Controller
         $lineaFilter = $request->input('linea');
         $sublineaFilter = $request->input('sublinea');
         $departamentoFilter = $request->input('departamento');
-        
-         // Si todos los filtros están vacíos o contienen solo valores por defecto, retornar una vista sin datos
-         if (empty($skuFilter) && empty($nameFilter) && (empty($lineaFilter) || $lineaFilter == 'LN') && (empty($sublineaFilter) || $sublineaFilter == 'SB') && empty($departamentoFilter)) {
+        $productIdFilter = $request->input('product_id');
+
+
+        // Si todos los filtros están vacíos o contienen solo valores por defecto, retornar una vista sin datos
+        if (empty($skuFilter) && empty($nameFilter) && (empty($lineaFilter) || $lineaFilter == 'LN') && (empty($sublineaFilter) || $sublineaFilter == 'SB') && empty($departamentoFilter)) {
             return view('etiquetascatalogo', ['labels' => collect()]); // Retornar una colección vacía si no hay filtros
         }
-        
+
         // Construir la consulta base
         $query = DB::table('INSDOS')
             ->join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
@@ -62,7 +65,18 @@ class LabelcatalogController extends Controller
                 'INSDOS.INSDOSQDS as Exhibicion',
                 'INSDOS.INALMNID as CentroCostos',
                 'INALPR.INAPR17ID as TipoStock'
-            );
+            )
+            ->whereNotNull('INPROD.INPRODDSC')
+            ->where('INPROD.INPRODDSC', '<>', '')
+            ->whereNotIn('INPROD.INPRODDSC', ['.', '*', '..', '...', '....'])
+            ->whereRaw('LEN(INPROD.INPRODI2) > 6')
+            ->where(function($query) {
+                $query->where('INALPR.INAPR17ID', '!=', '-1')
+                      ->orWhere(function($query) {
+                          $query->where('INALPR.INAPR17ID', '=', 'X')
+                                ->where('INSDOS.INSDOSQDS', '>', 0);
+                      });
+            });
 
         // Añadir filtros basados en los inputs del usuario
         if (!empty($skuFilter)) {
@@ -80,6 +94,9 @@ class LabelcatalogController extends Controller
         if (!empty($departamentoFilter)) {
             $query->where('INPROD.INPR02ID', 'like', $departamentoFilter . '%');
         }
+        if (!empty($productIdFilter)) { 
+            $query->where('INPROD.INPRODID', 'like', $productIdFilter . '%');
+        }
 
         // Paginación de los resultados
         $labels = $query->paginate(20);
@@ -87,6 +104,7 @@ class LabelcatalogController extends Controller
         return view('etiquetascatalogo', compact('labels'));
     }
 
+    
        
 
     public function printLabel(Request $request)
