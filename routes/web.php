@@ -55,20 +55,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 
     // Rutas relacionadas con almacen
-    Route::get('get-providers', [OrderController::class, 'getProviders']);
-    Route::get('/search', [OrderController::class, 'searchView'])->name('orders.search')->middleware('permission:ORDENES');
-    Route::get('/recepcion', [OrderController::class, 'recepcion'])->name('reception');
-    Route::get('/recepcionar/{ACMROIDOC}', [OrderController::class, 'recepcionar'])->name('recepcionar');
+
     Route::get('/check-username', [UserController::class, 'checkUsername'])->name('check-username');
     Route::get('/labelscatalog', [LabelcatalogController::class, 'labelscatalog'])->name('labelscatalog')->middleware('permission:ETIQUETAS');
-    Route::post('/order/generate-report', [OrderController::class, 'generateReport'])->name('order.generateReport');
-    Route::post('/recepcionar', [OrderController::class, 'recepcionar'])->name('order.recepcionar');
-   
-    Route::get('/order/getProvidersByNumber', [OrderController::class, 'getProvidersByNumber'])->name('order.getProvidersByNumber');
-Route::get('/order/getProvidersByName', [OrderController::class, 'getProvidersByName'])->name('order.getProvidersByName');
-
-
-
 });
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
