@@ -113,7 +113,7 @@ $(document).ready(function () {
     // Evento para buscar proveedores por número al escribir en el campo
     $("#numero").on("input", function () {
         var number = $(this).val();
-        if (number.length >= 2) {
+        if (number.length >= 0) {
             getProvidersByNumber(number);
         } else {
             $("#numeroFleteList").hide();
@@ -123,7 +123,7 @@ $(document).ready(function () {
     // Evento para buscar proveedores por nombre al escribir en el campo
     $("#fletero").on("input", function () {
         var name = $(this).val();
-        if (name.length >= 2) {
+        if (name.length >= 0) {
             getProvidersByName(name);
         } else {
             $("#fleteroList").hide();

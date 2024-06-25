@@ -22,68 +22,73 @@ class OrderController extends Controller
         return response()->json($proveedores);
     }
     public function searchView(Request $request)
-    {
-        // Verificar si el usuario está autenticado
-        if (!Auth::check()) {
-            // Redirigir al usuario a la página de inicio de sesión si no está autenticado
-            return redirect()->route('login');
-        }
-
-        $user = Auth::user();
-
-        // Obtener los centros de costo permitidos para el usuario
-        $allowedCostCenters = $user->costCenters->pluck('cost_center_id');
-
-        // Si no hay centros de costo permitidos, retornar una vista vacía
-        if ($allowedCostCenters->isEmpty()) {
-            return view('search', ['orders' => null]); // Pasar null en lugar de una colección vacía
-        }
-
-        // Construir la consulta principal
-        $query = Order::query()
-            ->where('ACMROIBGP', '=', 'N')
-            ->whereIn('INALMNID', $allowedCostCenters);
-
-        // Aplicar filtros opcionales
-        if ($request->filled('ACMROIDOC')) {
-            $query->where('ACMROIDOC', $request->input('ACMROIDOC'));
-        }
-
-        if ($request->filled('CNCDIRID')) {
-            $query->where('CNCDIRID', $request->input('CNCDIRID'));
-        }
-
-        if ($request->filled('start_date')) {
-            $query->whereDate('ACMROIFDOC', '>=', $request->input('start_date'));
-        }
-
-        if ($request->filled('end_date')) {
-            $query->whereDate('ACMROIFDOC', '<=', $request->input('end_date'));
-        }
-
-        $orders = $query->select([
-            'CNTDOCID',
-            'ACMROIDOC',
-            'ACMROIFDOC',
-            'INALMNID',
-            'CNCDIRID',
-            'ACMROICXP',
-            DB::raw('MAX(CNCIASID) as CNCIASID')
-        ])
-            ->groupBy('CNTDOCID', 'ACMROIDOC', 'ACMROIFDOC', 'INALMNID', 'CNCDIRID', 'ACMROICXP')
-            ->orderBy('ACMROIFDOC', 'desc')
-            ->Paginate(7);
-
-        $providerIds = $orders->pluck('CNCDIRID')->unique();
-
-        // Verificar si hay proveedores asociados
-        $providers = [];
-        if ($orders->isNotEmpty() && $providerIds->isNotEmpty()) {
-            $providers = Providers::whereIn('CNCDIRID', $providerIds)->pluck('CNCDIRNOM', 'CNCDIRID');
-        }
-
-        return view('search', compact('orders', 'providers'));
+{
+    // Verificar si el usuario está autenticado
+    if (!Auth::check()) {
+        // Redirigir al usuario a la página de inicio de sesión si no está autenticado
+        return redirect()->route('login');
     }
+
+    $user = Auth::user();
+
+    // Obtener los centros de costo permitidos para el usuario
+    $allowedCostCenters = $user->costCenters->pluck('cost_center_id');
+
+    // Si no hay centros de costo permitidos, retornar una vista vacía
+    if ($allowedCostCenters->isEmpty()) {
+        return view('search', ['orders' => null]); // Pasar null en lugar de una colección vacía
+    }
+
+    // Calcular la fecha límite de 6 meses atrás
+    $sixMonthsAgo = now()->subMonths(6)->format('Y-m-d');
+
+    // Construir la consulta principal
+    $query = Order::query()
+        ->where('ACMROIBGP', '=', 'N')
+        ->whereIn('INALMNID', $allowedCostCenters)
+        ->whereDate('ACMROIFDOC', '>=', $sixMonthsAgo); // Agregar condición para filtrar por fecha
+
+    // Aplicar filtros opcionales
+    if ($request->filled('ACMROIDOC')) {
+        $query->where('ACMROIDOC', $request->input('ACMROIDOC'));
+    }
+
+    if ($request->filled('CNCDIRID')) {
+        $query->where('CNCDIRID', $request->input('CNCDIRID'));
+    }
+
+    if ($request->filled('start_date')) {
+        $query->whereDate('ACMROIFDOC', '>=', $request->input('start_date'));
+    }
+
+    if ($request->filled('end_date')) {
+        $query->whereDate('ACMROIFDOC', '<=', $request->input('end_date'));
+    }
+
+    $orders = $query->select([
+        'CNTDOCID',
+        'ACMROIDOC',
+        'ACMROIFDOC',
+        'INALMNID',
+        'CNCDIRID',
+        'ACMROICXP',
+        DB::raw('MAX(CNCIASID) as CNCIASID')
+    ])
+    ->groupBy('CNTDOCID', 'ACMROIDOC', 'ACMROIFDOC', 'INALMNID', 'CNCDIRID', 'ACMROICXP')
+    ->orderBy('ACMROIFDOC', 'desc')
+    ->Paginate(7);
+
+    $providerIds = $orders->pluck('CNCDIRID')->unique();
+
+    // Verificar si hay proveedores asociados
+    $providers = [];
+    if ($orders->isNotEmpty() && $providerIds->isNotEmpty()) {
+        $providers = Providers::whereIn('CNCDIRID', $providerIds)->pluck('CNCDIRNOM', 'CNCDIRID');
+    }
+
+    return view('search', compact('orders', 'providers'));
+}
+
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
@@ -118,7 +123,7 @@ class OrderController extends Controller
                         $order->ACMROIQT = $item['acmroiqt'];
                         $order->ACMROINP = $item['acmroinp'];
                         $order->ACMROING = $item['acmroing'];
-                        $order->ACMROIBGP = 'N';
+                        $order->ACMROICXP = 'N';
                         $order->save();
 
                         // Si falta cantidad, crear nuevo documento

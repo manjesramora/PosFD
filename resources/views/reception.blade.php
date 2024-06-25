@@ -141,7 +141,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($orders as $order)
-                                            @if ($order->ACMROIBGP == 'N')
+                                            @if ($order->ACMROICXP == 'S')
                                             <tr>
                                                 <td class="col-1 text-center align-middle">{{ intval($order->ACMROILIN) }}</td>
                                                 <td class="col-1 text-center align-middle">{{ $order->ACMROIDSC }}</td>
