@@ -76,7 +76,7 @@
                                             <th>DEPARTAMENTO</th>
                                             <th>LINEA</th>
                                             <th>SUBLINEA</th>
-                                            <th>EXHIBICIÓN</th>
+                                            <th>EXISTENCIA</th>
                                             <th>CENTRO DE COSTOS</th>
                                             <th>TIPO STOCK</th>
                                             <th>ACCIONES</th>

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Picqer\Barcode\BarcodeGeneratorHTML;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+
 
 class LabelcatalogController extends Controller
 {
@@ -24,6 +26,7 @@ class LabelcatalogController extends Controller
             return $next($request);
         });
     }
+
     public function labelscatalog(Request $request)
     {
         $skuFilter = $request->input('sku');
@@ -32,14 +35,18 @@ class LabelcatalogController extends Controller
         $sublineaFilter = $request->input('sublinea');
         $departamentoFilter = $request->input('departamento');
         
-        // Si todos los filtros están vacíos o contienen solo valores por defecto, retornar una vista sin datos
-        if (empty($skuFilter) && empty($nameFilter) && (empty($lineaFilter) || $lineaFilter == 'LN') && (empty($sublineaFilter) || $sublineaFilter == 'SB') && empty($departamentoFilter)) {
+         // Si todos los filtros están vacíos o contienen solo valores por defecto, retornar una vista sin datos
+         if (empty($skuFilter) && empty($nameFilter) && (empty($lineaFilter) || $lineaFilter == 'LN') && (empty($sublineaFilter) || $sublineaFilter == 'SB') && empty($departamentoFilter)) {
             return view('etiquetascatalogo', ['labels' => collect()]); // Retornar una colección vacía si no hay filtros
         }
-
+        
         // Construir la consulta base
-        $query = Insdos::join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
-            ->join('INALPR', 'INPROD.INPRODID', '=', 'INALPR.INPRODID')
+        $query = DB::table('INSDOS')
+            ->join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
+            ->leftJoin('INALPR', function($join) {
+                $join->on('INSDOS.INPRODID', '=', 'INALPR.INPRODID')
+                     ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
+            })
             ->select(
                 'INPROD.INPRODID',
                 'INPROD.INPRODDSC',
@@ -55,8 +62,7 @@ class LabelcatalogController extends Controller
                 'INSDOS.INSDOSQDS as Exhibicion',
                 'INSDOS.INALMNID as CentroCostos',
                 'INALPR.INAPR17ID as TipoStock'
-            )
-            ->whereIn('INALPR.INAPR17ID', ['M', 'P', 'B', 'X']); // Filtro por Tipo de Stock
+            );
 
         // Añadir filtros basados en los inputs del usuario
         if (!empty($skuFilter)) {
