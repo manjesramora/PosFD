@@ -26,29 +26,32 @@
                 <div class="container-fluid">
                     <h1 class="mt-5" style="text-align: center;">EMPLEADOS</h1>
                     <!-- Add Employe Button -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
-                            <i class="fas fa-plus-circle mr-2"></i>Agregar Empleado
-                        </a>
+                    <div class="container">
+                        <div class="row align-items-center justify-content-center mb-4">
+                            <!-- Botón para agregar empleado -->
+                            <div class="col-md-2 mb-3">
+                                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" style="margin-top: 32px;">
+                                    <i class="fas fa-plus-circle mr-2"></i>Agregar Empleado
+                                </button>
+                            </div>
+                            <!-- Filtro buscar nombre -->
+                            <div class="col-md-3 mb-3">
+                                <input type="text" class="form-control" placeholder="Buscar empleado" id="searchEmployee" onkeyup="filterEmployees()" style="margin-top: 32px;">
+                            </div>
+                            <!-- Filtro activos/inactivos -->
+                            <div class="col-md-2 mb-3">
+                                <label for="statusFilter" class="form-label">Estado</label>
+                                <select id="statusFilter" class="form-select" onchange="filterEmployees()">
+                                    <option value="">Todos</option>
+                                    <option value="1">Activos</option>
+                                    <option value="0">Inactivos</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.container-fluid -->
 
                     <!-- Begin Page Content -->
-
-                    <div class="container-fluid">
-                        <!-- Filtro buscar nombre -->
-                        <div class="input-group mb-3 col-3">
-                            <input type="text" class="form-control uper" placeholder="Buscar empleado" id="searchEmployee" onkeyup="filterEmployees()">
-                        </div>
-                        <!-- Filtro activos inactivos -->
-                        <div class="input-group mb-3 col-3">
-                            <select id="statusFilter" class="form-select" onchange="filterEmployees()">
-                                <option value="">Todos</option>
-                                <option value="1">Activos</option>
-                                <option value="0">Inactivos</option>
-                            </select>
-                        </div>
-                    </div>
 
                     <div class="container-fluid">
 
@@ -59,7 +62,6 @@
                                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th class="col-1 text-center align-middle">ACCIONES</th>
                                                 <th class="col-1 text-center align-middle sortable">NOMBRE(S)</th>
                                                 <th class="col-1 text-center align-middle sortable">A.PATERNO</th>
                                                 <th class="col-1 text-center align-middle sortable">A.MATERNO</th>
@@ -74,13 +76,33 @@
                                                 <th class="col-1 text-center align-middle sortable">TELEFONO 2</th>
                                                 <th class="col-1 text-center align-middle sortable">FECHA NACIMIENTO</th>
                                                 <th class="col-1 text-center align-middle sortable">ESTADO</th>
+                                                <th class="col-1 text-center align-middle sticky-col">ACCIONES</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($employees as $employee)
                                             <tr>
+
+                                                <td class="text-center align-middle">{{ $employee->first_name }}</td>
+                                                <td class="text-center align-middle">{{ $employee->last_name }}</td>
+                                                <td class="text-center align-middle">{{ $employee->middle_name }}</td>
+                                                <td class="text-center align-middle">{{ $employee->curp }}</td>
+                                                <td class="text-center align-middle">{{ $employee->rfc }}</td>
+                                                <td class="text-center align-middle">{{ $employee->colony }}</td>
+                                                <td class="text-center align-middle">{{ $employee->street }}</td>
+                                                <td class="text-center align-middle">{{ $employee->external_number }}
+                                                </td>
+                                                <td class="text-center align-middle">{{ $employee->internal_number }}
+                                                </td>
+                                                <td class="text-center align-middle">{{ $employee->postal_code }}</td>
+                                                <td class="text-center align-middle">{{ $employee->phone }}</td>
+                                                <td class="text-center align-middle">{{ $employee->phone2 }}</td>
+                                                <td class="text-center align-middle">{{ $employee->birth }}</td>
                                                 <td class="text-center align-middle">
-                                                    <!-- Editar -->
+                                                    {{ $employee->status == 1 ? 'ACTIVO' : 'INACTIVO' }}
+                                                </td>
+                                                <td class="text-center align-middle sticky-col">
+                                                    <!-- Acciones -->
                                                     <div class="d-inline-block">
                                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editEmployeeModal{{ $employee->id }}">
                                                             <i class="fas fa-edit"></i>
@@ -229,24 +251,6 @@
                                                         </div>
                                                     </div>
                                                     <!-- Fin Modal de Edición de Empleado -->
-                                                </td>
-                                                <td class="text-center align-middle">{{ $employee->first_name }}</td>
-                                                <td class="text-center align-middle">{{ $employee->last_name }}</td>
-                                                <td class="text-center align-middle">{{ $employee->middle_name }}</td>
-                                                <td class="text-center align-middle">{{ $employee->curp }}</td>
-                                                <td class="text-center align-middle">{{ $employee->rfc }}</td>
-                                                <td class="text-center align-middle">{{ $employee->colony }}</td>
-                                                <td class="text-center align-middle">{{ $employee->street }}</td>
-                                                <td class="text-center align-middle">{{ $employee->external_number }}
-                                                </td>
-                                                <td class="text-center align-middle">{{ $employee->internal_number }}
-                                                </td>
-                                                <td class="text-center align-middle">{{ $employee->postal_code }}</td>
-                                                <td class="text-center align-middle">{{ $employee->phone }}</td>
-                                                <td class="text-center align-middle">{{ $employee->phone2 }}</td>
-                                                <td class="text-center align-middle">{{ $employee->birth }}</td>
-                                                <td class="text-center align-middle">
-                                                    {{ $employee->status == 1 ? 'ACTIVO' : 'INACTIVO' }}
                                                 </td>
                                             </tr>
                                             @endforeach
