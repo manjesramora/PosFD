@@ -128,11 +128,11 @@ function filterUsers() {
     const rows = table.getElementsByTagName('tr');
 
     for (let i = 1; i < rows.length; i++) { // i = 1 para saltar el encabezado
-        const usernameCell = rows[i].getElementsByTagName('td')[1]; // Columna de USUARIOS
-        const employeeNameCell = rows[i].getElementsByTagName('td')[2]; // Columna de NOMBRE EMPLEADO
-        const roleCell = rows[i].getElementsByTagName('td')[3]; // Columna de ROL
-        const statusCell = rows[i].getElementsByTagName('td')[4]; // Columna de ESTADO
-        const costCenterCell = rows[i].getElementsByTagName('td')[5]; // Columna de CENTRO DE COSTO
+        const usernameCell = rows[i].getElementsByTagName('td')[0]; // Columna de USUARIOS
+        const employeeNameCell = rows[i].getElementsByTagName('td')[1]; // Columna de NOMBRE EMPLEADO
+        const roleCell = rows[i].getElementsByTagName('td')[2]; // Columna de ROL
+        const statusCell = rows[i].getElementsByTagName('td')[3]; // Columna de ESTADO
+        const costCenterCell = rows[i].getElementsByTagName('td')[4]; // Columna de CENTRO DE COSTO
 
         if (usernameCell && employeeNameCell && roleCell && statusCell && costCenterCell) {
             const username = usernameCell.textContent.toLowerCase().trim();
@@ -154,6 +154,8 @@ function filterUsers() {
         }
     }
 }
+
+
 
 
 // Evento de clic en el encabezado de la columna para ordenar

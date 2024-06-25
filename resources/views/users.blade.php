@@ -26,7 +26,9 @@
                 @include('navbar')
                 <div class="container-fluid">
                     <h1 class="mt-5" style="text-align: center;">USUARIOS</h1>
+
                     <br>
+
                     <!-- Add User Button and Filters -->
                     <div class="container">
                         <div class="row align-items-center justify-content-center mb-4">
@@ -52,7 +54,7 @@
                                 <select id="roleFilter" class="form-select" onchange="filterUsers()">
                                     <option value="">Todos</option>
                                     @foreach($roles as $role)
-                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                    <option value="{{ strtolower($role->name) }}">{{ $role->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -62,33 +64,32 @@
                                 <select id="costCenterFilter" class="form-select" onchange="filterUsers()">
                                     <option value="">Todos</option>
                                     @foreach($centers as $center)
-                                    <option value="{{ $center->cost_center_id }}">{{ $center->cost_center_id }}</option>
+                                    <option value="{{ strtolower($center->cost_center_id) }}">{{ $center->cost_center_id }}</option>
                                     @endforeach
                                 </select>
                             </div>
+
                         </div>
                     </div>
                     <!-- /.container-fluid -->
 
-
                     <!-- Begin Page Content -->
 
-                    <!-- User Table -->
+                    <!-- Employee Table -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div class="table-responsive small-font">
                                 <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th class="col-1 text-center align-middle sortable">USUARIOS</th>
-                                            <th class="col-1 text-center align-middle sortable">NOMBRE EMPLEADO</th>
-                                            <th class="col-1 text-center align-middle sortable">ROL</th>
-                                            <th class="col-1 text-center align-middle sortable">ESTADO</th>
-                                            <th class="col-1 text-center align-middle sortable">CENTRO DE COSTO</th>
-                                            <th class="col-1 text-center align-middle">ACCIONES</th>
+                                            <th class="col-1 sortable">USUARIOS</th>
+                                            <th class="col-2 sortable">NOMBRE EMPLEADO</th>
+                                            <th class="col-1 sortable">ROL</th>
+                                            <th class="col-1 sortable">ESTADO</th>
+                                            <th class="col-3 sortable">CENTRO DE COSTO</th>
+                                            <th class="col-1 ">ACCIONES</th>
                                         </tr>
                                     </thead>
-
                                     <tbody>
 
                                         @foreach($users as $user)
@@ -181,6 +182,13 @@
                                                                             @endforeach
                                                                         </div>
                                                                     </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="edit_status" class="form-label">Estado</label>
+                                                                        <select class="form-control" id="edit_status" name="status">
+                                                                            <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>ACTIVO</option>
+                                                                            <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>INACTIVO</option>
+                                                                        </select>
+                                                                    </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                                                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
@@ -191,15 +199,15 @@
                                                     </div>
                                                 </div>
                                                 <!-- Fin Modal de Edición de Usuario -->
+
                                             </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div>
-                            <!-- Enlaces de paginación -->
-                            <div class="d-flex justify-content-center">
-                                {{ $users->links() }}
+                                <div class="d-flex justify-content-center mt-3">
+                                    {{ $users->links() }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -347,7 +355,6 @@
             <i class="fas fa-angle-up"></i>
         </a>
         <!-- Bootstrap core JavaScript -->
-        <script src="{{ asset('js/users.js') }}"></script>
         <script src="assets/vendor/jquery/jquery.min.js"></script>
         <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -355,6 +362,7 @@
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('js/users.js') }}"></script>
 </body>
 
 </html>

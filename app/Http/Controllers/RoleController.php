@@ -44,7 +44,7 @@ class RoleController extends Controller
 
         // Crear un nuevo rol
         $role = new Role();
-        $role->name = $request->name;
+        $role->name = strtoupper($request->name);
         $role->description = $request->description;
 
         // Guardar el rol en la base de datos

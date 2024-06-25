@@ -52,8 +52,8 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                             <tr>
-                                            <th class="col-1 text-center align-middle">NOMBRE</th>
-                                            <th class="col-1 text-center align-middle">DESCRIPCIÓN</th>
+                                            <th class="col-1 text-center align-middle sortable">NOMBRE</th>
+                                            <th class="col-1 text-center align-middle sortable">DESCRIPCIÓN</th>
                                             <th class="col-1 text-center align-middle">ACCIONES</th>
                                             </tr>
                                         </thead>

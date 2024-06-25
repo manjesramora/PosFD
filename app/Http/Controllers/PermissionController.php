@@ -52,7 +52,7 @@ class PermissionController extends Controller
     
         // Crear un nuevo permiso
         $permission = new Permission();
-        $permission->name = $request->name;
+        $permission->name = strtoupper($request->name);
         $permission->description = $request->description;
     
         // Guardar el permiso en la base de datos

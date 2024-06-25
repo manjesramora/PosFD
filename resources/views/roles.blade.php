@@ -54,16 +54,16 @@
                                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th>Rol</th>
-                                                <th>Descripcion</th>
-                                                <th>Permisos</th>
-                                                <th>Actions</th>
+                                                <th class="col-1 sortable">Rol</th>
+                                                <th class="col-2 sortable">Descripcion</th>
+                                                <th class="col-3 sortable">Permisos</th>
+                                                <th class="col-1">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($roles as $role)
                                             <tr>
-                                                <td class="uper">{{ $role->name }}</td>
+                                                <td>{{ $role->name }}</td>
                                                 <td>{{ $role->description }}</td>
                                                 <td>
                                                     @foreach($role->permissions ?? [] as $permission)
@@ -220,7 +220,6 @@
             </a>
 
             <!-- Bootstrap core JavaScript -->
-            <script src="{{ asset('js/roles.js') }}"></script>
             <script src="assets/vendor/jquery/jquery.min.js"></script>
             <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -228,7 +227,7 @@
             <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
+            <script src="{{ asset('js/roles.js') }}"></script>
 </body>
 
 </html>
