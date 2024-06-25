@@ -361,3 +361,7 @@ body {
     padding-left: 30px; /* Ajusta el valor según sea necesario */
 }
 
+.col-md-1-5 {
+    flex: 0 0 auto;
+    width: 12.5%;
+}

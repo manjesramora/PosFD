@@ -1,5 +1,4 @@
-// resources/js/users.js
-
+// Genera el nombre de usuario basado en el nombre y apellido del empleado seleccionado
 function generateUsername() {
     const employeeSelect = document.getElementById("employee_id_add");
     const selectedOption = employeeSelect.options[employeeSelect.selectedIndex];
@@ -14,6 +13,7 @@ function generateUsername() {
     }
 }
 
+// Verifica la disponibilidad del nombre de usuario generado
 function checkUsernameAvailability(baseUsername) {
     fetch(`/check-username?base=${baseUsername}`)
         .then((response) => {
@@ -30,6 +30,7 @@ function checkUsernameAvailability(baseUsername) {
         .catch((error) => console.error("Error:", error));
 }
 
+// Valida que la contraseña y su confirmación coincidan
 function validatePassword() {
     const password = document.getElementById("password_add").value;
     const confirmPassword = document.getElementById(
@@ -46,6 +47,7 @@ function validatePassword() {
     }
 }
 
+// Añade un evento para validar la contraseña antes de enviar el formulario
 document
     .getElementById("addUserForm")
     .addEventListener("submit", function (event) {
@@ -54,6 +56,7 @@ document
         }
     });
 
+// Restablece la contraseña del usuario con una solicitud AJAX
 function resetPassword(userId) {
     // Mostrar el modal de confirmación
     var confirmationModal = new bootstrap.Modal(
@@ -115,29 +118,109 @@ $(document).on("click", ".reset-password", function () {
     resetPassword(userId);
 });
 
-
+// Filtra los usuarios en la tabla según la búsqueda y el filtro de estado
 function filterUsers() {
     const searchInput = document.getElementById('searchUser').value.toLowerCase().trim();
     const statusFilter = document.getElementById('statusFilter').value;
+    const roleFilter = document.getElementById('roleFilter').value.toLowerCase().trim();
+    const costCenterFilter = document.getElementById('costCenterFilter').value.toLowerCase().trim();
     const table = document.getElementById('dataTable');
     const rows = table.getElementsByTagName('tr');
 
     for (let i = 1; i < rows.length; i++) { // i = 1 para saltar el encabezado
-        const employeeNameCell = rows[i].getElementsByTagName('td')[1]; // Columna de NOMBRE EMPLEADO
-        const statusCell = rows[i].getElementsByTagName('td')[3]; // Columna de ESTADO
+        const usernameCell = rows[i].getElementsByTagName('td')[1]; // Columna de USUARIOS
+        const employeeNameCell = rows[i].getElementsByTagName('td')[2]; // Columna de NOMBRE EMPLEADO
+        const roleCell = rows[i].getElementsByTagName('td')[3]; // Columna de ROL
+        const statusCell = rows[i].getElementsByTagName('td')[4]; // Columna de ESTADO
+        const costCenterCell = rows[i].getElementsByTagName('td')[5]; // Columna de CENTRO DE COSTO
 
-        if (employeeNameCell && statusCell) {
-            const employeeName = employeeNameCell.textContent.toLowerCase().trim();
+        if (usernameCell && employeeNameCell && roleCell && statusCell && costCenterCell) {
+            const username = usernameCell.textContent.toLowerCase().trim();
+            const employeeName = employeeNameCell.textContent.toLowerCase().replace(/\s+/g, ' ').trim();
+            const roles = roleCell.textContent.toLowerCase().trim();
             const status = statusCell.textContent.trim();
+            const costCenters = costCenterCell.textContent.toLowerCase().trim();
 
-            const matchesName = employeeName.includes(searchInput);
+            const matchesName = username.includes(searchInput) || employeeName.includes(searchInput);
             const matchesStatus = statusFilter === "" || (statusFilter === "1" && status === "ACTIVO") || (statusFilter === "0" && status === "INACTIVO");
+            const matchesRole = roleFilter === "" || roles.includes(roleFilter);
+            const matchesCostCenter = costCenterFilter === "" || costCenters.includes(costCenterFilter);
 
-            if (matchesName && matchesStatus) {
+            if (matchesName && matchesStatus && matchesRole && matchesCostCenter) {
                 rows[i].style.display = ""; // Mostrar la fila
             } else {
                 rows[i].style.display = "none"; // Ocultar la fila
             }
+        }
+    }
+}
+
+
+// Evento de clic en el encabezado de la columna para ordenar
+$(document).ready(function() {
+    $("th.sortable").click(function () {
+        var columnIndex = $(this).index();
+        var asc = $(this).hasClass("asc");
+        var desc = $(this).hasClass("desc");
+
+        // Si la columna ya está ordenada en orden ascendente, ordenar descendentemente
+        if (asc) {
+            $("th").removeClass("asc").removeClass("desc");
+            $(this).addClass("desc");
+            // Mostrar indicador de ordenamiento en el encabezado de la columna
+            $(this).find(".sort-indicator").remove();
+            $(this).append('<span class="sort-indicator">&#x25BE;</span>'); // Flecha hacia abajo
+            sortTable(columnIndex, false);
+        }
+        // Si la columna ya está ordenada en orden descendente, quitar el ordenamiento
+        else if (desc) {
+            $("th").removeClass("asc").removeClass("desc");
+            $(this).find(".sort-indicator").remove();
+            sortTable(0, true); // Orden predeterminado (primera columna ascendente)
+        }
+        // Si la columna no está ordenada, ordenar ascendente
+        else {
+            $("th").removeClass("asc").removeClass("desc");
+            $(this).addClass("asc");
+            // Mostrar indicador de ordenamiento en el encabezado de la columna
+            $(this).find(".sort-indicator").remove();
+            $(this).append('<span class="sort-indicator">&#x25B4;</span>'); // Flecha hacia arriba
+            sortTable(columnIndex, true);
+        }
+    });
+});
+
+// Ordena la tabla según la columna seleccionada y el orden (ascendente o descendente)
+function sortTable(columnIndex, asc) {
+    var table = document.getElementById("dataTable");
+    var rows = table.rows;
+    var switching = true;
+    var shouldSwitch;
+    var i;
+    var x, y;
+
+    while (switching) {
+        switching = false;
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            x = rows[i].getElementsByTagName("TD")[columnIndex];
+            y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+
+            if (asc) {
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            } else {
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
         }
     }
 }
