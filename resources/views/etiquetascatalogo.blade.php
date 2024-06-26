@@ -66,7 +66,7 @@
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div class="table-responsive small-font">
-                                <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered text-center table-striped" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>PRODUCTO</th>
@@ -79,6 +79,7 @@
                                             <th>EXISTENCIA</th>
                                             <th>CENTRO DE COSTOS</th>
                                             <th>TIPO STOCK</th>
+                                            <th>TIPO ALM</th>
                                             <th>ACCIONES</th>
                                         </tr>
                                     </thead>
@@ -95,8 +96,7 @@
                                             <td>{{ $label->Exhibicion }}</td>
                                             <td>{{ $label->CentroCostos }}</td>
                                             <td>{{ $label->TipoStock }}</td>
-
-
+                                            <td>{{ $label->INTPALID }}</td>
                                             <td>
                                                 <button class="btn btn-secondary" onclick="showPrintModal('{{ $label->INPRODI2 }}', '{{ $label->INPRODDSC }}')">Imprimir SKU</button> </form>
                                         </tr>
