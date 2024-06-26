@@ -110,7 +110,7 @@
                                             </td>
                                             <td>
                                                 @if ($user->status == 1)
-                                                <span class="badge bg-success">ACTIVO</span>
+                                                <span class="badge bg-primary">ACTIVO</span>
                                                 @else
                                                 <span class="badge bg-danger">INACTIVO</span>
                                                 @endif

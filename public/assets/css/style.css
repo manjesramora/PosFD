@@ -378,18 +378,6 @@ body {
 .sticky-col {
     position: sticky;
     right: 0;
-    background-color: white;
-    z-index: 100;
-    border-left: 2px solid #dee2e6; /* Añade un borde izquierdo para separar de otras columnas */
-    box-shadow: -2px 0px 5px rgba(0,0,0,0.5); /* Opcional: añade sombra para dar sensación de profundidad */
 }
 
-/* Asegúrate de que todos los bordes sean visibles */
-.table thead th {
-    border-bottom: 2px solid #dee2e6;
-}
-
-.table tbody td {
-    border-top: 1px solid #dee2e6;
-}
 

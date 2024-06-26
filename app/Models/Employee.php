@@ -20,6 +20,11 @@ class Employee extends Model
         'phone', 'phone2', 'birth', 'status'
     ];
 
+    // Establecer el valor predeterminado del atributo status
+    protected $attributes = [
+        'status' => 1,
+    ];
+
     // Método para formatear la fecha de nacimiento
     public function getBirthAttribute($value)
     {
