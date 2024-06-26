@@ -16,6 +16,7 @@ class Order extends Model
         'ACMVOIALID',
         'ACMVOIFDOC',
         'ACMVOIULIN',
+        'ACMVOIPENT',
     ];
     public function store()
     {

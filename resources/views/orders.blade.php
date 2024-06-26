@@ -1,5 +1,3 @@
-<!-- resources/views/orders.blade.php -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,16 +70,17 @@
                             <div class="card shadow mb-4">
                                 <div class="card-body">
                                     <div class="table-responsive small-font">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <!-- Añade aquí las columnas de tu tabla de órdenes -->
-                                                    <th>NO. DOC</th>
-                                                    <th>NO. PROV</th>
-                                                    <th>PROVEDOR</th>
-                                                    <th>FECHA DE ORDEN</th>
-                                                    <th>PARTIDAS</th>
-                                                    <th>ALMACEN</th>
+                                                    <th class="col-md-1">NO. DOC</th>
+                                                    <th class="col-md-1">NO. PROV</th>
+                                                    <th class="col-md-2">PROVEDOR</th>
+                                                    <th class="col-md-2">FECHA DE ORDEN</th>
+                                                    <th class="col-md-1">PARTIDAS</th>
+                                                    <th class="col-md-2">ALMACEN</th>
+                                                    <th class="col-md-1">Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -92,16 +91,25 @@
                                                     <td>{{ $order->CNCDIRID }}</td>
                                                     <td>{{ $order->provider->CNCDIRNOM }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($order->ACMVOIFDOC)->format('Y-m-d') }}</td>
-                                                    <td>{{ $order->ACMVOIULIN }}</td>
-                                                    <td>{{ $order->ACMVOIALID}}</td>
+                                                    <td>{{ number_format($order->ACMVOIULIN, 2) }}</td>
+                                                    <td>{{ $order->ACMVOIALID }}</td>
+                                                    <td>
+                                                        <button class="btn btn-info">
+                                                            <i class="fas fa-truck"></i>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
+                                            
                                         </table>
+                                        <div class="d-flex justify-content-center">
+                                {{ $orders->links() }} <!-- Paginación centrada -->
+                            </div>
                                     </div>
                                 </div>
                             </div>
-                            {{ $orders->links() }} <!-- Paginación -->
+                            
                         </div>
                     </div>
                 </div>

@@ -54,6 +54,7 @@ class OrderController extends Controller
         // Aplicamos el filtro para no mostrar registros más antiguos de 6 meses
         $query->where('ACMVOIFDOC', '>=', $sixMonthsAgo);
 
+
         // Validar los centros de costo asociados al usuario
         $user = Auth::user();
         if ($user) {

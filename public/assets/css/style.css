@@ -1,3 +1,8 @@
+.table-centered td, .table-centered th {
+    text-align: center;
+    vertical-align: middle;
+}
+
 #scrollToTopBtn {
     display: none; /* Oculta el botón por defecto */
     position: fixed; /* Lo fija en la ventana del navegador */
