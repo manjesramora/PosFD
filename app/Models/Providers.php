@@ -10,11 +10,13 @@ class Providers extends Model
 
     protected $table = 'CNCDIR';
 
-    protected $primaryKey = 'CNCDIRID';
-
     protected $fillable = [
         'CNCDIRID',
-        'CNCDIRNOM',
-        // otros campos si es necesario
+        'CNCDIRNOM'
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'CNCDIRID');
+    }
 }

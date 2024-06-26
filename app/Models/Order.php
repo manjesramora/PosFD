@@ -1,55 +1,28 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\Providers; // Importa la clase Provider aquí
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Providers as ProviderModel;
 
 class Order extends Model
 {
-    use HasFactory;
+    protected $table = 'ACMVOR';
 
-    // Nombre de la tabla
-    protected $table = 'ACMROI';
-
-    // Campos que se pueden rellenar
     protected $fillable = [
-        'CNTDOCID',
-        'ACMROIDOC',
-        'ACMROIFDOC',
-        'ACMROIFCEP',
-        'INALMNID',
         'CNCDIRID',
-        'ACMROIREF', //ref
-        'ACMROICXP',
-        'ACMROIDSC',
-        'ACMROIUMT',
-        'ACMROILIN',
-        'INPRODID',
-        'ACMROIQT',
-        'ACMROIQTTR',
-        'ACMROINP',
-        'ACMROING',
-        'ACMROITDOC',
-        'ACMROINDOC',
-        'ACMROIBGP'
+        'CNTDOCID',
+        'ACMVOIDOC',
+        'ACMVOIALID',
+        'ACMVOIFDOC',
+        'ACMVOIULIN',
     ];
-
-    // Si no usas timestamps
-    public $timestamps = false;
-
+    public function store()
+    {
+        return $this->belongsTo(StoreCostCenter::class, 'ACMVOIALID', 'id');
+    }
     public function provider()
     {
-        return $this->belongsTo(ProviderModel::class, 'CNCDIRID', 'CNCDIRID');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-    public function product()
-    {
-        return $this->belongsTo(Product::class, 'INPRODID', 'INPRODID');
+        return $this->belongsTo(Providers::class, 'CNCDIRID', 'CNCDIRID'); // Especifica la clave primaria de Provider
     }
 }

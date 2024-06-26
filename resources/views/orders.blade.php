@@ -1,3 +1,5 @@
+<!-- resources/views/orders.blade.php -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,25 +10,25 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Ordenes de Compra</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/sb-admin-2.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/sb-admin-2.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
 
 <body id="page-top">
     <div id="wrapper">
-        @include('slidebar')
+        @include('slidebar') <!-- Asegúrate de tener un archivo sidebar.blade.php en resources/views -->
         <div id="content-wrapper" class="d-flex flex-column dash" style="overflow-y: hidden;">
             <div id="content">
-                @include('navbar')
+                @include('navbar') <!-- Asegúrate de tener un archivo navbar.blade.php en resources/views -->
                 <div class="container-fluid">
                     <h1 class="mt-5" style="text-align: center;">ORDENES DE COMPRA</h1>
                     <br>
                     <!-- Formulario de filtro -->
-                    <form method="GET" action="{{ route('') }}" class="mb-3" id="filterForm">
+                    <form method="GET" action="{{ route('orders') }}" class="mb-3" id="filterForm">
                         <!-- Campos del formulario -->
                         <div class="row g-3 align-items-end">
                             <div class="col-md-2">
@@ -71,32 +73,52 @@
                                 <div class="card-body">
                                     <div class="table-responsive small-font">
                                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <!-- Añade aquí las columnas de tu tabla de órdenes -->
+                                                    <th>NO. DOC</th>
+                                                    <th>NO. PROV</th>
+                                                    <th>PROVEDOR</th>
+                                                    <th>FECHA DE ORDEN</th>
+                                                    <th>PARTIDAS</th>
+                                                    <th>ALMACEN</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
+                                                @foreach ($orders as $order)
+                                                <tr>
+                                                    <!-- Asegúrate de que $order->id sea el campo correcto -->
+                                                    <td>{{ $order->ACMVOIDOC }}</td>
+                                                    <td>{{ $order->CNCDIRID }}</td>
+                                                    <td>{{ $order->provider->CNCDIRNOM }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($order->ACMVOIFDOC)->format('Y-m-d') }}</td>
+                                                    <td>{{ $order->ACMVOIULIN }}</td>
+                                                    <td>{{ $order->ACMVOIALID}}</td>
+                                                </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
-
+                            {{ $orders->links() }} <!-- Paginación -->
                         </div>
-
                     </div>
                 </div>
             </div>
-            <!-- Modal -->          
-            <!-- Bootstrap core JavaScript -->
-            <script src="assets/vendor/jquery/jquery.min.js"></script>
-            <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-            <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-            <script src="assets/vendor/chart.js/Chart.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-            <script src="{{ asset('js/order.js') }}"></script>
         </div>
     </div>
-    </div>
+    <!-- Coloca esto al inicio de tu archivo head -->
+    
+
+    <!-- Coloca esto al final del body -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/chart.js/Chart.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{{ asset('js/order.js') }}"></script>
+
 </body>
 
 </html>

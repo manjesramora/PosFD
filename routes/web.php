@@ -10,7 +10,7 @@ use App\Http\Controllers\LabelcatalogController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\InsdosController;
 use App\Http\Middleware\Authenticate;
-
+use App\Http\Controllers\ProviderController;
 Route::get('/', function () {
     return view('login');
 })->name('home');
@@ -54,7 +54,11 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
     Route::delete('permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 
-    // Rutas relacionadas con almacen
+    
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+    Route::get('providers/autocomplete', [ProviderController::class, 'autocomplete'])->name('providers.autocomplete')->middleware('permission:ORDENES');;
+
 
     Route::get('/check-username', [UserController::class, 'checkUsername'])->name('check-username');
     Route::get('/labelscatalog', [LabelcatalogController::class, 'labelscatalog'])->name('labelscatalog')->middleware('permission:ETIQUETAS');
