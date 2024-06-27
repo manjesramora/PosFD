@@ -74,6 +74,7 @@
                                             <thead>
                                                 <tr>
                                                     <!-- Añade aquí las columnas de tu tabla de órdenes -->
+                                                    <th class="col-md-1">T. DOC</th>
                                                     <th class="col-md-1">NO. DOC</th>
                                                     <th class="col-md-1">NO. PROV</th>
                                                     <th class="col-md-2">PROVEDOR</th>
@@ -87,6 +88,7 @@
                                                 @foreach ($orders as $order)
                                                 <tr>
                                                     <!-- Asegúrate de que $order->id sea el campo correcto -->
+                                                    <td>{{ $order->CNTDOCID }}</td>
                                                     <td>{{ $order->ACMVOIDOC }}</td>
                                                     <td>{{ $order->CNCDIRID }}</td>
                                                     <td>{{ $order->provider->CNCDIRNOM }}</td>
@@ -98,6 +100,7 @@
         <i class="fas fa-truck"></i>
     </a>
 </td>
+
 
                                                 </tr>
                                                 @endforeach

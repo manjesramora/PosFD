@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('providers/autocomplete', [ProviderController::class, 'autocomplete'])->name('providers.autocomplete')->middleware('permission:ORDENES');;
     Route::get('/receptions/{ACMVOIDOC}', [OrderController::class, 'showReceptions'])->name('receptions.show');
 
+
     Route::get('/check-username', [UserController::class, 'checkUsername'])->name('check-username');
     Route::get('/labelscatalog', [LabelcatalogController::class, 'labelscatalog'])->name('labelscatalog')->middleware('permission:ETIQUETAS');
 });

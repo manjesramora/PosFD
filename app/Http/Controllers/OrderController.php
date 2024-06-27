@@ -63,22 +63,28 @@ class OrderController extends Controller
     }
 
     public function autocomplete(Request $request)
-    {
-        $query = $request->get('query');
-        $field = $request->get('field');
+{
+    $query = $request->get('query');
+    $field = $request->get('field');
 
-        $providers = Providers::where($field, 'LIKE', "%{$query}%")
-            ->whereBetween('CNCDIRID', [30000000, 49999999])
-            ->take(10)
-            ->get();
+    $providers = Providers::where($field, 'LIKE', "%{$query}%")
+        ->whereBetween('CNCDIRID', [30000000, 49999999]) // Asegúrate de ajustar estos rangos según tus requisitos
+        ->take(10)
+        ->get();
 
-        return response()->json($providers);
-    }
+    return response()->json($providers);
+}
 
     public function showReceptions($ACMVOIDOC)
-    {
-        $receptions = Receptions::where('ACMVOIDOC', $ACMVOIDOC)->get();
+{
+    $order = Order::where('ACMVOIDOC', $ACMVOIDOC)
+    ->with('provider')
+    ->first();
+$receptions = Receptions::where('ACMVOIDOC', $ACMVOIDOC)
+              ->get();
+    $provider = Providers::where('CNCDIRID', $order->CNCDIRID)->first();
 
-        return view('receptions', compact('receptions'));
-    }
+    return view('receptions', compact('receptions', 'order', 'provider'));
+}
+
 }
