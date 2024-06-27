@@ -79,7 +79,7 @@
                                                     <th class="col-md-1">NO. PROV</th>
                                                     <th class="col-md-2">PROVEDOR</th>
                                                     <th class="col-md-2">FECHA DE ORDEN</th>
-                                                    <th class="col-md-1">PARTIDAS</th>
+                                                
                                                     <th class="col-md-2">ALMACEN</th>
                                                     <th class="col-md-1">Acciones</th>
                                                 </tr>
@@ -93,7 +93,7 @@
                                                     <td>{{ $order->CNCDIRID }}</td>
                                                     <td>{{ $order->provider->CNCDIRNOM }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($order->ACMVOIFDOC)->format('Y-m-d') }}</td>
-                                                    <td>{{ number_format($order->ACMVOIULIN, 2) }}</td>
+                                                    
                                                     <td>{{ $order->ACMVOIALID }}</td>
                                                     <td>
     <a href="{{ route('receptions.show', $order->ACMVOIDOC) }}" class="btn btn-info">

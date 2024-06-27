@@ -32,7 +32,7 @@
                             <!-- Botón para agregar rol -->
                             <div class="col-md-2 mb-3">
                                 <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addRoleModal" style="margin-top: 32px;">
-                                    <i class="fas fa-plus-circle mr-2"></i>Agregar Empleado
+                                    <i class="fas fa-plus-circle mr-2"></i>Agregar Rol
                                 </button>
                             </div>
                             <!-- Filtro buscar nombre -->
