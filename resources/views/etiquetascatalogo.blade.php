@@ -29,57 +29,88 @@
             <div id="content">
                 @include('navbar')
                 <div class="container-fluid mt-4">
-                    <div class="row mb-3 gx-2 align-items-end">
-                        <div class="col-md-2">
-                            <label for="sku" class="form-label text-center w-100">SKU</label>
-                            <input type="text" name="sku" id="sku" class="form-control form-control-sm" value="{{ request('sku') }}" onkeyup="filtrar()">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="name" class="form-label text-center w-100">NOMBRE</label>
-                            <input type="text" name="name" id="name" class="form-control form-control-sm" value="{{ request('name') }}" onkeyup="filtrar()">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="linea" class="form-label text-center w-100">LINEA</label>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text" id="linea-addon">LN</span>
-                                <input type="text" name="linea" id="linea" class="form-control" value="{{ request('linea') ? str_replace('LN', '', request('linea')) : '' }}" onkeyup="filtrar()" aria-describedby="linea-addon">
+                    <div class="input-container mb-3 filtro">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="productId" class="form-label">ID PRODUCTO</label>
+                                <input type="text" name="productId" id="productId" class="form-control" value="{{ request('productId') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="sku" class="form-label">SKU</label>
+                                <input type="text" name="sku" id="sku" class="form-control" value="{{ request('sku') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="name" class="form-label">NOMBRE</label>
+                                <input type="text" name="name" id="name" class="form-control" value="{{ request('name') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="linea" class="form-label">LINEA</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="linea-addon">LN</span>
+                                    <input type="text" name="linea" id="linea" class="form-control" value="{{ request('linea') ? str_replace('LN', '', request('linea')) : '' }}" aria-describedby="linea-addon">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="sublinea" class="form-label">SUBLINEA</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="sublinea-addon">SB</span>
+                                    <input type="text" name="sublinea" id="sublinea" class="form-control" value="{{ request('sublinea') ? str_replace('SB', '', request('sublinea')) : '' }}" aria-describedby="sublinea-addon">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="departamento" class="form-label">DEPARTAMENTO</label>
+                                <input type="text" name="departamento" id="departamento" class="form-control" value="{{ request('departamento') }}">
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <label for="sublinea" class="form-label text-center w-100">SUBLINEA</label>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text" id="sublinea-addon">SB</span>
-                                <input type="text" name="sublinea" id="sublinea" class="form-control" value="{{ request('sublinea') ? str_replace('SB', '', request('sublinea')) : '' }}" onkeyup="filtrar()" aria-describedby="sublinea-addon">
+                        <div class="row mt-4">
+                            <div class="col-md-1 offset-md-10 d-flex justify-content-end">
+                                <button type="button" class="btn btn-primary me-2" onclick="buscarFiltros()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="limpiarFiltros()">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="departamento" class="form-label text-center w-100">DEPARTAMENTO</label>
-                            <input type="text" name="departamento" id="departamento" class="form-control form-control-sm" value="{{ request('departamento') }}" onkeyup="filtrar()">
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button class="btn btn-secondary btn-sm w-100" onclick="limpiarFiltros()">
-                                <i class="fas fa-eraser"></i> Limpiar
-                            </button>
                         </div>
                     </div>
-                    <!-- Tabla de datos -->
+                                    <!-- Tabla de datos -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div class="table-responsive small-font">
-                                <table class="table table-bordered text-center table-striped" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>PRODUCTO</th>
-                                            <th>DESCRIPCIÓN</th>
-                                            <th>SKU</th>
-                                            <th>CODIGO BARRAS</th>
-                                            <th>DEPARTAMENTO</th>
-                                            <th>LINEA</th>
-                                            <th>SUBLINEA</th>
-                                            <th>EXISTENCIA</th>
-                                            <th>CENTRO DE COSTOS</th>
-                                            <th>TIPO STOCK</th>
-                                            <th>TIPO ALM</th>
+                                            @php
+                                                $columns = [
+                                                    'INPROD.INPRODID' => 'PRODUCTO',
+                                                    'INPROD.INPRODDSC' => 'DESCRIPCIÓN',
+                                                    'INPROD.INPRODI2' => 'SKU',
+                                                    'INSDOS.INSDOSQDS' => 'EXISTENCIA',
+                                                    'INPROD.INPR02ID' => 'DEPARTAMENTO',
+                                                    'INPROD.INPRODCBR' => 'CODIGO BARRAS',
+                                                    'INPROD.INPR03ID' => 'LINEA',
+                                                    'INPROD.INPR04ID' => 'SUBLINEA',
+                                                    'INSDOS.INALMNID' => 'CENTRO DE COSTOS',
+                                                    'INALPR.INAPR17ID' => 'TS',
+                                                    'INPROD.INTPALID' => 'TA',
+                                                ];
+                                            @endphp
+                                            @foreach ($columns as $column => $label)
+                                                <th>
+                                                    <a href="{{ route('labelscatalog', array_merge(request()->query(), ['sort' => $column, 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sortable-column">
+                                                        {{ $label }}
+                                                        @if (request('sort') === $column)
+                                                            @if (request('direction') === 'asc')
+                                                                <i class="sort-icon fas fa-sort-up"></i>
+                                                            @else
+                                                                <i class="sort-icon fas fa-sort-down"></i>
+                                                            @endif
+                                                        @else
+                                                            <i class="sort-icon fas fa-sort"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                            @endforeach
                                             <th>ACCIONES</th>
                                         </tr>
                                     </thead>
@@ -89,11 +120,11 @@
                                             <td>{{ $label->INPRODID }}</td>
                                             <td>{{ $label->INPRODDSC }}</td>
                                             <td>{{ $label->INPRODI2 }}</td>
-                                            <td>{{ $label->INPRODCBR }}</td>
+                                            <td>{{ number_format($label->Existencia, 2) }}</td>
                                             <td>{{ $label->INPR02ID }}</td>
+                                            <td>{{ $label->INPRODCBR }}</td>
                                             <td>{{ $label->INPR03ID }}</td>
                                             <td>{{ $label->INPR04ID }}</td>
-                                            <td>{{ $label->Exhibicion }}</td>
                                             <td>{{ $label->CentroCostos }}</td>
                                             <td>{{ $label->TipoStock }}</td>
                                             <td>{{ $label->INTPALID }}</td>

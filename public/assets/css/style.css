@@ -380,4 +380,25 @@ body {
     right: 0;
 }
 
+/* Estilos para los encabezados de las columnas */
+.sortable-column {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.sortable-column:hover {
+    color: inherit; /* Mantener el color original al pasar el cursor */
+}
+
+.sortable-column .sort-icon {
+    margin-left: 5px;
+    font-size: 0.8em;
+}
+
+.table thead th {
+    white-space: nowrap;
+    cursor: pointer; /* Mostrar el cursor como puntero */
+}
