@@ -94,10 +94,11 @@
                                                     <td>{{ number_format($order->ACMVOIULIN, 2) }}</td>
                                                     <td>{{ $order->ACMVOIALID }}</td>
                                                     <td>
-                                                        <button class="btn btn-info">
-                                                            <i class="fas fa-truck"></i>
-                                                        </button>
-                                                    </td>
+    <a href="{{ route('receptions.show', $order->ACMVOIDOC) }}" class="btn btn-info">
+        <i class="fas fa-truck"></i>
+    </a>
+</td>
+
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -120,11 +121,13 @@
     
 
     <!-- Coloca esto al final del body -->
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="assets/vendor/chart.js/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/chart.js/Chart.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{{ asset('js/order.js') }}"></script>
 
 </body>

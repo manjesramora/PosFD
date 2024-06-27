@@ -37,9 +37,3 @@ function limpiarCampos() {
     $('#idDropdown, #nameDropdown').hide();
 }
 
-// Ocultar dropdowns al hacer clic fuera de ellos
-$(document).click(function(e) {
-    if (!$(e.target).closest('.dropdown-menu').length) {
-        $('.dropdown-menu').hide();
-    }
-});

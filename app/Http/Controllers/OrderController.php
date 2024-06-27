@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Providers;
 use App\Models\StoreCostCenter;
+use App\Models\Receptions;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -13,14 +13,10 @@ class OrderController extends Controller
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            // Obtener el usuario autenticado
             $user = Auth::user();
 
             if ($user) {
-                // Obtener los roles del usuario autenticado
                 $userRoles = $user->roles;
-
-                // Compartir los roles del usuario con todas las vistas
                 view()->share('userRoles', $userRoles);
             }
 
@@ -30,7 +26,6 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        // Obtenemos la fecha actual y restamos 6 meses
         $sixMonthsAgo = now()->subMonths(6)->format('Y-m-d');
 
         $query = Order::query();
@@ -51,21 +46,15 @@ class OrderController extends Controller
             $query->where('ACMVOIFDOC', '<=', $request->end_date);
         }
 
-        // Aplicamos el filtro para no mostrar registros más antiguos de 6 meses
         $query->where('ACMVOIFDOC', '>=', $sixMonthsAgo);
 
-
-        // Validar los centros de costo asociados al usuario
         $user = Auth::user();
         if ($user) {
             $centrosCostosIds = $user->costCenters->pluck('cost_center_id');
-            $query->whereIn('ACMVOIALID', $centrosCostosIds); // Filtrar por ACMVOIALM en lugar de center_id
+            $query->whereIn('ACMVOIALID', $centrosCostosIds);
         }
 
-        // Ordenamos por ACMVOIDOC en orden descendente
         $query->orderBy('ACMVOIDOC', 'desc');
-
-        // Incluir el nombre del almacén ACMVOIALM en la consulta
         $query->with('store');
 
         $orders = $query->paginate(10);
@@ -84,5 +73,12 @@ class OrderController extends Controller
             ->get();
 
         return response()->json($providers);
+    }
+
+    public function showReceptions($ACMVOIDOC)
+    {
+        $receptions = Receptions::where('ACMVOIDOC', $ACMVOIDOC)->get();
+
+        return view('receptions', compact('receptions'));
     }
 }
