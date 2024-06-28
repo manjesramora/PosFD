@@ -70,7 +70,7 @@
                             <div class="card shadow mb-4">
                                 <div class="card-body">
                                     <div class="table-responsive small-font">
-                                    <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
+                                        <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <!-- Añade aquí las columnas de tu tabla de órdenes -->
@@ -79,7 +79,7 @@
                                                     <th class="col-md-1">NO. PROV</th>
                                                     <th class="col-md-2">PROVEDOR</th>
                                                     <th class="col-md-2">FECHA DE ORDEN</th>
-                                                
+
                                                     <th class="col-md-2">ALMACEN</th>
                                                     <th class="col-md-1">Acciones</th>
                                                 </tr>
@@ -93,27 +93,27 @@
                                                     <td>{{ $order->CNCDIRID }}</td>
                                                     <td>{{ $order->provider->CNCDIRNOM }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($order->ACMVOIFDOC)->format('Y-m-d') }}</td>
-                                                    
+
                                                     <td>{{ $order->ACMVOIALID }}</td>
                                                     <td>
-    <a href="{{ route('receptions.show', $order->ACMVOIDOC) }}" class="btn btn-info">
-        <i class="fas fa-truck"></i>
-    </a>
-</td>
+                                                        <a href="{{ route('receptions.show', $order->ACMVOIDOC) }}" class="btn btn-info">
+                                                            <i class="fas fa-truck"></i>
+                                                        </a>
+                                                    </td>
 
 
                                                 </tr>
                                                 @endforeach
                                             </tbody>
-                                            
+
                                         </table>
                                         <div class="d-flex justify-content-center">
-                                {{ $orders->links() }} <!-- Paginación centrada -->
-                            </div>
+                                            {{ $orders->links() }} <!-- Paginación centrada -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -121,8 +121,6 @@
         </div>
     </div>
     <!-- Coloca esto al inicio de tu archivo head -->
-    
-
     <!-- Coloca esto al final del body -->
     <script src="assets/vendor/jquery/jquery.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

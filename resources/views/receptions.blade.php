@@ -1,7 +1,5 @@
-                      
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,7 +14,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/sb-admin-2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
-
 <body id="page-top">
     <div id="wrapper">
         @include('slidebar')
@@ -27,9 +24,9 @@
                     <h1 class="mt-5" style="text-align: center;">Detalles de Recepción</h1>
                     <br>
                     <div class="row g-3 align-items-end">
-                        
-<div class="col-md-2">
-                           <label for="numero" class="form-label">Número:</label>
+
+                        <div class="col-md-2">
+                            <label for="numero" class="form-label">Número:</label>
                             <div class="input-group">
                                 <input type="text" id="numero" class="form-control">
                                 <button class="btn btn-danger btn-outline-ligth clear-input" type="button" id="clearNumero">
@@ -58,7 +55,7 @@
                             <label for="num_doc" class="form-label">No. de Doc:</label>
                             <input type="text" id="num_doc" class="form-control" value="{{ $order->ACMVOIDOC }}" readonly>
                         </div>
-                       
+
                         <div class="col-md-4">
                             <label for="nombre_proveedor" class="form-label">Nombre del Proveedor:</label>
                             <input type="text" id="nombre_proveedor" class="form-control" value="{{ $order->provider->CNCDIRNOM }}" readonly>
@@ -114,7 +111,7 @@
                             <div class="card shadow mb-4">
                                 <div class="card-body">
                                     <div class="table-responsive small-font">
-                                        <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th class="col-md-1">LIN</th>
@@ -139,8 +136,12 @@
                                                     <td>{{ $reception->ACMVOINPAR }}</td>
                                                     <td>{{ $reception->ACMVOIUMT }}</td>
                                                     <td>{{ number_format($reception->ACMVOIQTO, 2) }}</td>
-                                                    <td><input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" oninput="updateRow(this)"></td>
-                                                    <td><input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{number_format( $reception->ACMVOINPO,2) }}" max="{{ $reception->ACMVOINPO }}" step="0.01" oninput="updateRow(this)"></td>
+                                                    <td>
+                                                        <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" oninput="validateCantidad(this)" max="{{ $reception->ACMVOIQTO }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" max="{{ $reception->ACMVOINPO }}" step="0.01" oninput="validatePrecio(this)">
+                                                    </td>
                                                     <td class="subtotal">{{ number_format($reception->ACMVOIMRE, 2) }}$</td>
                                                     <td class="flete">0.00$</td>
                                                     <td class="iva">{{ number_format($reception->ACMVOINIO, 2) }}$</td>
@@ -165,13 +166,10 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
     </div>
-
     <script src="assets/vendor/jquery/jquery.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -179,193 +177,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/reception.js') }}"></script>
 
-    <script>
-        function toggleFleteInput() {
-            var selectBox = document.getElementById("flete_select");
-            var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-            var fleteInputDiv = document.getElementById("flete_input_div");
-
-            if (selectedValue === "1") {
-                fleteInputDiv.style.display = "block";
-            } else {
-                fleteInputDiv.style.display = "none";
-                document.getElementById("flete_input").value = "";
-                distributeFreight();
-            }
-        }
-
-        function updateRow(element) {
-            let row = element.closest('tr');
-            let cantidadRecibida = parseFloat(row.querySelector('.cantidad-recibida').value) || 0;
-            let precioUnitario = parseFloat(row.querySelector('.precio-unitario').value) || 0;
-            let subtotal = row.querySelector('.subtotal');
-            subtotal.innerHTML = (cantidadRecibida * precioUnitario).toFixed(2) + "$";
-
-            distributeFreight();
-        }
-
-        function distributeFreight() {
-            let totalSubtotal = 0;
-            let freightCost = parseFloat(document.getElementById('flete_input').value) || 0;
-
-            // Calculate total subtotal
-            document.querySelectorAll('#receptionTableBody tr').forEach(row => {
-                let subtotal = parseFloat(row.querySelector('.subtotal').innerHTML.replace('$', '')) || 0;
-                totalSubtotal += subtotal;
-            });
-
-            // Distribute freight cost
-            document.querySelectorAll('#receptionTableBody tr').forEach(row => {
-                let subtotal = parseFloat(row.querySelector('.subtotal').innerHTML.replace('$', '')) || 0;
-                let freight = row.querySelector('.flete');
-                let iva = row.querySelector('.iva');
-                let freightAmount = ((subtotal / totalSubtotal) * freightCost).toFixed(2);
-                freight.innerHTML = freightAmount + "$";
-                iva.innerHTML = (subtotal * 0.16).toFixed(2) + "$"; // Assuming 16% IVA
-            });
-
-            // Update totals
-            document.getElementById('totalSubtotal').innerHTML = totalSubtotal.toFixed(2) + "$";
-            document.getElementById('totalFlete').innerHTML = freightCost.toFixed(2) + "$";
-            updateTotalIva();
-            updateTotalGeneral();
-        }
-
-        function updateTotalIva() {
-            let totalIva = 0;
-
-            document.querySelectorAll('#receptionTableBody tr').forEach(row => {
-                let iva = parseFloat(row.querySelector('.iva').innerHTML.replace('$', '')) || 0;
-                totalIva += iva;
-            });
-
-            document.getElementById('totalIva').innerHTML = totalIva.toFixed(2) + "$";
-        }
-
-        function updateTotalGeneral() {
-            let totalSubtotal = parseFloat(document.getElementById('totalSubtotal').innerHTML.replace('$', '')) || 0;
-            let totalFlete = parseFloat(document.getElementById('totalFlete').innerHTML.replace('$', '')) || 0;
-            let totalIva = parseFloat(document.getElementById('totalIva').innerHTML.replace('$', '')) || 0;
-            let totalGeneral = totalSubtotal + totalFlete + totalIva;
-
-            document.getElementById('totalGeneral').innerHTML = totalGeneral.toFixed(2) + "$";
-        }
-
-        $(document).ready(function () {
-            $('.numero-input').on('input', function () {
-                var input = $(this).val();
-                var optionsList = $(this).siblings('.autocomplete-list');
-                optionsList.empty();
-
-                $.ajax({
-                    url: '/autocomplete-numeros',
-                    method: 'GET',
-                    data: { input: input },
-                    success: function (response) {
-                        response.forEach(function (option) {
-                            var listItem = $('<li></li>').text(option.CNCDIRID + ' - ' + option.CNCDIRNOM).attr('data-id', option.CNCDIRID).attr('data-name', option.CNCDIRNOM);
-                            optionsList.append(listItem);
-                        });
-                    }
-                });
-            });
-
-            $(document).on('click', '.autocomplete-list li', function () {
-                var selectedValue = $(this).text();
-                var input = $(this).closest('.input-group').find('.numero-input');
-                input.val(selectedValue);
-                input.siblings('.autocomplete-list').empty();
-            });
-
-            $(document).on('blur', '.numero-input', function () {
-                setTimeout(function () {
-                    $('.autocomplete-list').empty();
-                }, 200);
-            });
-        });
-        // Autocomplete and clear input functions (unchanged)
-$('#numero').on('input', function() {
-    let query = $(this).val();
-
-    if (query.length >= 3) {
-        $.ajax({
-            url: "/providers/autocomplete",
-            type: "GET",
-            data: {
-                query: query,
-                field: 'CNCDIRID'
-            },
-            success: function(data) {
-                let dropdown = $('#numeroList');
-                dropdown.empty().show();
-
-                data.forEach(item => {
-                    dropdown.append(`<li class="list-group-item" data-id="${item.CNCDIRID}" data-name="${item.CNCDIRNOM}">${item.CNCDIRID} - ${item.CNCDIRNOM}</li>`);
-                });
-            }
-        });
-    } else {
-        $('#numeroList').hide();
-    }
-});
-
-$(document).on('click', '#numeroList li', function() {
-    let id = $(this).data('id');
-    let name = $(this).data('name');
-    $('#numero').val(id);
-    $('#fletero').val(name); // Captura el nombre del fletero en el campo Fletero
-    $('#numeroList').hide();
-});
-
-$('#clearNumero').on('click', function() {
-    $('#numero').val('');
-    $('#fletero').val(''); // Limpia también el campo Fletero
-    $('#numeroList').hide();
-});
-
-$('#fletero').on('input', function() {
-    let query = $(this).val();
-
-    if (query.length >= 3) {
-        $.ajax({
-            url: "/providers/autocomplete",
-            type: "GET",
-            data: {
-                query: query,
-                field: 'CNCDIRNOM'
-            },
-            success: function(data) {
-                let dropdown = $('#fleteroList');
-                dropdown.empty().show();
-
-                data.forEach(item => {
-                    dropdown.append(`<li class="list-group-item" data-id="${item.CNCDIRID}" data-name="${item.CNCDIRNOM}">${item.CNCDIRID} - ${item.CNCDIRNOM}</li>`);
-                });
-            }
-        });
-    } else {
-        $('#fleteroList').hide();
-    }
-});
-
-$(document).on('click', '#fleteroList li', function() {
-    let id = $(this).data('id');
-    let name = $(this).data('name');
-    $('#fletero').val(name);
-    $('#numero').val(id); // Captura el número del proveedor en el campo Número
-    $('#fleteroList').hide();
-});
-
-$('#clearFletero').on('click', function() {
-    $('#fletero').val('');
-    $('#numero').val(''); // Limpia también el campo Número
-    $('#fleteroList').hide();
-});
-    </script>
 </body>
 
 </html>
-
-
-
