@@ -73,7 +73,7 @@
                             </div>
                         </div>
                     </div>
-                                    <!-- Tabla de datos -->
+                    <!-- Tabla de datos -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div class="table-responsive small-font">
@@ -81,35 +81,35 @@
                                     <thead>
                                         <tr>
                                             @php
-                                                $columns = [
-                                                    'INPROD.INPRODID' => 'PRODUCTO',
-                                                    'INPROD.INPRODDSC' => 'DESCRIPCIÓN',
-                                                    'INPROD.INPRODI2' => 'SKU',
-                                                    'INSDOS.INSDOSQDS' => 'EXISTENCIA',
-                                                    'INPROD.INPR02ID' => 'DEPARTAMENTO',
-                                                    'INPROD.INPRODCBR' => 'CODIGO BARRAS',
-                                                    'INPROD.INPR03ID' => 'LINEA',
-                                                    'INPROD.INPR04ID' => 'SUBLINEA',
-                                                    'INSDOS.INALMNID' => 'CENTRO DE COSTOS',
-                                                    'INALPR.INAPR17ID' => 'TS',
-                                                    'INPROD.INTPALID' => 'TA',
-                                                ];
+                                            $columns = [
+                                            'INPROD.INPRODID' => 'PRODUCTO',
+                                            'INPROD.INPRODDSC' => 'DESCRIPCIÓN',
+                                            'INPROD.INPRODI2' => 'SKU',
+                                            'INSDOS.INSDOSQDS' => 'EXISTENCIA',
+                                            'INPROD.INPR02ID' => 'DEPARTAMENTO',
+                                            'INPROD.INPRODCBR' => 'CODIGO BARRAS',
+                                            'INPROD.INPR03ID' => 'LINEA',
+                                            'INPROD.INPR04ID' => 'SUBLINEA',
+                                            'INSDOS.INALMNID' => 'CENTRO DE COSTOS',
+                                            'INALPR.INAPR17ID' => 'TS',
+                                            'INPROD.INTPALID' => 'TA',
+                                            ];
                                             @endphp
                                             @foreach ($columns as $column => $label)
-                                                <th>
-                                                    <a href="{{ route('labelscatalog', array_merge(request()->query(), ['sort' => $column, 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sortable-column">
-                                                        {{ $label }}
-                                                        @if (request('sort') === $column)
-                                                            @if (request('direction') === 'asc')
-                                                                <i class="sort-icon fas fa-sort-up"></i>
-                                                            @else
-                                                                <i class="sort-icon fas fa-sort-down"></i>
-                                                            @endif
-                                                        @else
-                                                            <i class="sort-icon fas fa-sort"></i>
-                                                        @endif
-                                                    </a>
-                                                </th>
+                                            <th>
+                                                <a href="{{ route('labelscatalog', array_merge(request()->query(), ['sort' => $column, 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sortable-column">
+                                                    {{ $label }}
+                                                    @if (request('sort') === $column)
+                                                    @if (request('direction') === 'asc')
+                                                    <i class="sort-icon fas fa-sort-up"></i>
+                                                    @else
+                                                    <i class="sort-icon fas fa-sort-down"></i>
+                                                    @endif
+                                                    @else
+                                                    <i class="sort-icon fas fa-sort"></i>
+                                                    @endif
+                                                </a>
+                                            </th>
                                             @endforeach
                                             <th>ACCIONES</th>
                                         </tr>

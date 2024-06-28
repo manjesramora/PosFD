@@ -2,19 +2,21 @@
 
 // app/Http/Controllers/LabelcatalogController.php
 namespace App\Http\Controllers;
-use App\Models\Insdos;//No sirve
-use App\Models\LabelCatalog;//No sirve
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Picqer\Barcode\BarcodeGeneratorHTML;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\DB;
 
+use App\Models\Insdos; // Importa el modelo Insdos (aunque no se usa en este controlador)
+use App\Models\LabelCatalog; // Importa el modelo LabelCatalog (aunque no se usa en este controlador)
+use Illuminate\Http\Request; // Importa la clase Request para manejar las solicitudes HTTP
+use Illuminate\Support\Facades\Auth; // Importa la clase Auth para la autenticación de usuarios
+use Picqer\Barcode\BarcodeGeneratorHTML; // Importa la clase BarcodeGeneratorHTML para generar códigos de barras en formato HTML
+use Barryvdh\DomPDF\Facade\Pdf; // Importa la clase Pdf para generar archivos PDF
+use Illuminate\Support\Facades\DB; // Importa la clase DB para realizar consultas a la base de datos
 
 class LabelcatalogController extends Controller
 {
+    // Constructor del controlador
     public function __construct()
     {
+        // Middleware para compartir los roles del usuario en las vistas
         $this->middleware(function ($request, $next) {
             $user = Auth::user();
 
@@ -25,12 +27,12 @@ class LabelcatalogController extends Controller
 
             return $next($request);
         });
-
     }
- 
 
+    // Método para manejar la lógica de la vista del catálogo de etiquetas
     public function labelscatalog(Request $request)
     {
+        // Filtrar inputs de la solicitud
         $productIdFilter = $request->input('productId');
         $skuFilter = $request->input('sku');
         $nameFilter = $request->input('name');
@@ -49,9 +51,9 @@ class LabelcatalogController extends Controller
         // Construir la consulta base
         $query = DB::table('INSDOS')
             ->join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
-            ->leftJoin('INALPR', function($join) {
+            ->leftJoin('INALPR', function ($join) {
                 $join->on('INSDOS.INPRODID', '=', 'INALPR.INPRODID')
-                     ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
+                    ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
             })
             ->select(
                 'INPROD.INPRODID',
@@ -70,7 +72,7 @@ class LabelcatalogController extends Controller
                 'INSDOS.INALMNID as CentroCostos',
                 'INALPR.INAPR17ID as TipoStock'
             )
-            // Condiciones para INPRODDSC
+            // Condiciones para INPRODDSC (nombre del producto)
             ->whereNotNull('INPROD.INPRODDSC')
             ->where('INPROD.INPRODDSC', '<>', '')
             ->where('INPROD.INPRODDSC', '<>', '.')
@@ -85,7 +87,7 @@ class LabelcatalogController extends Controller
             // Condiciones para Tipo de Almacenamiento
             ->whereNotIn('INPROD.INTPALID', ['O', 'D'])
             ->whereRaw('ISNUMERIC(INPROD.INTPALID) = 0') // Excluir valores numéricos en Tipo de Almacenamiento
-            // Condición para la longitud de SKU
+            // Condición para la longitud de SKU (código de producto)
             ->whereRaw('LEN(INPROD.INPRODI2) >= 7')
             // Aplicar ordenamiento
             ->orderBy($sortColumn, $sortDirection);
@@ -116,33 +118,37 @@ class LabelcatalogController extends Controller
         // Paginación de los resultados
         $labels = $query->paginate(20)->appends($request->query());
 
+        // Retornar la vista con los datos filtrados y paginados
         return view('etiquetascatalogo', compact('labels'));
     }
 
-    
-    
-       
-
+    // Método para imprimir la etiqueta
     public function printLabel(Request $request)
     {
+        // Obtener inputs de la solicitud
         $sku = $request->input('sku');
         $description = $request->input('description');
         $quantity = $request->input('quantity', 1);
-    
+
+        // Generar el código de barras en formato HTML
         $generator = new BarcodeGeneratorHTML();
         $barcodeHtml = $generator->getBarcode($sku, $generator::TYPE_CODE_128);
-    
+
+        // Preparar los datos para la etiqueta
         $data = [
             'sku' => $sku,
             'description' => $description,
             'barcode' => $barcodeHtml
         ];
-    
+
+        // Crear un array de etiquetas con la cantidad especificada
         $labels = array_fill(0, $quantity, $data);
-    
+
+        // Generar el PDF con las etiquetas
         $pdf = Pdf::loadView('label', ['labels' => $labels]);
         $pdfOutput = $pdf->output();
-    
+
+        // Retornar la respuesta con el PDF generado
         return response($pdfOutput, 200)->header('Content-Type', 'application/pdf');
     }
 }

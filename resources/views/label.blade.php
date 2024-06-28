@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Etiqueta de Código de Barras</title>
     <style>
@@ -7,6 +8,7 @@
             margin: 0;
             padding: 0;
         }
+
         .label-container {
             display: flex;
             flex-direction: column;
@@ -20,22 +22,26 @@
             margin: 5px;
             page-break-after: always;
         }
+
         .description {
             text-align: center;
             font-size: 12px;
             margin-bottom: 5px;
         }
+
         .barcode {
             display: flex;
             justify-content: center;
             margin-bottom: 5px;
         }
+
         .sku {
             font-size: 10px;
             text-align: center;
         }
     </style>
 </head>
+
 <body>
     @foreach ($labels as $label)
     <div class="label-container">
@@ -51,4 +57,5 @@
     </div>
     @endforeach
 </body>
+
 </html>
