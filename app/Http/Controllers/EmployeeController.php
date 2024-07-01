@@ -52,7 +52,7 @@ class EmployeeController extends Controller
             'birth' => 'required',
             'status' => 'required|in:0,1',
         ]);
-
+    
         // Crea un nuevo objeto Employee con los datos del formulario
         $employee = new Employee();
         $employee->first_name = strtoupper($request->first_name);
@@ -61,24 +61,31 @@ class EmployeeController extends Controller
         $employee->curp = strtoupper($request->curp);
         $employee->rfc = strtoupper($request->rfc);
         $employee->colony = strtoupper($request->colony);
-        $employee->street = strtoupper($request->street);;
-        $employee->external_number = $request->input('external_number');
-        $employee->internal_number = $request->input('internal_number');
-        $employee->postal_code = $request->input('postal_code');
-        $employee->phone = $request->input('phone');
-        $employee->phone2 = $request->input('phone2');
-        $employee->status = strtoupper($request->status);
-
+        $employee->street = strtoupper($request->street);
+        $employee->external_number = $request->external_number;
+        $employee->internal_number = $request->internal_number;
+        $employee->postal_code = $request->postal_code;
+        $employee->phone = $request->phone;
+        $employee->phone2 = $request->phone2;
+        $employee->status = $request->status;
+    
         // Formatea la fecha al formato deseado (DD-MM-YYYY)
-        $formattedBirth = date('d-m-Y', strtotime($request->input('birth')));
+        $formattedBirth = date('d-m-Y', strtotime($request->birth));
         $employee->birth = $formattedBirth;
-
+    
         // Guarda el empleado en la base de datos
         $employee->save();
-
+    
+        // Crear usuario asociado con el mismo estado del empleado
+        $user = new User();
+        $user->employee_id = $employee->id;
+        $user->status = $employee->status;
+        $user->save();
+    
         // Redirecciona a una ruta adecuada después de guardar el empleado
-        return redirect()->route('employees'); // Ajusta 'nombre_de_la_ruta' según tu aplicación
+        return redirect()->route('employees')->with('success', 'Empleado y usuario creados correctamente.');
     }
+    
 
     // Método para actualizar un empleado
     public function update(Request $request, $id)
@@ -98,28 +105,28 @@ class EmployeeController extends Controller
             'phone' => 'nullable|string|max:15',
             'phone2' => 'nullable|string|max:15',
             'birth' => 'nullable|date',
-            'status' => 'required|boolean'
+            'status' => 'required|in:0,1'
         ]);
-
+    
         // Encontrar el empleado por su ID
         $employee = Employee::findOrFail($id);
-
+    
         // Formatear la fecha al formato d-m-Y
         if ($request->has('birth')) {
             $formattedBirth = date('d-m-Y', strtotime($request->birth));
         } else {
             $formattedBirth = $employee->birth; // Mantener la fecha actual si no se envió una nueva
         }
-
+    
         // Actualizar los datos del empleado
         $employee->update([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'middle_name' => $request->middle_name,
-            'curp' => $request->curp,
-            'rfc' => $request->rfc,
-            'colony' => $request->colony,
-            'street' => $request->street,
+            'first_name' => strtoupper($request->first_name),
+            'last_name' => strtoupper($request->last_name),
+            'middle_name' => strtoupper($request->middle_name),
+            'curp' => strtoupper($request->curp),
+            'rfc' => strtoupper($request->rfc),
+            'colony' => strtoupper($request->colony),
+            'street' => strtoupper($request->street),
             'external_number' => $request->external_number,
             'internal_number' => $request->internal_number,
             'postal_code' => $request->postal_code,
@@ -128,15 +135,16 @@ class EmployeeController extends Controller
             'birth' => $formattedBirth,
             'status' => $request->status,
         ]);
-
+    
         // Actualizar el estado del usuario asociado
         $user = User::where('employee_id', $employee->id)->first();
         if ($user) {
             $user->status = $employee->status;
             $user->save();
         }
-
+    
         // Redirigir con un mensaje de éxito
         return redirect()->route('employees')->with('success', 'Empleado y usuario actualizados correctamente.');
     }
+    
 }

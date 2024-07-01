@@ -93,7 +93,7 @@
                                                 <td class="text-center align-middle">{{ $employee->birth }}</td>
                                                 <td>
                                                     @if ($employee->status == 1)
-                                                    <span class="badge bg-success">ACTIVO</span>
+                                                    <span class="badge bg-primary">ACTIVO</span>
                                                     @else
                                                     <span class="badge bg-danger">INACTIVO</span>
                                                     @endif

@@ -40,15 +40,6 @@
                             <div class="col-md-3 mb-3">
                                 <input type="text" class="form-control uper" placeholder="Buscar usuario o empleado" id="searchUser" onkeyup="filterUsers()" style="margin-top: 32px;">
                             </div>
-                            <div class="col-md-1-5 mb-3">
-                                <label for="statusFilter" class="form-label">Estado</label>
-                                <select id="statusFilter" class="form-select" onchange="filterUsers()">
-                                    <option value="">Todos</option>
-                                    <option value="1">Activos</option>
-                                    <option value="0">Inactivos</option>
-                                </select>
-                            </div>
-
                             <div class="col-md-2 mb-3">
                                 <label for="roleFilter" class="form-label">Roles</label>
                                 <select id="roleFilter" class="form-select" onchange="filterUsers()">
@@ -185,13 +176,6 @@
                                                                             </div>
                                                                             @endforeach
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="mb-3">
-                                                                        <label for="edit_status" class="form-label">Estado</label>
-                                                                        <select class="form-control" id="edit_status" name="status">
-                                                                            <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>ACTIVO</option>
-                                                                            <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>INACTIVO</option>
-                                                                        </select>
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
