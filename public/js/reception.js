@@ -16,8 +16,14 @@ function updateRow(element) {
     let row = element.closest('tr');
     let cantidadRecibida = parseFloat(row.querySelector('.cantidad-recibida').value) || 0;
     let precioUnitario = parseFloat(row.querySelector('.precio-unitario').value) || 0;
+    let ivaPorcentaje = parseFloat(row.querySelector('.iva-porcentaje').textContent) || 0; // Obtener porcentaje de IVA
     let subtotal = row.querySelector('.subtotal');
     subtotal.innerHTML = (cantidadRecibida * precioUnitario).toFixed(2) + "$";
+
+    // Recalculando IVA basado en el porcentaje del 16% de ACMVOITIVA
+    let iva = row.querySelector('.iva');
+    let ivaAmount = (subtotal.textContent.replace('$', '') * (ivaPorcentaje / 100)).toFixed(2);
+    iva.innerHTML = ivaAmount + "$";
 
     distributeFreight();
 }
@@ -26,23 +32,27 @@ function distributeFreight() {
     let totalSubtotal = 0;
     let freightCost = parseFloat(document.getElementById('flete_input').value) || 0;
 
-    // Calculate total subtotal
+    // Calcular total subtotal
     document.querySelectorAll('#receptionTableBody tr').forEach(row => {
         let subtotal = parseFloat(row.querySelector('.subtotal').innerHTML.replace('$', '')) || 0;
         totalSubtotal += subtotal;
     });
 
-    // Distribute freight cost
+    // Distribuir costo del flete
     document.querySelectorAll('#receptionTableBody tr').forEach(row => {
         let subtotal = parseFloat(row.querySelector('.subtotal').innerHTML.replace('$', '')) || 0;
         let freight = row.querySelector('.flete');
         let iva = row.querySelector('.iva');
+        let ivaPorcentaje = parseFloat(row.querySelector('.iva-porcentaje').textContent) || 0; // Obtener porcentaje de IVA
         let freightAmount = ((subtotal / totalSubtotal) * freightCost).toFixed(2);
         freight.innerHTML = freightAmount + "$";
-        iva.innerHTML = (subtotal * 0.16).toFixed(2) + "$"; // Assuming 16% IVA
+
+        // Recalculando IVA basado en el porcentaje de ACMVOITIVA
+        let ivaAmount = (subtotal * (ivaPorcentaje / 100)).toFixed(2);
+        iva.innerHTML = ivaAmount + "$";
     });
 
-    // Update totals
+    // Actualizar totales
     document.getElementById('totalSubtotal').innerHTML = totalSubtotal.toFixed(2) + "$";
     document.getElementById('totalFlete').innerHTML = freightCost.toFixed(2) + "$";
     updateTotalIva();
@@ -70,203 +80,123 @@ function updateTotalGeneral() {
 }
 
 $(document).ready(function() {
-    $('.numero-input').on('input', function() {
-        var input = $(this).val();
-        var optionsList = $(this).siblings('.autocomplete-list');
-        optionsList.empty();
-
-        $.ajax({
-            url: '/autocomplete-numeros',
-            method: 'GET',
-            data: {
-                input: input
-            },
-            success: function(response) {
-                response.forEach(function(option) {
-                    var listItem = $('<li></li>').text(option.CNCDIRID + ' - ' + option.CNCDIRNOM).attr('data-id', option.CNCDIRID).attr('data-name', option.CNCDIRNOM);
-                    optionsList.append(listItem);
-                });
-            }
-        });
+    // Actualización de la tabla al cambiar la cantidad o el precio
+    $(document).on('input', '.cantidad-recibida, .precio-unitario', function() {
+        updateRow(this);
     });
 
-    $(document).on('click', '.autocomplete-list li', function() {
-        var selectedValue = $(this).text();
-        var input = $(this).closest('.input-group').find('.numero-input');
-        input.val(selectedValue);
-        input.siblings('.autocomplete-list').empty();
+    $('#flete_select').change(function() {
+        toggleFleteInput();
     });
 
-    $(document).on('blur', '.numero-input', function() {
-        setTimeout(function() {
-            $('.autocomplete-list').empty();
-        }, 200);
+    $('#flete_input').on('input', function() {
+        distributeFreight();
     });
-});
-// Autocomplete and clear input functions (unchanged)
-$('#numero').on('input', function() {
-    let query = $(this).val();
 
-    if (query.length >= 3) {
-        $.ajax({
-            url: "/providers/autocomplete",
-            type: "GET",
-            data: {
-                query: query,
-                field: 'CNCDIRID'
-            },
-            success: function(data) {
-                let dropdown = $('#numeroList');
-                dropdown.empty().show();
+    // Autocompletado para el campo Número
+    $('#numero').on('input', function() {
+        let query = $(this).val();
 
-                data.forEach(item => {
-                    dropdown.append(`<li class="list-group-item" data-id="${item.CNCDIRID}" data-name="${item.CNCDIRNOM}">${item.CNCDIRID} - ${item.CNCDIRNOM}</li>`);
-                });
-            }
-        });
-    } else {
+        if (query.length >= 3) {
+            $.ajax({
+                url: "/providers/autocomplete",
+                type: "GET",
+                data: {
+                    query: query,
+                    field: 'CNCDIRID'
+                },
+                success: function(data) {
+                    let dropdown = $('#numeroList');
+                    dropdown.empty().show();
+
+                    data.forEach(item => {
+                        dropdown.append(`<li class="list-group-item" data-id="${item.CNCDIRID}" data-name="${item.CNCDIRNOM}">${item.CNCDIRID} - ${item.CNCDIRNOM}</li>`);
+                    });
+                }
+            });
+        } else {
+            $('#numeroList').hide();
+        }
+    });
+
+    $(document).on('click', '#numeroList li', function() {
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        $('#numero').val(id);
+        $('#fletero').val(name); // Captura el nombre del fletero en el campo Fletero
         $('#numeroList').hide();
-    }
-});
-
-$(document).on('click', '#numeroList li', function() {
-    let id = $(this).data('id');
-    let name = $(this).data('name');
-    $('#numero').val(id);
-    $('#fletero').val(name); // Captura el nombre del fletero en el campo Fletero
-    $('#numeroList').hide();
-});
-
-$('#clearNumero').on('click', function() {
-    $('#numero').val('');
-    $('#fletero').val(''); // Limpia también el campo Fletero
-    $('#numeroList').hide();
-});
-
-$('#fletero').on('input', function() {
-    let query = $(this).val();
-
-    if (query.length >= 3) {
-        $.ajax({
-            url: "/providers/autocomplete",
-            type: "GET",
-            data: {
-                query: query,
-                field: 'CNCDIRNOM'
-            },
-            success: function(data) {
-                let dropdown = $('#fleteroList');
-                dropdown.empty().show();
-
-                data.forEach(item => {
-                    dropdown.append(`<li class="list-group-item" data-id="${item.CNCDIRID}" data-name="${item.CNCDIRNOM}">${item.CNCDIRID} - ${item.CNCDIRNOM}</li>`);
-                });
-            }
-        });
-    } else {
-        $('#fleteroList').hide();
-    }
-});
-
-$(document).on('click', '#fleteroList li', function() {
-    let id = $(this).data('id');
-    let name = $(this).data('name');
-    $('#fletero').val(name);
-    $('#numero').val(id); // Captura el número del proveedor en el campo Número
-    $('#fleteroList').hide();
-});
-
-$('#clearFletero').on('click', function() {
-    $('#fletero').val('');
-    $('#numero').val(''); // Limpia también el campo Número
-    $('#fleteroList').hide();
-});
-function validateCantidad(input) {
-    const maxCantidad = parseFloat($(input).attr('max'));
-    let cantidadRecibida = parseFloat($(input).val());
-    if (cantidadRecibida > maxCantidad) {
-        $(input).val(maxCantidad);
-        cantidadRecibida = maxCantidad;
-    }
-    updateRow(input);
-}
-
-function validatePrecio(input) {
-    const maxPrecio = parseFloat($(input).attr('max'));
-    let precioUnitario = parseFloat($(input).val());
-    if (precioUnitario > maxPrecio) {
-        $(input).val(maxPrecio);
-        precioUnitario = maxPrecio;
-    }
-    updateRow(input);
-}
-
-function updateRow(input) {
-    const row = $(input).closest('tr');
-    const cantidadRecibida = parseFloat(row.find('.cantidad-recibida').val()) || 0;
-    const precioUnitario = parseFloat(row.find('.precio-unitario').val()) || 0;
-
-    // Actualizar subtotal
-    const subtotal = cantidadRecibida * precioUnitario;
-    row.find('.subtotal').text(subtotal.toFixed(2) + '$');
-
-    // Actualizar cálculos totales
-    updateTotals();
-}
-
-function updateTotals() {
-    let totalSubtotal = 0;
-    let totalFlete = 0;
-    let totalIva = 0;
-    let totalGeneral = 0;
-
-    $('#receptionTableBody tr').each(function() {
-        const subtotal = parseFloat($(this).find('.subtotal').text()) || 0;
-        const flete = parseFloat($(this).find('.flete').text()) || 0;
-        const iva = parseFloat($(this).find('.iva').text()) || 0;
-
-        totalSubtotal += subtotal;
-        totalFlete += flete;
-        totalIva += iva;
     });
 
-    totalGeneral = totalSubtotal + totalFlete + totalIva;
+    $('#clearNumero').on('click', function() {
+        $('#numero').val('');
+        $('#fletero').val(''); // Limpia también el campo Fletero
+        $('#numeroList').hide();
+    });
 
-    $('#totalSubtotal').text(totalSubtotal.toFixed(2) + '$');
-    $('#totalFlete').text(totalFlete.toFixed(2) + '$');
-    $('#totalIva').text(totalIva.toFixed(2) + '$');
-    $('#totalGeneral').text(totalGeneral.toFixed(2) + '$');
-}
+    // Autocompletado para el campo Fletero
+    $('#fletero').on('input', function() {
+        let query = $(this).val();
+
+        if (query.length >= 3) {
+            $.ajax({
+                url: "/providers/autocomplete",
+                type: "GET",
+                data: {
+                    query: query,
+                    field: 'CNCDIRNOM'
+                },
+                success: function(data) {
+                    let dropdown = $('#fleteroList');
+                    dropdown.empty().show();
+
+                    data.forEach(item => {
+                        dropdown.append(`<li class="list-group-item" data-id="${item.CNCDIRID}" data-name="${item.CNCDIRNOM}">${item.CNCDIRID} - ${item.CNCDIRNOM}</li>`);
+                    });
+                }
+            });
+        } else {
+            $('#fleteroList').hide();
+        }
+    });
+
+    $(document).on('click', '#fleteroList li', function() {
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        $('#fletero').val(name);
+        $('#numero').val(id); // Captura el número del proveedor en el campo Número
+        $('#fleteroList').hide();
+    });
+
+    $('#clearFletero').on('click', function() {
+        $('#fletero').val('');
+        $('#numero').val(''); // Limpia también el campo Número
+        $('#fleteroList').hide();
+    });
+
+    // Inicializar la tabla al cargar la página
+    updateTotals();
+});
 
 function toggleFleteInput() {
-    const fleteSelect = $('#flete_select').val();
-    if (fleteSelect == 1) {
-        $('#flete_input_div').show();
+    var fleteSelect = document.getElementById('flete_select');
+    var fleteInputDiv = document.getElementById('flete_input_div');
+    if (fleteSelect.value == "1") {
+        fleteInputDiv.style.display = 'block';
     } else {
-        $('#flete_input_div').hide();
-        $('#flete_input').val('');
+        fleteInputDiv.style.display = 'none';
+        document.getElementById('flete_input').value = '';
         distributeFreight();
     }
 }
 
 function distributeFreight() {
-    const fleteInput = parseFloat($('#flete_input').val()) || 0;
-    let totalSubtotal = 0;
-
-    $('#receptionTableBody tr').each(function() {
-        const subtotal = parseFloat($(this).find('.subtotal').text()) || 0;
-        totalSubtotal += subtotal;
-    });
-
-    $('#receptionTableBody tr').each(function() {
-        const subtotal = parseFloat($(this).find('.subtotal').text()) || 0;
-        const flete = (subtotal / totalSubtotal) * fleteInput;
-        $(this).find('.flete').text(flete.toFixed(2) + '$');
-    });
-
-    updateTotals();
+    // Your logic to distribute freight cost among products
 }
 
-$(document).ready(function() {
-    updateTotals();
-});
+function validateCantidad(input) {
+    // Your logic to validate received quantity
+}
+
+function validatePrecio(input) {
+    // Your logic to validate unit price
+}

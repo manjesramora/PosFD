@@ -77,8 +77,8 @@
                             <input type="text" id="ACMROIREF" class="form-control">
                         </div>
                         <div class="col-md-2">
-                            <label for="fecha" class="form-label">Fecha:</label>
-                            <input type="date" id="fecha" class="form-control">
+                            <label for="fecha" class="form-label">Fecha Recepcion:</label>
+                            <input type="date" id="fecha" class="form-control" value="{{ $currentDate }}" readonly>
                         </div>
                         <div class="col-md-1">
                             <label for="rcn_final" class="form-label">DOC:</label>
@@ -86,7 +86,7 @@
                         </div>
                         <div class="col-md-1">
                             <label for="num_rcn_letras" class="form-label">NO DE DOC:</label>
-                            <input type="text" id="num_rcn_letras" class="form-control" value="NUMERO" readonly>
+                            <input type="text" id="num_rcn_letras" class="form-control" value="{{ $num_rcn_letras }}" readonly>
                         </div>
                         <div class="col-md-1">
                             <label for="flete_select" class="form-label">¿Hay flete?</label>
@@ -144,7 +144,7 @@
                                                     </td>
                                                     <td class="subtotal">{{ number_format($reception->ACMVOIMRE, 2) }}$</td>
                                                     <td class="flete">0.00$</td>
-                                                    <td class="iva">{{ number_format($reception->ACMVOINIO, 2) }}$</td>
+                                                    <td class="iva">{{ number_format($reception->ACMVOITIVA, 2) }}$</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
