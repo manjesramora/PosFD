@@ -111,13 +111,6 @@ function checkDefault(id, defaultValue) {
 
 // Función para mostrar el modal de impresión con los datos del SKU y descripción
 function showPrintModal(sku, description) {
-    document.getElementById("skuInput").value = sku;
-    document.getElementById("descriptionInput").value = description;
-    $("#printModal").modal("show");
-}
-
-// Función para mostrar el modal de impresión con los datos del SKU y descripción (duplicada, eliminar una)
-function showPrintModal(sku, description) {
     document.getElementById("modalSku").value = sku;
     document.getElementById("modalDescription").value = description;
     $("#printModal").modal("show");
@@ -127,22 +120,40 @@ function showPrintModal(sku, description) {
 function submitPrintForm() {
     var printForm = document.getElementById("printForm");
     var formData = new FormData(printForm);
-    var form = document.createElement("form");
-    form.method = "POST";
-    form.action = printForm.action;
-    form.target = "_blank";
 
-    // Crear inputs ocultos para cada dato del formulario y agregarlos al nuevo formulario
-    for (var [key, value] of formData.entries()) {
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
+    fetch(printLabelUrl, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.url) {
+            // Crear un iframe invisible para cargar el PDF
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = data.url;
+            iframe.onload = function() {
+                // Abrir el diálogo de impresión
+                iframe.contentWindow.print();
+            };
+            document.body.appendChild(iframe);
+        } else {
+            console.error('Error al generar el PDF');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+
+function validateInput(input, maxLength) {
+    if (!/^\d*$/.test(input.value)) {
+        input.value = input.value.replace(/[^\d]/g, '');
     }
-
-    // Adjuntar el formulario al cuerpo del documento y enviarlo
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
+    if (input.value.length > maxLength) {
+        input.value = input.value.slice(0, maxLength);
+    }
 }

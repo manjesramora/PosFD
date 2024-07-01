@@ -124,31 +124,36 @@ class LabelcatalogController extends Controller
 
     // Método para imprimir la etiqueta
     public function printLabel(Request $request)
-    {
-        // Obtener inputs de la solicitud
-        $sku = $request->input('sku');
-        $description = $request->input('description');
-        $quantity = $request->input('quantity', 1);
+{
+    // Obtener inputs de la solicitud
+    $sku = $request->input('sku');
+    $description = $request->input('description');
+    $quantity = $request->input('quantity', 1);
 
-        // Generar el código de barras en formato HTML
-        $generator = new BarcodeGeneratorHTML();
-        $barcodeHtml = $generator->getBarcode($sku, $generator::TYPE_CODE_128);
+    // Generar el código de barras en formato HTML
+    $generator = new BarcodeGeneratorHTML();
+    $barcodeHtml = $generator->getBarcode($sku, $generator::TYPE_CODE_128);
 
-        // Preparar los datos para la etiqueta
-        $data = [
-            'sku' => $sku,
-            'description' => $description,
-            'barcode' => $barcodeHtml
-        ];
+    // Preparar los datos para la etiqueta
+    $data = [
+        'sku' => $sku,
+        'description' => $description,
+        'barcode' => $barcodeHtml
+    ];
 
-        // Crear un array de etiquetas con la cantidad especificada
-        $labels = array_fill(0, $quantity, $data);
+    // Crear un array de etiquetas con la cantidad especificada
+    $labels = array_fill(0, $quantity, $data);
 
-        // Generar el PDF con las etiquetas
-        $pdf = Pdf::loadView('label', ['labels' => $labels]);
-        $pdfOutput = $pdf->output();
+    // Generar el PDF con las etiquetas
+    $pdf = Pdf::loadView('label', ['labels' => $labels]);
 
-        // Retornar la respuesta con el PDF generado
-        return response($pdfOutput, 200)->header('Content-Type', 'application/pdf');
-    }
+    // Guardar el PDF temporalmente
+    $pdfOutput = $pdf->output();
+    $filename = 'labels.pdf';
+    file_put_contents(public_path($filename), $pdfOutput);
+
+    // Retornar la ruta del PDF temporal
+    return response()->json(['url' => asset($filename)]);
+}
+
 }
