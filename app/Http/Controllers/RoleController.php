@@ -90,8 +90,7 @@ class RoleController extends Controller
     }
 
     public function __construct()
-       
-        {
+    {
             $this->middleware(function ($request, $next) {
                 // Obtener el usuario autenticado
                 $user = Auth::user();
@@ -110,21 +109,26 @@ class RoleController extends Controller
     
                 return $next($request);
             });
-        }
+    }
     
 
     public function destroy($id)
     {
         // Encontrar el rol por su ID
         $role = Role::findOrFail($id);
-
+    
         // Desvincular todos los permisos asociados
         $role->permissions()->detach();
-
+    
+        // Desvincular todos los usuarios asociados
+        $role->users()->detach();
+    
         // Eliminar el rol
         $role->delete();
-
+    
         // Redirigir con un mensaje de éxito
-        return redirect()->route('roles')->with('success', 'Rol eliminado correctamente.');
+        return redirect()->route('roles')->with('success', 'Rol y sus relaciones con usuarios eliminados correctamente.');
     }
+    
+    
 }

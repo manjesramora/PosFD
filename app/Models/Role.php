@@ -12,10 +12,13 @@ class Role extends Model
 
     protected $fillable = ['name', 'description'];
 
-    public function permissions()
+    public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'roles_permissions');
     }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'users_roles', 'role_id', 'user_id');
+    }
 }
-
-
