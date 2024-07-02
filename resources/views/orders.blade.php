@@ -70,19 +70,48 @@
                                 <div class="card-body">
                                     <div class="table-responsive small-font">
                                         <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
-                                            <thead>
-                                                <tr>
-                                                    <!-- Añade aquí las columnas de tu tabla de órdenes -->
-                                                    <th class="col-md-1">T. DOC</th>
-                                                    <th class="col-md-1">NO. DOC</th>
-                                                    <th class="col-md-1">NO. PROV</th>
-                                                    <th class="col-md-2">PROVEDOR</th>
-                                                    <th class="col-md-2">FECHA DE ORDEN</th>
+                                        <thead>
+    <tr>
+        <th class="col-md-1">
+            T. DOC
+            <button class="btn btn-link p-0" onclick="sortTable('CNTDOCID')">
+                <i class="fas fa-sort"></i>
+            </button>
+        </th>
+        <th class="col-md-1">
+            NO. DOC
+            <button class="btn btn-link p-0" onclick="sortTable('ACMVOIDOC')">
+                <i class="fas fa-sort"></i>
+            </button>
+        </th>
+        <th class="col-md-1">
+            NO. PROV
+            <button class="btn btn-link p-0" onclick="sortTable('CNCDIRID')">
+                <i class="fas fa-sort"></i>
+            </button>
+        </th>
+        <th class="col-md-2">
+            PROVEDOR
+            <button class="btn btn-link p-0" onclick="sortTable('CNCDIRNOM')">
+                <i class="fas fa-sort"></i>
+            </button>
+        </th>
+        <th class="col-md-2">
+            FECHA DE ORDEN
+            <button class="btn btn-link p-0" onclick="sortTable('ACMVOIFDOC')">
+                <i class="fas fa-sort"></i>
+            </button>
+        </th>
+        <th class="col-md-2">
+            ALMACEN
+            <button class="btn btn-link p-0" onclick="sortTable('ACMVOIALID')">
+                <i class="fas fa-sort"></i>
+            </button>
+        </th>
+        <th class="col-md-1">Acciones</th>
+    </tr>
+</thead>
 
-                                                    <th class="col-md-2">ALMACEN</th>
-                                                    <th class="col-md-1">Acciones</th>
-                                                </tr>
-                                            </thead>
                                             <tbody>
                                                 @foreach ($orders as $order)
                                                 <tr>
@@ -137,6 +166,23 @@
         document.getElementById('CNCDIRNOM').value = '';
         document.getElementById('start_date').value = '';
         document.getElementById('end_date').value = '';
+    }
+</script>
+<script>
+    function sortTable(column) {
+        let currentUrl = new URL(window.location.href);
+        let currentSortColumn = currentUrl.searchParams.get('sortColumn');
+        let currentSortDirection = currentUrl.searchParams.get('sortDirection');
+
+        let newSortDirection = 'asc';
+        if (currentSortColumn === column && currentSortDirection === 'asc') {
+            newSortDirection = 'desc';
+        }
+
+        currentUrl.searchParams.set('sortColumn', column);
+        currentUrl.searchParams.set('sortDirection', newSortDirection);
+
+        window.location.href = currentUrl.toString();
     }
 </script>
 

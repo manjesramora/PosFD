@@ -24,45 +24,53 @@ class OrderController extends Controller
             return $next($request);
         });
     }
-
     public function index(Request $request)
     {
-        $sixMonthsAgo = now()->subMonths(6)->format('Y-m-d');
-
         $query = Order::query();
-
-        if ($request->has('ACMROIDOC') && $request->ACMROIDOC != '') {
-            $query->where('ACMROIDOC', 'LIKE', "%{$request->ACMROIDOC}%");
+    
+        // Aplicar filtros
+        if ($request->filled('ACMROIDOC')) {
+            $query->where('ACMROIDOC', $request->input('ACMROIDOC'));
         }
-
-        if ($request->has('CNCDIRID') && $request->CNCDIRID != '') {
-            $query->where('CNCDIRID', 'LIKE', "%{$request->CNCDIRID}%");
+    
+        if ($request->filled('CNCDIRID')) {
+            $query->where('CNCDIRID', $request->input('CNCDIRID'));
         }
-
-        if ($request->has('start_date') && $request->start_date != '') {
-            $query->where('ACMVOIFDOC', '>=', $request->start_date);
+    
+        if ($request->filled('CNCDIRNOM')) {
+            $query->whereHas('provider', function ($q) use ($request) {
+                $q->where('CNCDIRNOM', 'like', '%' . $request->input('CNCDIRNOM') . '%');
+            });
         }
-
-        if ($request->has('end_date') && $request->end_date != '') {
-            $query->where('ACMVOIFDOC', '<=', $request->end_date);
+    
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('ACMVOIFDOC', [$request->input('start_date'), $request->input('end_date')]);
         }
-
-        $query->where('ACMVOIFDOC', '>=', $sixMonthsAgo);
-
-        $user = Auth::user();
-        if ($user) {
-            $centrosCostosIds = $user->costCenters->pluck('cost_center_id');
-            $query->whereIn('ACMVOIALID', $centrosCostosIds);
+    
+        // Aplicar ordenamiento solo para columnas válidas
+        $sortableColumns = ['CNTDOCID', 'ACMVOIDOC', 'CNCDIRID', 'ACMVOIFDOC', 'ACMVOIALID'];
+        $sortColumn = $request->input('sortColumn', 'CNTDOCID');
+        $sortDirection = $request->input('sortDirection', 'asc');
+    
+        if (in_array($sortColumn, $sortableColumns)) {
+            $query->orderBy($sortColumn, $sortDirection);
+        } else {
+            $query->orderBy('CNTDOCID', 'asc');  // Valor por defecto en caso de columnas inválidas
         }
-
-        $query->orderBy('ACMVOIDOC', 'desc');
-        $query->with('store');
-
+    
+        // Obtener las órdenes paginadas
         $orders = $query->paginate(10);
-
-        return view('orders', compact('orders'));
+    
+        if ($request->ajax()) {
+            return view('orders_table', compact('orders', 'sortColumn', 'sortDirection'))->render();
+        }
+    
+        return view('orders', compact('orders', 'sortColumn', 'sortDirection'));
     }
-
+    
+    
+    
+    
     public function autocomplete(Request $request)
 {
     $query = $request->input('query');
@@ -74,7 +82,6 @@ class OrderController extends Controller
 
     return response()->json($results);
 }
-
 
 public function showReceptions($ACMVOIDOC)
 {
