@@ -78,42 +78,42 @@
                         <div class="card-body">
                             <div class="table-responsive small-font">
                                 <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            @php
-                                            $columns = [
-                                            'INPROD.INPRODID' => 'PRODUCTO',
-                                            'INPROD.INPRODDSC' => 'DESCRIPCIÓN',
-                                            'INPROD.INPRODI2' => 'SKU',
-                                            'INSDOS.INSDOSQDS' => 'EXISTENCIA',
-                                            'INPROD.INPR02ID' => 'DEPARTAMENTO',
-                                            'INPROD.INPRODCBR' => 'CODIGO BARRAS',
-                                            'INPROD.INPR03ID' => 'LINEA',
-                                            'INPROD.INPR04ID' => 'SUBLINEA',
-                                            'INSDOS.INALMNID' => 'CENTRO DE COSTOS',
-                                            //'INALPR.INAPR17ID' => 'TS',//
-                                            //'INPROD.INTPALID' => 'TA',//
-                                            ];
-                                            @endphp
-                                            @foreach ($columns as $column => $label)
-                                            <th>
-                                                <a href="{{ route('labelscatalog', array_merge(request()->query(), ['sort' => $column, 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sortable-column">
-                                                    {{ $label }}
-                                                    @if (request('sort') === $column)
-                                                    @if (request('direction') === 'asc')
-                                                    <i class="sort-icon fas fa-sort-up"></i>
-                                                    @else
-                                                    <i class="sort-icon fas fa-sort-down"></i>
-                                                    @endif
-                                                    @else
-                                                    <i class="sort-icon fas fa-sort"></i>
-                                                    @endif
-                                                </a>
-                                            </th>
-                                            @endforeach
-                                            <th>ACCIONES</th>
-                                        </tr>
-                                    </thead>
+                                <thead>
+    <tr>
+        @php
+        $columns = [
+            'INPROD.INPRODID' => 'PRODUCTO',
+            'INPROD.INPRODDSC' => 'DESCRIPCIÓN',
+            'INPROD.INPRODI2' => 'SKU',
+            'INSDOS.INSDOSQDS' => 'EXISTENCIA',
+            'INPROD.INPR02ID' => 'DEPARTAMENTO',
+            'INPROD.INPRODCBR' => 'CODIGO BARRAS',
+            'INPROD.INPR03ID' => 'LINEA',
+            'INPROD.INPR04ID' => 'SUBLINEA',
+            'INSDOS.INALMNID' => 'CENTRO DE COSTOS',
+            //'INALPR.INAPR17ID' => 'TS',//
+            //'INPROD.INTPALID' => 'TA',//
+        ];
+        @endphp
+        @foreach ($columns as $column => $label)
+        <th>
+            <a href="{{ route('labelscatalog', array_merge(request()->query(), ['sort' => $column, 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sortable-column">
+                {{ $label }}
+                @if (request('sort') === $column)
+                @if (request('direction') === 'asc')
+                <i class="sort-icon fas fa-sort-up"></i>
+                @else
+                <i class="sort-icon fas fa-sort-down"></i>
+                @endif
+                @else
+                <i class="sort-icon fas fa-sort"></i>
+                @endif
+            </a>
+        </th>
+        @endforeach
+        <th>ACCIONES</th>
+    </tr>
+</thead>
                                     <tbody id="proveedorTable">
                                         @foreach($labels as $label)
                                         <tr>
@@ -134,11 +134,16 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                <div class="d-flex justify-content-center">
+
                                 <div id="pagination-links">
                                     @if ($labels instanceof \Illuminate\Pagination\LengthAwarePaginator)
                                     {{ $labels->appends(request()->query())->links() }}
                                     @endif
                                 </div>
+
+                                </div>
+                                
 
                             </div>
                         </div>
@@ -201,7 +206,33 @@
     <script>
     var printLabelUrl = "{{ route('print.label') }}";
     </script>
+<script>
+    function buscarFiltros() {
+    let query = '';
+    const inputs = ['productId', 'sku', 'name', 'linea', 'sublinea', 'departamento'];
+    inputs.forEach(input => {
+        const value = document.getElementById(input).value;
+        if (value) {
+            query += `&${input}=${encodeURIComponent(value)}`;
+        }
+    });
 
+    const sort = new URLSearchParams(window.location.search).get('sort') || 'INPROD.INPRODID';
+    const direction = new URLSearchParams(window.location.search).get('direction') || 'asc';
+
+    window.location.href = `${window.location.pathname}?sort=${sort}&direction=${direction}${query}`;
+}
+
+function limpiarFiltros() {
+    const inputs = ['productId', 'sku', 'name', 'linea', 'sublinea', 'departamento'];
+    inputs.forEach(input => {
+        document.getElementById(input).value = '';
+    });
+
+    buscarFiltros();
+}
+
+</script>
 
 </body>
 

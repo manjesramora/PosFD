@@ -51,7 +51,8 @@ function buscarFiltros() {
 
             // Reattach event listeners for pagination links
             reattachPaginationEventListeners();
-        });
+        })
+        .catch((error) => console.error('Error en la solicitud fetch:', error));
 }
 
 // Función para limpiar los filtros y actualizar la tabla
@@ -83,7 +84,8 @@ function reattachPaginationEventListeners() {
 
                     // Reattach event listeners for pagination links
                     reattachPaginationEventListeners();
-                });
+                })
+                .catch((error) => console.error('Error en la solicitud fetch:', error));
         });
     });
 }
@@ -147,8 +149,7 @@ function submitPrintForm() {
     .catch(error => console.error('Error:', error));
 }
 
-
-
+// Función para validar entradas de datos
 function validateInput(input, maxLength) {
     if (!/^\d*$/.test(input.value)) {
         input.value = input.value.replace(/[^\d]/g, '');
