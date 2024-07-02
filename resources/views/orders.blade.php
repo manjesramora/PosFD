@@ -27,43 +27,42 @@
                     <br>
                     <!-- Formulario de filtro -->
                     <form method="GET" action="{{ route('orders') }}" class="mb-3" id="filterForm">
-                        <!-- Campos del formulario -->
-                        <div class="row g-3 align-items-end">
-                            <div class="col-md-2">
-                                <label for="ACMROIDOC" class="form-label">NO DE DOC:</label>
-                                <input type="text" name="ACMROIDOC" id="ACMROIDOC" class="form-control" value="" inputmode="numeric">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="CNCDIRID" class="form-label">Proveedor ID:</label>
-                                <input type="text" name="CNCDIRID" id="CNCDIRID" class="form-control" value="" inputmode="numeric">
-                                <div id="idDropdown" class="dropdown-menu"></div>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="CNCDIRNOM" class="form-label">Proveedor Nombre:</label>
-                                <div class="input-group">
-                                    <input type="text" name="CNCDIRNOM" id="CNCDIRNOM" class="form-control" value="">
-                                    <div id="nameDropdown" class="dropdown-menu"></div>
-                                    <button class="btn btn-danger" type="button" onclick="limpiarCampos()">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="start_date" class="form-label">Fecha de inicio:</label>
-                                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="end_date" class="form-label">Fecha de fin:</label>
-                                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
-                            </div>
-                            <div class="col-md-1">
-                                <button type="submit" class="btn btn-primary w-100" id="filterButton">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div id="errorMessage" style="color: red; display: none;"></div>
-                    </form>
+    <div class="row g-3 align-items-end">
+        <div class="col-md-2">
+            <label for="ACMROIDOC" class="form-label">NO DE DOC:</label>
+            <input type="text" name="ACMROIDOC" id="ACMROIDOC" class="form-control" value="{{ request('ACMROIDOC') }}" inputmode="numeric">
+        </div>
+        <div class="col-md-2">
+            <label for="CNCDIRID" class="form-label">Proveedor ID:</label>
+            <input type="text" name="CNCDIRID" id="CNCDIRID" class="form-control" value="{{ request('CNCDIRID') }}" inputmode="numeric">
+            <div id="idDropdown" class="dropdown-menu"></div>
+        </div>
+        <div class="col-md-3">
+            <label for="CNCDIRNOM" class="form-label">Proveedor Nombre:</label>
+            <div class="input-group">
+                <input type="text" name="CNCDIRNOM" id="CNCDIRNOM" class="form-control" value="{{ request('CNCDIRNOM') }}">
+                <div id="nameDropdown" class="dropdown-menu"></div>
+                <button class="btn btn-danger" type="button" onclick="limpiarCampos()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label for="start_date" class="form-label">Fecha de inicio:</label>
+            <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
+        </div>
+        <div class="col-md-2">
+            <label for="end_date" class="form-label">Fecha de fin:</label>
+            <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100" id="filterButton">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+</form>
+
                     <!-- Tabla de órdenes -->
                     <div class="table-responsive">
                         <div class="container-fluid">
@@ -108,8 +107,9 @@
 
                                         </table>
                                         <div class="d-flex justify-content-center">
-                                            {{ $orders->links() }} <!-- Paginación centrada -->
-                                        </div>
+    {{ $orders->appends(request()->except('page'))->links() }}
+</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -130,6 +130,15 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/order.js') }}"></script>
+    <script>
+    function limpiarCampos() {
+        document.getElementById('ACMROIDOC').value = '';
+        document.getElementById('CNCDIRID').value = '';
+        document.getElementById('CNCDIRNOM').value = '';
+        document.getElementById('start_date').value = '';
+        document.getElementById('end_date').value = '';
+    }
+</script>
 
 </body>
 
