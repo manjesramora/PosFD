@@ -31,94 +31,98 @@ class LabelcatalogController extends Controller
 
     // Método para manejar la lógica de la vista del catálogo de etiquetas
     public function labelscatalog(Request $request)
-{
-    // Filtrar inputs de la solicitud
-    $productIdFilter = $request->input('productId');
-    $skuFilter = $request->input('sku');
-    $nameFilter = $request->input('name');
-    $lineaFilter = $request->input('linea');
-    $sublineaFilter = $request->input('sublinea');
-    $departamentoFilter = $request->input('departamento');
-    $sortColumn = $request->input('sort', 'INPROD.INPRODID'); // Columna por defecto
-    $sortDirection = $request->input('direction', 'asc'); // Dirección por defecto
+    {
+        $productIdFilter = $request->input('productId');
+        $skuFilter = $request->input('sku');
+        $nameFilter = $request->input('name');
+        $lineaFilter = $request->input('linea');
+        $sublineaFilter = $request->input('sublinea');
+        $departamentoFilter = $request->input('departamento');
+        $activoFilter = $request->input('activo');
+        $sortColumn = $request->input('sort', 'INPROD.INPRODID'); // Columna por defecto
+        $sortDirection = $request->input('direction', 'asc'); // Dirección por defecto
 
-    // Obtener el usuario actual
-    $user = Auth::user();
+        // Obtener el usuario actual
+        $user = Auth::user();
 
-    // Obtener los centros de costos asignados al usuario
-    $centrosCostosIds = $user->costCenters->pluck('cost_center_id');
+        // Obtener los centros de costos asignados al usuario
+        $centrosCostosIds = $user->costCenters->pluck('cost_center_id');
 
-    // Construir la consulta base
-    $query = DB::table('INSDOS')
-        ->join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
-        ->leftJoin('INALPR', function ($join) {
-            $join->on('INSDOS.INPRODID', '=', 'INALPR.INPRODID')
-                ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
-        })
-        ->select(
-            'INPROD.INPRODID',
-            'INPROD.INPRODDSC',
-            'INPROD.INPRODDS2',
-            'INPROD.INPRODDS3',
-            'INPROD.INPRODI2',
-            'INPROD.INPRODI3',
-            'INPROD.INTPCMID',
-            'INPROD.INPR02ID',
-            'INPROD.INPR03ID',
-            'INPROD.INPR04ID',
-            'INPROD.INPRODCBR',
-            'INPROD.INTPALID',
-            DB::raw('ROUND(INSDOS.INSDOSQDS, 2) as Existencia'), // Formatear a 2 decimales
-            'INSDOS.INALMNID as CentroCostos',
-            'INALPR.INAPR17ID as TipoStock'
-        )
-        // Condiciones para INPRODDSC (nombre del producto)
-        ->whereNotNull('INPROD.INPRODDSC')
-        ->where('INPROD.INPRODDSC', '<>', '')
-        ->where('INPROD.INPRODDSC', '<>', '.')
-        ->where('INPROD.INPRODDSC', '<>', '*')
-        ->where('INPROD.INPRODDSC', '<>', '..')
-        ->where('INPROD.INPRODDSC', '<>', '...')
-        ->where('INPROD.INPRODDSC', '<>', '....')
-        // Condición para Tipo de Stock no vacío
-        ->whereNotNull('INALPR.INAPR17ID')
-        ->where('INALPR.INAPR17ID', '<>', '')
-        ->where('INALPR.INAPR17ID', '<>', '-1')
-        // Condiciones para Tipo de Almacenamiento
-        ->whereNotIn('INPROD.INTPALID', ['O', 'D'])
-        ->whereRaw('ISNUMERIC(INPROD.INTPALID) = 0') // Excluir valores numéricos en Tipo de Almacenamiento
-        // Condición para la longitud de SKU (código de producto)
-        ->whereRaw('LEN(INPROD.INPRODI2) >= 7')
+        // Construir la consulta base
+        $query = DB::table('INSDOS')
+            ->join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
+            ->leftJoin('INALPR', function($join) {
+                $join->on('INSDOS.INPRODID', '=', 'INALPR.INPRODID')
+                     ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
+            })
+            ->select(
+                'INPROD.INPRODID',
+                'INPROD.INPRODDSC',
+                'INPROD.INPRODDS2',
+                'INPROD.INPRODDS3',
+                'INPROD.INPRODI2',
+                'INPROD.INPRODI3',
+                'INPROD.INTPCMID',
+                'INPROD.INPR02ID',
+                'INPROD.INPR03ID',
+                'INPROD.INPR04ID',
+                'INPROD.INPRODCBR',
+                'INPROD.INTPALID',
+                DB::raw('ROUND(INSDOS.INSDOSQDS, 2) as Existencia'), // Formatear a 2 decimales
+                'INSDOS.INALMNID as CentroCostos',
+                'INALPR.INAPR17ID as TipoStock'
+            )
+            // Condiciones para INPRODDSC
+            ->whereNotNull('INPROD.INPRODDSC')
+            ->where('INPROD.INPRODDSC', '<>', '')
+            ->where('INPROD.INPRODDSC', '<>', '.')
+            ->where('INPROD.INPRODDSC', '<>', '*')
+            ->where('INPROD.INPRODDSC', '<>', '..')
+            ->where('INPROD.INPRODDSC', '<>', '...')
+            ->where('INPROD.INPRODDSC', '<>', '....')
+            // Condición para Tipo de Stock no vacío
+            ->whereNotNull('INALPR.INAPR17ID')
+            ->where('INALPR.INAPR17ID', '<>', '')
+            ->where('INALPR.INAPR17ID', '<>', '-1')
+            // Condiciones para Tipo de Almacenamiento
+            ->whereNotIn('INPROD.INTPALID', ['O', 'D'])
+            ->whereRaw('ISNUMERIC(INPROD.INTPALID) = 0') // Excluir valores numéricos en Tipo de Almacenamiento
+            // Condición para la longitud de SKU
+            ->whereRaw('LEN(INPROD.INPRODI2) >= 7')
+            // Aplicar ordenamiento
+            ->orderBy($sortColumn, $sortDirection);
+
         // Añadir filtros basados en los inputs del usuario
-        ->when($productIdFilter, function ($query) use ($productIdFilter) {
+        if (!empty($productIdFilter)) {
             $query->where('INPROD.INPRODID', 'like', $productIdFilter . '%');
-        })
-        ->when($skuFilter, function ($query) use ($skuFilter) {
+        }
+        if (!empty($skuFilter)) {
             $query->where('INPROD.INPRODI2', 'like', $skuFilter . '%');
-        })
-        ->when($nameFilter, function ($query) use ($nameFilter) {
+        }
+        if (!empty($nameFilter)) {
             $query->where('INPROD.INPRODDSC', 'like', $nameFilter . '%');
-        })
-        ->when($lineaFilter && $lineaFilter !== 'LN', function ($query) use ($lineaFilter) {
-            $query->where('INPROD.INPR03ID', 'like', $lineaFilter . '%');
-        })
-        ->when($sublineaFilter && $sublineaFilter !== 'SB', function ($query) use ($sublineaFilter) {
-            $query->where('INPROD.INPR04ID', 'like', $sublineaFilter . '%');
-        })
-        ->when($departamentoFilter, function ($query) use ($departamentoFilter) {
+        }
+        if (!empty($lineaFilter) && $lineaFilter !== 'LN') {
+            $query->where('INPROD.INPR03ID', 'like', 'LN' + $lineaFilter + '%');
+        }
+        if (!empty($sublineaFilter) && $sublineaFilter !== 'SB') {
+            $query->where('INPROD.INPR04ID', 'like', 'SB' + $sublineaFilter + '%');
+        }
+        if (!empty($departamentoFilter)) {
             $query->where('INPROD.INPR02ID', 'like', $departamentoFilter . '%');
-        })
+        }
+        if ($activoFilter === 'activos') {
+            $query->where('INALPR.INAPR17ID', '<>', 'X');
+        }
+
         // Añadir filtro para los centros de costos asignados al usuario
-        ->whereIn('INSDOS.INALMNID', $centrosCostosIds)
-        // Aplicar ordenamiento
-        ->orderBy($sortColumn, $sortDirection);
+        $query->whereIn('INSDOS.INALMNID', $centrosCostosIds);
 
-    // Paginación de los resultados
-    $labels = $query->paginate(20)->appends($request->query());
+        // Paginación de los resultados
+        $labels = $query->paginate(20)->appends($request->query());
 
-    // Retornar la vista con los datos filtrados y paginados
-    return view('etiquetascatalogo', compact('labels'));
-}
+        return view('etiquetascatalogo', compact('labels'));
+    }
 
     // Método para imprimir la etiqueta
     public function printLabel(Request $request)

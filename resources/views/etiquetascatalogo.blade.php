@@ -29,49 +29,57 @@
             <div id="content">
                 @include('navbar')
                 <div class="container-fluid mt-4">
-                    <div class="input-container mb-3 filtro">
-                        <div class="row justify-content-center">
-                            <div class="col-md-1">
-                                <label for="productId" class="form-label">PRODUCTO</label>
-                                <input type="text" name="productId" id="productId" class="form-control" maxlength="5" pattern="\d*" value="{{ request('productId') }}" oninput="validateInput(this, 5)">
-                            </div>
-                            <div class="col-md-1">
-                                <label for="sku" class="form-label">SKU</label>
-                                <input type="text" name="sku" id="sku" class="form-control" maxlength="7" pattern="\d*" value="{{ request('sku') }}" oninput="validateInput(this, 7)">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="name" class="form-label">DESCRIPCIÓN</label>
-                                <input type="text" name="name" id="name" class="form-control" value="{{ request('name') }}">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="linea" class="form-label">LINEA</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="linea-addon">LN</span>
-                                    <input type="text" name="linea" id="linea" class="form-control" maxlength="5" pattern="\d*" value="{{ request('linea') ? str_replace('LN', '', request('linea')) : '' }}" aria-describedby="linea-addon" oninput="validateInput(this, 5)">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="sublinea" class="form-label">SUBLINEA</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="sublinea-addon">SB</span>
-                                    <input type="text" name="sublinea" id="sublinea" class="form-control" maxlength="7" pattern="\d*" value="{{ request('sublinea') ? str_replace('SB', '', request('sublinea')) : '' }}" aria-describedby="sublinea-addon" oninput="validateInput(this, 7)">
-                                </div>
-                            </div>
-                            <div class="col-md-1">
-                                <label for="departamento" class="form-label">DPTO</label>
-                                <input type="text" name="departamento" id="departamento" class="form-control" maxlength="3" pattern="\d*" value="{{ request('departamento') }}" oninput="validateInput(this, 3)">
-                            </div>
-                            <div class="col-md-2 d-flex align-items-end">
-                                <button type="button" class="btn btn-primary me-2" onclick="buscarFiltros()">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                                <button type="button" class="btn btn-secondary" onclick="limpiarFiltros()">
-                                    <i class="fas fa-eraser"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+    <div class="input-container mb-3 filtro">
+        <div class="row justify-content-center">
+            <div class="col-md-1">
+                <label for="productId" class="form-label">PRODUCTO</label>
+                <input type="text" name="productId" id="productId" class="form-control" maxlength="5" pattern="\d*" value="{{ request('productId') }}" oninput="validateInput(this, 5)">
+            </div>
+            <div class="col-md-1">
+                <label for="sku" class="form-label">SKU</label>
+                <input type="text" name="sku" id="sku" class="form-control" maxlength="7" pattern="\d*" value="{{ request('sku') }}" oninput="validateInput(this, 7)">
+            </div>
+            <div class="col-md-3">
+                <label for="name" class="form-label">DESCRIPCIÓN</label>
+                <input type="text" name="name" id="name" class="form-control" value="{{ request('name') }}">
+            </div>
+            <div class="col-md-2">
+                <label for="linea" class="form-label">LINEA</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="linea-addon">LN</span>
+                    <input type="text" name="linea" id="linea" class="form-control" maxlength="5" pattern="\d*" value="{{ request('linea') ? str_replace('LN', '', request('linea')) : '' }}" aria-describedby="linea-addon" oninput="validateInput(this, 5)">
                 </div>
+            </div>
+            <div class="col-md-2">
+                <label for="sublinea" class="form-label">SUBLINEA</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="sublinea-addon">SB</span>
+                    <input type="text" name="sublinea" id="sublinea" class="form-control" maxlength="7" pattern="\d*" value="{{ request('sublinea') ? str_replace('SB', '', request('sublinea')) : '' }}" aria-describedby="sublinea-addon" oninput="validateInput(this, 7)">
+                </div>
+            </div>
+            <div class="col-md-1">
+                <label for="departamento" class="form-label">DPTO</label>
+                <input type="text" name="departamento" id="departamento" class="form-control" maxlength="3" pattern="\d*" value="{{ request('departamento') }}" oninput="validateInput(this, 3)">
+            </div>
+            <div class="col-md-1">
+                <label for="activo" class="form-label">ACTIVOS</label>
+                <select name="activo" id="activo" class="form-control">
+                    <option value="todos" {{ request('activo') == 'todos' ? 'selected' : '' }}>Todos</option>
+                    <option value="activos" {{ request('activo') == 'activos' ? 'selected' : '' }}>Activos</option>
+                </select>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="button" class="btn btn-primary me-2" onclick="buscarFiltros()">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="limpiarFiltros()">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            </div>
+         
+        </div>
+    </div>
+</div>
 
                     <!-- Tabla de datos -->
                     <div class="card shadow mb-4">
@@ -91,8 +99,8 @@
             'INPROD.INPR03ID' => 'LINEA',
             'INPROD.INPR04ID' => 'SUBLINEA',
             'INSDOS.INALMNID' => 'CENTRO DE COSTOS',
-            //'INALPR.INAPR17ID' => 'TS',//
-            //'INPROD.INTPALID' => 'TA',//
+            'INALPR.INAPR17ID' => 'TS',
+            'INPROD.INTPALID' => 'TA',
         ];
         @endphp
         @foreach ($columns as $column => $label)
@@ -126,8 +134,8 @@
                                             <td>{{ $label->INPR03ID }}</td>
                                             <td>{{ $label->INPR04ID }}</td>
                                             <td>{{ $label->CentroCostos }}</td>
-                                            <!--<td>{{ $label->TipoStock }}</td>-->
-                                            <!--<td>{{ $label->INTPALID }}</td>-->
+                                            <td>{{ $label->TipoStock }}</td>
+                                            <td>{{ $label->INTPALID }}</td>
                                             <td>
                                                 <button class="btn btn-secondary" onclick="showPrintModal('{{ $label->INPRODI2 }}', '{{ $label->INPRODDSC }}')">Imprimir SKU</button> </form>
                                         </tr>
@@ -158,7 +166,6 @@
 
     <!-- Modal para seleccionar la cantidad de etiquetas a imprimir -->
 
-    <!-- Modal para seleccionar la cantidad de etiquetas a imprimir -->
 <div class="modal fade" id="printModal" tabindex="-1" aria-labelledby="printModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -208,31 +215,43 @@
     </script>
 <script>
     function buscarFiltros() {
-    let query = '';
-    const inputs = ['productId', 'sku', 'name', 'linea', 'sublinea', 'departamento'];
-    inputs.forEach(input => {
-        const value = document.getElementById(input).value;
-        if (value) {
-            query += `&${input}=${encodeURIComponent(value)}`;
+        let query = '';
+        const inputs = ['productId', 'sku', 'name', 'linea', 'sublinea', 'departamento'];
+        inputs.forEach(input => {
+            let value = document.getElementById(input).value;
+            if (input === 'linea' && value) {
+                value = 'LN' + value;
+            }
+            if (input === 'sublinea' && value) {
+                value = 'SB' + value;
+            }
+            if (value) {
+                query += `&${input}=${encodeURIComponent(value)}`;
+            }
+        });
+
+        const activo = document.getElementById('activo').value;
+        if (activo) {
+            query += `&activo=${encodeURIComponent(activo)}`;
         }
-    });
 
-    const sort = new URLSearchParams(window.location.search).get('sort') || 'INPROD.INPRODID';
-    const direction = new URLSearchParams(window.location.search).get('direction') || 'asc';
+        const sort = new URLSearchParams(window.location.search).get('sort') || 'INPROD.INPRODID';
+        const direction = new URLSearchParams(window.location.search).get('direction') || 'asc';
 
-    window.location.href = `${window.location.pathname}?sort=${sort}&direction=${direction}${query}`;
-}
+        window.location.href = `${window.location.pathname}?sort=${sort}&direction=${direction}${query}`;
+    }
 
-function limpiarFiltros() {
-    const inputs = ['productId', 'sku', 'name', 'linea', 'sublinea', 'departamento'];
-    inputs.forEach(input => {
-        document.getElementById(input).value = '';
-    });
+    function limpiarFiltros() {
+        const inputs = ['productId', 'sku', 'name', 'linea', 'sublinea', 'departamento'];
+        inputs.forEach(input => {
+            document.getElementById(input).value = '';
+        });
+        document.getElementById('activo').value = 'todos';
 
-    buscarFiltros();
-}
-
+        buscarFiltros();
+    }
 </script>
+
 
 </body>
 
