@@ -38,25 +38,49 @@ class UserController extends Controller
         return view('indexes');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::paginate(10); // Cambia 10 por la cantidad de registros que deseas por página
+        $query = User::query();
+    
+        // Filtro por usuario o empleado
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('employee', function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('middle_name', 'like', "%{$search}%");
+            })->orWhere('username', 'like', "%{$search}%");
+        }
+    
+        // Filtro por rol
+        if ($request->filled('role')) {
+            $role = $request->input('role');
+            $query->whereHas('roles', function ($q) use ($role) {
+                $q->where('name', $role);
+            });
+        }
+    
+        // Filtro por centro de costo
+        if ($request->filled('cost_center')) {
+            $costCenter = $request->input('cost_center');
+            $query->whereHas('costCenters', function ($q) use ($costCenter) {
+                $q->where('cost_center_id', $costCenter);
+            });
+        }
+    
+        // Ordenamiento
+        $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
+        $sortOrder = $request->input('sort_order', 'asc');
+        $query->orderBy($sortBy, $sortOrder);
+    
+        $users = $query->paginate(10)->appends($request->all()); // Asegúrate de pasar todos los parámetros
+    
         $roles = Role::all();
-        $permissions = Permission::all();
-        $user = Auth::user();
-        $employee = Employee::find($user->employee_id);
-        $userRoles = $user->roles;
-        $userCenters = $user->centers;
-
-        return view('users', [
-            'users' => $users,
-            'roles' => $roles,
-            'permissions' => $permissions,
-            'employee' => $employee,
-            'userRoles' => $userRoles,
-            'userCenters' => $userCenters
-        ]);
+        $centers = StoreCostCenter::all();
+    
+        return view('users', compact('users', 'roles', 'centers'));
     }
+    
 
     public function createUserForm()
     {

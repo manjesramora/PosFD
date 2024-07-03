@@ -27,11 +27,37 @@ class EmployeeController extends Controller
         });
     }
     // Método para mostrar la lista de empleados
-    public function employees()
+    public function employees(Request $request)
     {
-        $employees = Employee::paginate(10); // Obtener 10 empleados por página
+        $query = Employee::query();
+    
+        // Filtro por búsqueda de empleado
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('middle_name', 'like', "%{$search}%");
+            });
+        }
+    
+        // Filtro por estado (activo/inactivo)
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            $query->where('status', $status);
+        }
+    
+        // Ordenamiento
+        $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
+        $sortOrder = $request->input('sort_order', 'asc');
+        $query->orderBy($sortBy, $sortOrder);
+    
+        $employees = $query->paginate(10)->appends($request->all()); // Asegúrate de pasar todos los parámetros
+    
         return view('employees', compact('employees'));
     }
+    
+    
 
     // Método para mostrar los detalles de un empleado
     public function show($id)

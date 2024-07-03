@@ -24,28 +24,30 @@
                 @include('navbar')
                 <div class="container-fluid">
                     <h1 class="mt-5" style="text-align: center;">EMPLEADOS</h1>
-                    <!-- Botón para agregar empleado -->
-                    <div class="container">
-                        <div class="row align-items-center justify-content-center mb-4">
-                            <div class="col-md-2 mb-3">
-                                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" style="margin-top: 32px;">
-                                    <i class="fas fa-plus-circle mr-2"></i>Agregar Empleado
-                                </button>
+<!-- Filtros y Botón para agregar empleado -->
+<div class="container">
+                        <form id="filtersForm" method="GET" action="{{ route('employees') }}">
+                            <div class="row align-items-center justify-content-center mb-4">
+                                <div class="col-md-2 mb-3">
+                                    <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addEmployeeModal" style="margin-top: 32px;">
+                                        <i class="fas fa-plus-circle mr-2"></i>Agregar Empleado
+                                    </button>
+                                </div>
+                                <!-- Filtro buscar nombre -->
+                                <div class="col-md-3 mb-3">
+                                    <input type="text" class="form-control uper" placeholder="Buscar empleado" id="searchEmployee" name="search" value="{{ request('search') }}" style="margin-top: 32px;">
+                                </div>
+                                <!-- Filtro activos/inactivos -->
+                                <div class="col-md-2 mb-3">
+                                    <label for="statusFilter" class="form-label">Estado</label>
+                                    <select id="statusFilter" class="form-select" name="status" onchange="document.getElementById('filtersForm').submit()">
+                                        <option value="">Todos</option>
+                                        <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Activos</option>
+                                        <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Inactivos</option>
+                                    </select>
+                                </div>
                             </div>
-                            <!-- Filtro buscar nombre -->
-                            <div class="col-md-3 mb-3">
-                                <input type="text" class="form-control uper" placeholder="Buscar empleado" id="searchEmployee" onkeyup="filterEmployees()" style="margin-top: 32px;">
-                            </div>
-                            <!-- Filtro activos/inactivos -->
-                            <div class="col-md-2 mb-3">
-                                <label for="statusFilter" class="form-label">Estado</label>
-                                <select id="statusFilter" class="form-select" onchange="filterEmployees()">
-                                    <option value="">Todos</option>
-                                    <option value="1">Activos</option>
-                                    <option value="0">Inactivos</option>
-                                </select>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     <!-- /.container-fluid -->
 
@@ -114,8 +116,8 @@
 
                                     </div>
                                     <div class="d-flex justify-content-center mt-3">
-                                        {{ $employees->links() }}
-                                    </div>
+                                    {{ $employees->appends(request()->all())->links() }}
+                                </div>
 
                                 </div>
                             </div>

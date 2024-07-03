@@ -41,14 +41,7 @@
             </a>
         </li>
         @endif
-        @if(auth()->user()->hasPermission('ORDENES'))
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('orders') }}">
-                <i class="fa fa-truck"></i>
-                <span>Ordenes de Compra</span>
-            </a>
-        </li>
-        @endif
+
         <!-- Boton Permisos -->
         @if(auth()->user()->hasPermission('PERMISOS'))
         <li class="nav-item">
@@ -58,6 +51,17 @@
             </a>
         </li>
         @endif
+
+        <!-- Boton Ordenes de compra -->
+        @if(auth()->user()->hasPermission('ORDENES'))
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('orders') }}">
+                <i class="fa fa-truck"></i>
+                <span>Ordenes de Compra</span>
+            </a>
+        </li>
+        @endif
+
 
 
         <!-- Boton Etiquetas y Catalogo -->

@@ -118,46 +118,6 @@ $(document).on("click", ".reset-password", function () {
     resetPassword(userId);
 });
 
-// Filtra los usuarios en la tabla según la búsqueda y el filtro de estado
-function filterUsers() {
-    const searchInput = document.getElementById('searchUser').value.toLowerCase().trim();
-    const statusFilter = document.getElementById('statusFilter').value;
-    const roleFilter = document.getElementById('roleFilter').value.toLowerCase().trim();
-    const costCenterFilter = document.getElementById('costCenterFilter').value.toLowerCase().trim();
-    const table = document.getElementById('dataTable');
-    const rows = table.getElementsByTagName('tr');
-
-    for (let i = 1; i < rows.length; i++) { // i = 1 para saltar el encabezado
-        const usernameCell = rows[i].getElementsByTagName('td')[0]; // Columna de USUARIOS
-        const employeeNameCell = rows[i].getElementsByTagName('td')[1]; // Columna de NOMBRE EMPLEADO
-        const roleCell = rows[i].getElementsByTagName('td')[2]; // Columna de ROL
-        const statusCell = rows[i].getElementsByTagName('td')[3]; // Columna de ESTADO
-        const costCenterCell = rows[i].getElementsByTagName('td')[4]; // Columna de CENTRO DE COSTO
-
-        if (usernameCell && employeeNameCell && roleCell && statusCell && costCenterCell) {
-            const username = usernameCell.textContent.toLowerCase().trim();
-            const employeeName = employeeNameCell.textContent.toLowerCase().replace(/\s+/g, ' ').trim();
-            const roles = roleCell.textContent.toLowerCase().trim();
-            const status = statusCell.textContent.trim();
-            const costCenters = costCenterCell.textContent.toLowerCase().trim();
-
-            const matchesName = username.includes(searchInput) || employeeName.includes(searchInput);
-            const matchesStatus = statusFilter === "" || (statusFilter === "1" && status === "ACTIVO") || (statusFilter === "0" && status === "INACTIVO");
-            const matchesRole = roleFilter === "" || roles.includes(roleFilter);
-            const matchesCostCenter = costCenterFilter === "" || costCenters.includes(costCenterFilter);
-
-            if (matchesName && matchesStatus && matchesRole && matchesCostCenter) {
-                rows[i].style.display = ""; // Mostrar la fila
-            } else {
-                rows[i].style.display = "none"; // Ocultar la fila
-            }
-        }
-    }
-}
-
-
-
-
 // Evento de clic en el encabezado de la columna para ordenar
 $(document).ready(function() {
     $("th.sortable").click(function () {
@@ -223,6 +183,39 @@ function sortTable(columnIndex, asc) {
         if (shouldSwitch) {
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
             switching = true;
+        }
+    }
+}
+
+// Filtra los usuarios en la tabla según la búsqueda y el filtro de estado
+function filterUsers() {
+    const searchInput = document.getElementById('searchUser').value.toLowerCase().trim();
+    const roleFilter = document.getElementById('roleFilter').value.toLowerCase().trim();
+    const costCenterFilter = document.getElementById('costCenterFilter').value.toLowerCase().trim();
+    const table = document.getElementById('dataTable');
+    const rows = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < rows.length; i++) { // i = 1 para saltar el encabezado
+        const usernameCell = rows[i].getElementsByTagName('td')[0]; // Columna de USUARIOS
+        const employeeNameCell = rows[i].getElementsByTagName('td')[1]; // Columna de NOMBRE EMPLEADO
+        const roleCell = rows[i].getElementsByTagName('td')[2]; // Columna de ROL
+        const costCenterCell = rows[i].getElementsByTagName('td')[4]; // Columna de CENTRO DE COSTO
+
+        if (usernameCell && employeeNameCell && roleCell && costCenterCell) {
+            const username = usernameCell.textContent.toLowerCase().trim();
+            const employeeName = employeeNameCell.textContent.toLowerCase().replace(/\s+/g, ' ').trim();
+            const roles = roleCell.textContent.toLowerCase().trim();
+            const costCenters = costCenterCell.textContent.toLowerCase().trim();
+
+            const matchesName = username.includes(searchInput) || employeeName.includes(searchInput);
+            const matchesRole = roleFilter === "" || roles.includes(roleFilter);
+            const matchesCostCenter = costCenterFilter === "" || costCenters.includes(costCenterFilter);
+
+            if (matchesName && matchesRole && matchesCostCenter) {
+                rows[i].style.display = ""; // Mostrar la fila
+            } else {
+                rows[i].style.display = "none"; // Ocultar la fila
+            }
         }
     }
 }
