@@ -1,3 +1,15 @@
+.table th .btn-link {
+    color: #000; /* Color de texto negro */
+}
+
+.table th .btn-link .fas {
+    color: #000; /* Color de íconos negro */
+}
+
+.table th .btn-link:hover .fas {
+    color: #555; /* Color de íconos negro oscuro al pasar el ratón */
+}
+
 .table-centered td, .table-centered th {
     text-align: center;
     vertical-align: middle;

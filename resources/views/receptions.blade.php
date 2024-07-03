@@ -122,8 +122,6 @@
                                                     <th class="col-md-1">Cantidad Solicitada</th>
                                                     <th class="col-md-1">Cantidad Recibida</th>
                                                     <th class="col-md-1">Precio Unitario</th>
-                                                    <th class="col-md-1">Subtotal</th>
-                                                    <th class="col-md-1">Flete</th>
                                                     <th class="col-md-1">IVA</th>
                                                 </tr>
                                             </thead>
@@ -137,29 +135,17 @@
                                                     <td>{{ $reception->ACMVOIUMT }}</td>
                                                     <td>{{ number_format($reception->ACMVOIQTO, 2) }}</td>
                                                     <td>
-                                                        <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" oninput="validateCantidad(this)" max="{{ $reception->ACMVOIQTO }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" max="{{ $reception->ACMVOINPO }}" step="0.01" oninput="validatePrecio(this)">
-                                                    </td>
-                                                    <td class="subtotal">{{ number_format($reception->ACMVOIMRE, 2) }}$</td>
-                                                    <td class="flete">0.00$</td>
-                                                    <td class="iva">{{ number_format($reception->ACMVOITIVA, 2) }}$</td>
+    <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" min="0" oninput="validateCantidad(this)" max="{{ $reception->ACMVOIQTO }}">
+</td>
+<td>
+    <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" min="0" max="{{ $reception->ACMVOINPO }}" step="0.01" oninput="validatePrecio(this)">
+</td>
+
+
+                                                    <td class="iva">{{ number_format($reception->ACMVOIIVA) }}%</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="8" class="text-end"><strong>Total</strong></td>
-                                                    <td id="totalSubtotal">0.00$</td>
-                                                    <td id="totalFlete">0.00$</td>
-                                                    <td id="totalIva">0.00$</td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="10" class="text-end"><strong>Total General</strong></td>
-                                                    <td id="totalGeneral">0.00$</td>
-                                                </tr>
-                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>

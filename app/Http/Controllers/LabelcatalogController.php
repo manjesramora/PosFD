@@ -32,13 +32,13 @@ class LabelcatalogController extends Controller
     // Método para manejar la lógica de la vista del catálogo de etiquetas
     public function labelscatalog(Request $request)
     {
-        // Filtrar inputs de la solicitud
         $productIdFilter = $request->input('productId');
         $skuFilter = $request->input('sku');
         $nameFilter = $request->input('name');
         $lineaFilter = $request->input('linea');
         $sublineaFilter = $request->input('sublinea');
         $departamentoFilter = $request->input('departamento');
+        $activoFilter = $request->input('activo');
         $sortColumn = $request->input('sort', 'INPROD.INPRODID'); // Columna por defecto
         $sortDirection = $request->input('direction', 'asc'); // Dirección por defecto
 
@@ -51,9 +51,9 @@ class LabelcatalogController extends Controller
         // Construir la consulta base
         $query = DB::table('INSDOS')
             ->join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
-            ->leftJoin('INALPR', function ($join) {
+            ->leftJoin('INALPR', function($join) {
                 $join->on('INSDOS.INPRODID', '=', 'INALPR.INPRODID')
-                    ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
+                     ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
             })
             ->select(
                 'INPROD.INPRODID',
@@ -72,7 +72,7 @@ class LabelcatalogController extends Controller
                 'INSDOS.INALMNID as CentroCostos',
                 'INALPR.INAPR17ID as TipoStock'
             )
-            // Condiciones para INPRODDSC (nombre del producto)
+            // Condiciones para INPRODDSC
             ->whereNotNull('INPROD.INPRODDSC')
             ->where('INPROD.INPRODDSC', '<>', '')
             ->where('INPROD.INPRODDSC', '<>', '.')
@@ -87,7 +87,7 @@ class LabelcatalogController extends Controller
             // Condiciones para Tipo de Almacenamiento
             ->whereNotIn('INPROD.INTPALID', ['O', 'D'])
             ->whereRaw('ISNUMERIC(INPROD.INTPALID) = 0') // Excluir valores numéricos en Tipo de Almacenamiento
-            // Condición para la longitud de SKU (código de producto)
+            // Condición para la longitud de SKU
             ->whereRaw('LEN(INPROD.INPRODI2) >= 7')
             // Aplicar ordenamiento
             ->orderBy($sortColumn, $sortDirection);
@@ -103,13 +103,16 @@ class LabelcatalogController extends Controller
             $query->where('INPROD.INPRODDSC', 'like', $nameFilter . '%');
         }
         if (!empty($lineaFilter) && $lineaFilter !== 'LN') {
-            $query->where('INPROD.INPR03ID', 'like', $lineaFilter . '%');
+            $query->where('INPROD.INPR03ID', 'like', 'LN' + $lineaFilter + '%');
         }
         if (!empty($sublineaFilter) && $sublineaFilter !== 'SB') {
-            $query->where('INPROD.INPR04ID', 'like', $sublineaFilter . '%');
+            $query->where('INPROD.INPR04ID', 'like', 'SB' + $sublineaFilter + '%');
         }
         if (!empty($departamentoFilter)) {
             $query->where('INPROD.INPR02ID', 'like', $departamentoFilter . '%');
+        }
+        if ($activoFilter === 'activos') {
+            $query->where('INALPR.INAPR17ID', '<>', 'X');
         }
 
         // Añadir filtro para los centros de costos asignados al usuario
@@ -118,7 +121,6 @@ class LabelcatalogController extends Controller
         // Paginación de los resultados
         $labels = $query->paginate(20)->appends($request->query());
 
-        // Retornar la vista con los datos filtrados y paginados
         return view('etiquetascatalogo', compact('labels'));
     }
 
