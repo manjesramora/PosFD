@@ -93,7 +93,7 @@
                         </div>
                         <div class="col-md-1" id="flete_input_div" style="display: none;">
                             <label for="flete_input" class="form-label">Flete:</label>
-                            <input type="number" id="flete_input" class="form-control" oninput="distributeFreight()">
+                            <input type="number" id="flete_input" class="form-control" oninput="distributeFreight()" step="0.01" min="0">
                         </div>
                         <div class="col-md-3">
                             <a href="{{ route('orders') }}" class="btn btn-secondary me-2">Volver a Órdenes</a>
@@ -109,17 +109,18 @@
                                         <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
-                                                    <th class="col-md-1">LIN</th>
-                                                    <th class="col-md-1">ID</th>
+                                                    <th class="col-md-0">LIN</th>
+                                                    <th class="col-md-0">ID</th>
                                                     <th class="col-md-6">DESCRIPCION</th>
-                                                    <th class="col-md-1">SKU</th>
-                                                    <th class="col-md-1">UM</th>
-                                                    <th class="col-md-1">Cantidad Solicitada</th>
-                                                    <th class="col-md-1">Cantidad Recibida</th>
-                                                    <th class="col-md-1">Precio Unitario</th>
-                                                    <th class="col-md-1">IVA</th>
+                                                    <th class="col-md-0">SKU</th>
+                                                    <th class="col-md-0">UM</th>
+                                                    <th class="col-md-0">Cantidad <br> Solicitada</th>
+                                                    <th class="col-md-1">Cantidad <br> Recibida</th>
+                                                    <th class="col-md-0">Precio Unitario</th>
+                                                    <th class="col-md-0">IVA</th>
                                                     <th class="col-md-1">Subtotal</th>
                                                     <th class="col-md-1">Flete</th>
+                                                    <th class="col-md-1">Porcentaje <br> de Flete</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="receptionTableBody">
@@ -137,97 +138,186 @@
                                                         <td>
                                                             <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" min="0" max="{{ number_format($reception->ACMVOINPO, 2) }}" step="0.01" oninput="limitPrecio(this)">
                                                         </td>
-                                                        <td class="iva">{{ number_format($reception->ACMVOIIVA) }}%</td>
-                                                        <td class="subtotal">0.00</td>
-                                                        <td class="flete">0.00</td>
+                                                        <td>{{ number_format($reception->ACMVOIIVA, 2) }}</td>
+                                                        <td class="subtotal"></td>
+                                                        <td class="flete"></td>
+                                                        <td class="porcentaje-flete"></td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
-                                       
-                                            </table>
+                                        </table>
+                                        <br>
+                                        <button id="saveButton" class="btn btn-primary" onclick="saveData()">Guardar</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-    
             </div>
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
     <script>
+       function toggleFleteInput() {
+    var selectBox = document.getElementById("flete_select");
+    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+    var fleteInputDiv = document.getElementById("flete_input_div");
+
+    if (selectedValue === "1") {
+        fleteInputDiv.style.display = "block";
+    } else {
+        fleteInputDiv.style.display = "none";
+        document.getElementById("flete_input").value = "";
+        distributeFreight();
+    }
+}
+
+// Autocompletado para el campo Número
+$(document).on('click', '#numeroList li', function() {
+    let id = $(this).data('id');
+    let name = $(this).data('name');
+    $('#numero').val(id);
+    $('#fletero').val(name);
+    $('#numeroList').hide();
+});
+
+$('#clearNumero').on('click', function() {
+    $('#numero').val('');
+    $('#fletero').val('');
+    $('#numeroList').hide();
+});
+
+// Autocompletado para el campo Fletero
+$('#fletero').on('input', function() {
+    let query = $(this).val();
+
+    if (query.length >= 3) {
+        $.ajax({
+            url: "/providers/autocomplete",
+            type: "GET",
+            data: {
+                query: query,
+                field: 'CNCDIRNOM'
+            },
+            success: function(data) {
+                let dropdown = $('#fleteroList');
+                dropdown.empty().show();
+
+                data.forEach(item => {
+                    dropdown.append(`<li class="list-group-item" data-id="${item.CNCDIRID}" data-name="${item.CNCDIRNOM}">${item.CNCDIRID} - ${item.CNCDIRNOM}</li>`);
+                });
+            }
+        });
+    } else {
+        $('#fleteroList').hide();
+    }
+});
+
+$(document).on('click', '#fleteroList li', function() {
+    let id = $(this).data('id');
+    let name = $(this).data('name');
+    $('#fletero').val(name);
+    $('#numero').val(id);
+    $('#fleteroList').hide();
+});
+
+$('#clearFletero').on('click', function() {
+    $('#fletero').val('');
+    $('#numero').val('');
+    $('#fleteroList').hide();
+});
+
+
         function toggleFleteInput() {
-            var fleteSelect = document.getElementById('flete_select');
-            var fleteInputDiv = document.getElementById('flete_input_div');
+            const fleteSelect = document.getElementById('flete_select');
+            const fleteInputDiv = document.getElementById('flete_input_div');
             if (fleteSelect.value == '1') {
                 fleteInputDiv.style.display = 'block';
             } else {
                 fleteInputDiv.style.display = 'none';
-                document.getElementById('flete_input').value = '';
                 distributeFreight();
             }
         }
 
-        function limitCantidad(element) {
-            var max = parseFloat(element.max);
-            var value = parseFloat(element.value);
-            if (value > max) {
-                element.value = max;
-            }
-            calculateSubtotal(element.closest('tr'));
-            distributeFreight();
-        }
-
-        function limitPrecio(element) {
-            var max = parseFloat(element.max);
-            var value = parseFloat(element.value);
-            if (value > max) {
-                element.value = max;
-            }
-            calculateSubtotal(element.closest('tr'));
-            distributeFreight();
-        }
-
-        function calculateSubtotal(row) {
-            var cantidadRecibida = parseFloat(row.querySelector('.cantidad-recibida').value) || 0;
-            var precioUnitario = parseFloat(row.querySelector('.precio-unitario').value) || 0;
-            var iva = parseFloat(row.querySelector('.iva').innerText.replace('%', '')) || 0;
-
-            var subtotal = cantidadRecibida * precioUnitario;
-            var ivaAmount = subtotal * iva / 100;
-            row.querySelector('.subtotal').innerText = (subtotal + ivaAmount).toFixed(2);
-        }
-
         function distributeFreight() {
-            var flete = parseFloat(document.getElementById('flete_input').value) || 0;
-            var table = document.getElementById('receptionTableBody');
-            var rows = table.querySelectorAll('tr');
-            var totalSubtotal = 0;
-            
+            const fleteInput = document.getElementById('flete_input').value;
+            const rows = document.querySelectorAll('#receptionTableBody tr');
+            let totalSubtotal = 0;
+
             rows.forEach(row => {
-                var subtotal = parseFloat(row.querySelector('.subtotal').innerText) || 0;
+                const subtotalCell = row.querySelector('.subtotal');
+                const cantidadRecibida = parseFloat(row.querySelector('.cantidad-recibida').value) || 0;
+                const precioUnitario = parseFloat(row.querySelector('.precio-unitario').value) || 0;
+                const subtotal = cantidadRecibida * precioUnitario;
+                subtotalCell.textContent = subtotal.toFixed(2);
                 totalSubtotal += subtotal;
             });
 
             rows.forEach(row => {
-                var subtotal = parseFloat(row.querySelector('.subtotal').innerText) || 0;
-                var fleteProportion = (subtotal / totalSubtotal) * flete;
-                row.querySelector('.flete').innerText = fleteProportion.toFixed(2);
+                const subtotalCell = row.querySelector('.subtotal').textContent;
+                const subtotal = parseFloat(subtotalCell);
+                const porcentajeFlete = totalSubtotal > 0 ? (subtotal / totalSubtotal) * 100 : 0;
+                const flete = (fleteInput * porcentajeFlete / 100).toFixed(2);
+                row.querySelector('.flete').textContent = flete;
+                row.querySelector('.porcentaje-flete').textContent = porcentajeFlete.toFixed(2) + '%';
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.cantidad-recibida').forEach(element => {
-                element.addEventListener('input', () => limitCantidad(element));
+        function limitCantidad(input) {
+            const maxCantidad = parseFloat(input.max);
+            if (parseFloat(input.value) > maxCantidad) {
+                input.value = maxCantidad;
+            }
+        }
+
+        function limitPrecio(input) {
+            const maxPrecio = parseFloat(input.max);
+            if (parseFloat(input.value) > maxPrecio) {
+                input.value = maxPrecio;
+            }
+        }
+
+        function saveData() {
+            const data = {
+                numero: $('#numero').val(),
+                fletero: $('#fletero').val(),
+                tipo_doc: $('#tipo_doc').val(),
+                num_doc: $('#num_doc').val(),
+                nombre_proveedor: $('#nombre_proveedor').val(),
+                referencia: $('#referencia').val(),
+                almacen: $('#almacen').val(),
+                ACMROIREF: $('#ACMROIREF').val(),
+                fecha: $('#fecha').val(),
+                rcn_final: $('#rcn_final').val(),
+                num_rcn_letras: $('#num_rcn_letras').val(),
+                flete: $('#flete_input').val(),
+                items: []
+            };
+
+            $('#receptionTableBody tr').each(function() {
+                const row = $(this);
+                data.items.push({
+                    cantidad_recibida: row.find('.cantidad-recibida').val(),
+                    precio_unitario: row.find('.precio-unitario').val()
+                });
             });
 
-            document.querySelectorAll('.precio-unitario').forEach(element => {
-                element.addEventListener('input', () => limitPrecio(element));
+            $.ajax({
+                url: '/save-data',
+                type: 'POST',
+                data: data,
+                success: function(response) {
+                    alert('Datos guardados exitosamente');
+                },
+                error: function(xhr) {
+                    alert('Hubo un error al guardar los datos');
+                }
             });
-        });
+        }
     </script>
 </body>
 </html>
+
