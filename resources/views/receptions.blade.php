@@ -24,12 +24,11 @@
                     <h1 class="mt-5" style="text-align: center;">Detalles de Recepción</h1>
                     <br>
                     <div class="row g-3 align-items-end">
-
                         <div class="col-md-2">
                             <label for="numero" class="form-label">Número:</label>
                             <div class="input-group">
                                 <input type="text" id="numero" class="form-control">
-                                <button class="btn btn-danger btn-outline-ligth clear-input" type="button" id="clearNumero">
+                                <button class="btn btn-danger btn-outline-light clear-input" type="button" id="clearNumero">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
@@ -39,23 +38,20 @@
                             <label for="fletero" class="form-label">Fletero:</label>
                             <div class="input-group">
                                 <input type="text" id="fletero" class="form-control">
-                                <button class="btn btn-danger btn-outline-ligth clear-input" type="button" id="clearFletero">
+                                <button class="btn btn-danger btn-outline-light clear-input" type="button" id="clearFletero">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                             <ul id="fleteroList" class="list-group" style="display: none;"></ul>
                         </div>
-
                         <div class="col-md-1">
                             <label for="tipo_doc" class="form-label">Tipo Doc:</label>
                             <input type="text" id="tipo_doc" class="form-control" value="{{ $order->CNTDOCID }}" readonly>
                         </div>
-
                         <div class="col-md-1">
                             <label for="num_doc" class="form-label">No. de Doc:</label>
                             <input type="text" id="num_doc" class="form-control" value="{{ $order->ACMVOIDOC }}" readonly>
                         </div>
-
                         <div class="col-md-4">
                             <label for="nombre_proveedor" class="form-label">Nombre del Proveedor:</label>
                             <input type="text" id="nombre_proveedor" class="form-control" value="{{ $order->provider->CNCDIRNOM }}" readonly>
@@ -103,7 +99,6 @@
                             <a href="{{ route('orders') }}" class="btn btn-secondary me-2">Volver a Órdenes</a>
                             <a href="#" class="btn btn-warning">Recepcionar</a>
                         </div>
-                        <!-- Other fields -->
                     </div>
                     <br>
                     <div class="table-responsive">
@@ -111,7 +106,7 @@
                             <div class="card shadow mb-4">
                                 <div class="card-body">
                                     <div class="table-responsive small-font">
-                                    <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
+                                        <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th class="col-md-1">LIN</th>
@@ -123,48 +118,116 @@
                                                     <th class="col-md-1">Cantidad Recibida</th>
                                                     <th class="col-md-1">Precio Unitario</th>
                                                     <th class="col-md-1">IVA</th>
+                                                    <th class="col-md-1">Subtotal</th>
+                                                    <th class="col-md-1">Flete</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="receptionTableBody">
                                                 @foreach ($receptions as $reception)
-                                                <tr>
-                                                    <td>{{ number_format($reception->ACMVOILIN) }}</td>
-                                                    <td>{{ $reception->ACMVOIPRID }}</td>
-                                                    <td>{{ $reception->ACMVOIPRDS }}</td>
-                                                    <td>{{ $reception->ACMVOINPAR }}</td>
-                                                    <td>{{ $reception->ACMVOIUMT }}</td>
-                                                    <td>{{ number_format($reception->ACMVOIQTO, 2) }}</td>
-                                                    <td>
-    <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" min="0" oninput="validateCantidad(this)" max="{{ $reception->ACMVOIQTO }}">
-</td>
-<td>
-    <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" min="0" max="{{ $reception->ACMVOINPO }}" step="0.01" oninput="validatePrecio(this)">
-</td>
-
-
-                                                    <td class="iva">{{ number_format($reception->ACMVOIIVA) }}%</td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>{{ number_format($reception->ACMVOILIN) }}</td>
+                                                        <td>{{ $reception->ACMVOIPRID }}</td>
+                                                        <td>{{ $reception->ACMVOIPRDS }}</td>
+                                                        <td>{{ $reception->ACMVOINPAR }}</td>
+                                                        <td>{{ $reception->ACMVOIUMT }}</td>
+                                                        <td>{{ number_format($reception->ACMVOIQTO, 2) }}</td>
+                                                        <td>
+                                                            <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" min="0" max="{{ $reception->ACMVOIQTO }}" oninput="limitCantidad(this)">
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" min="0" max="{{ number_format($reception->ACMVOINPO, 2) }}" step="0.01" oninput="limitPrecio(this)">
+                                                        </td>
+                                                        <td class="iva">{{ number_format($reception->ACMVOIIVA) }}%</td>
+                                                        <td class="subtotal">0.00</td>
+                                                        <td class="flete">0.00</td>
+                                                    </tr>
                                                 @endforeach
                                             </tbody>
-                                        </table>
+                                       
+                                            </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+    
             </div>
         </div>
     </div>
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="assets/vendor/chart.js/Chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/reception.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleFleteInput() {
+            var fleteSelect = document.getElementById('flete_select');
+            var fleteInputDiv = document.getElementById('flete_input_div');
+            if (fleteSelect.value == '1') {
+                fleteInputDiv.style.display = 'block';
+            } else {
+                fleteInputDiv.style.display = 'none';
+                document.getElementById('flete_input').value = '';
+                distributeFreight();
+            }
+        }
 
+        function limitCantidad(element) {
+            var max = parseFloat(element.max);
+            var value = parseFloat(element.value);
+            if (value > max) {
+                element.value = max;
+            }
+            calculateSubtotal(element.closest('tr'));
+            distributeFreight();
+        }
+
+        function limitPrecio(element) {
+            var max = parseFloat(element.max);
+            var value = parseFloat(element.value);
+            if (value > max) {
+                element.value = max;
+            }
+            calculateSubtotal(element.closest('tr'));
+            distributeFreight();
+        }
+
+        function calculateSubtotal(row) {
+            var cantidadRecibida = parseFloat(row.querySelector('.cantidad-recibida').value) || 0;
+            var precioUnitario = parseFloat(row.querySelector('.precio-unitario').value) || 0;
+            var iva = parseFloat(row.querySelector('.iva').innerText.replace('%', '')) || 0;
+
+            var subtotal = cantidadRecibida * precioUnitario;
+            var ivaAmount = subtotal * iva / 100;
+            row.querySelector('.subtotal').innerText = (subtotal + ivaAmount).toFixed(2);
+        }
+
+        function distributeFreight() {
+            var flete = parseFloat(document.getElementById('flete_input').value) || 0;
+            var table = document.getElementById('receptionTableBody');
+            var rows = table.querySelectorAll('tr');
+            var totalSubtotal = 0;
+            
+            rows.forEach(row => {
+                var subtotal = parseFloat(row.querySelector('.subtotal').innerText) || 0;
+                totalSubtotal += subtotal;
+            });
+
+            rows.forEach(row => {
+                var subtotal = parseFloat(row.querySelector('.subtotal').innerText) || 0;
+                var fleteProportion = (subtotal / totalSubtotal) * flete;
+                row.querySelector('.flete').innerText = fleteProportion.toFixed(2);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.cantidad-recibida').forEach(element => {
+                element.addEventListener('input', () => limitCantidad(element));
+            });
+
+            document.querySelectorAll('.precio-unitario').forEach(element => {
+                element.addEventListener('input', () => limitPrecio(element));
+            });
+        });
+    </script>
 </body>
-
 </html>
