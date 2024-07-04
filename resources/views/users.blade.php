@@ -38,9 +38,18 @@
                                         <i class="fas fa-plus-circle mr-2"></i> Generar Usuario
                                     </button>
                                 </div>
+
+
                                 <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control uper" placeholder="Buscar usuario o empleado" id="searchUser" name="search" value="{{ request('search') }}" style="margin-top: 32px;">
+                                    <div class="input-group" style="margin-top: 32px;">
+                                        <input type="text" class="form-control uper" placeholder="Buscar usuario o empleado" id="searchUser" name="search" value="{{ request('search') }}" oninput="filterEmployees()">
+                                        <button class="btn btn-danger" type="button" onclick="limpiarCampos()">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
                                 </div>
+
+
                                 <div class="col-md-2 mb-3">
                                     <label for="roleFilter" class="form-label">Roles</label>
                                     <select id="roleFilter" class="form-select" name="role" onchange="document.getElementById('filtersForm').submit()">

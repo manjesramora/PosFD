@@ -151,8 +151,9 @@ function filterUsers() {
     }
 }
 
-
-
+function limpiarCampos() {
+    $('#searchUser').val(''); // Limpiar el campo de búsqueda
+}
 
 
 
