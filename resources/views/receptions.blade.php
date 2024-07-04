@@ -26,85 +26,85 @@
                     <h1 class="mt-5" style="text-align: center;">Detalles de Recepción</h1>
                     <br>
                     <div class="row g-3 align-items-end">
-                    <br>
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-2">
-                            <label for="numero" class="form-label">Número:</label>
-                            <div class="input-group">
-                                <input type="text" id="numero" class="form-control">
-                                <button class="btn btn-danger btn-outline-light clear-input" type="button" id="clearNumero">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                        <br>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-2">
+                                <label for="numero" class="form-label">Número:</label>
+                                <div class="input-group">
+                                    <input type="text" id="numero" class="form-control">
+                                    <button class="btn btn-danger btn-outline-light clear-input" type="button" id="clearNumero">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <ul id="numeroList" class="list-group" style="display: none;"></ul>
                             </div>
-                            <ul id="numeroList" class="list-group" style="display: none;"></ul>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="fletero" class="form-label">Fletero:</label>
-                            <div class="input-group">
-                                <input type="text" id="fletero" class="form-control">
-                                <button class="btn btn-danger btn-outline-light clear-input" type="button" id="clearFletero">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                            <div class="col-md-4">
+                                <label for="fletero" class="form-label">Fletero:</label>
+                                <div class="input-group">
+                                    <input type="text" id="fletero" class="form-control">
+                                    <button class="btn btn-danger btn-outline-light clear-input" type="button" id="clearFletero">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <ul id="fleteroList" class="list-group" style="display: none;"></ul>
                             </div>
-                            <ul id="fleteroList" class="list-group" style="display: none;"></ul>
+                            <div class="col-md-1">
+                                <label for="tipo_doc" class="form-label">Tipo Doc:</label>
+                                <input type="text" id="tipo_doc" class="form-control" value="{{ $order->CNTDOCID }}" readonly>
+                            </div>
+                            <div class="col-md-1">
+                                <label for="num_doc" class="form-label">No. de Doc:</label>
+                                <input type="text" id="num_doc" class="form-control" value="{{ $order->ACMVOIDOC }}" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="nombre_proveedor" class="form-label">Nombre del Proveedor:</label>
+                                <input type="text" id="nombre_proveedor" class="form-control" value="{{ $order->provider->CNCDIRNOM }}" readonly>
+                            </div>
+                            <div class="col-md-1">
+                                <label for="referencia" class="form-label">Referencia:</label>
+                                <select id="referencia" class="form-control">
+                                    <option value="1">FACTURA</option>
+                                    <option value="2">REMISION</option>
+                                    <option value="3">MISELANEO</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <label for="almacen" class="form-label">Almacén:</label>
+                                <input type="text" id="almacen" class="form-control" value="{{ $order->ACMVOIALID }}" readonly>
+                            </div>
+                            <div class="col-md-1">
+                                <label for="ACMROIREF" class="form-label">Referencia:</label>
+                                <input type="text" id="ACMROIREF" class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="fecha" class="form-label">Fecha Recepcion:</label>
+                                <input type="date" id="fecha" class="form-control" value="{{ $currentDate }}" readonly>
+                            </div>
+                            <div class="col-md-1">
+                                <label for="rcn_final" class="form-label">DOC:</label>
+                                <input type="text" id="rcn_final" class="form-control" value="RCN" readonly>
+                            </div>
+                            <div class="col-md-1">
+                                <label for="num_rcn_letras" class="form-label">NO DE DOC:</label>
+                                <input type="text" id="num_rcn_letras" class="form-control" value="{{ $num_rcn_letras }}" readonly>
+                            </div>
+                            <div class="col-md-1">
+                                <label for="flete_select" class="form-label">¿Hay flete?</label>
+                                <select id="flete_select" class="form-control" onchange="toggleFleteInput()">
+                                    <option value="0">No</option>
+                                    <option value="1">Sí</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1" id="flete_input_div" style="display: none;">
+                                <label for="flete_input" class="form-label">Flete:</label>
+                                <input type="number" id="flete_input" class="form-control" oninput="distributeFreight()" step="0.01" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ route('orders') }}" class="btn btn-secondary me-2">Volver a Órdenes</a>
+                                <a href="#" class="btn btn-warning">Recepcionar</a>
+                            </div>
                         </div>
-                        <div class="col-md-1">
-                            <label for="tipo_doc" class="form-label">Tipo Doc:</label>
-                            <input type="text" id="tipo_doc" class="form-control" value="{{ $order->CNTDOCID }}" readonly>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="num_doc" class="form-label">No. de Doc:</label>
-                            <input type="text" id="num_doc" class="form-control" value="{{ $order->ACMVOIDOC }}" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="nombre_proveedor" class="form-label">Nombre del Proveedor:</label>
-                            <input type="text" id="nombre_proveedor" class="form-control" value="{{ $order->provider->CNCDIRNOM }}" readonly>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="referencia" class="form-label">Referencia:</label>
-                            <select id="referencia" class="form-control">
-                                <option value="1">FACTURA</option>
-                                <option value="2">REMISION</option>
-                                <option value="3">MISELANEO</option>
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="almacen" class="form-label">Almacén:</label>
-                            <input type="text" id="almacen" class="form-control" value="{{ $order->ACMVOIALID }}" readonly>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="ACMROIREF" class="form-label">Referencia:</label>
-                            <input type="text" id="ACMROIREF" class="form-control">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="fecha" class="form-label">Fecha Recepcion:</label>
-                            <input type="date" id="fecha" class="form-control" value="{{ $currentDate }}" readonly>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="rcn_final" class="form-label">DOC:</label>
-                            <input type="text" id="rcn_final" class="form-control" value="RCN" readonly>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="num_rcn_letras" class="form-label">NO DE DOC:</label>
-                            <input type="text" id="num_rcn_letras" class="form-control" value="{{ $num_rcn_letras }}" readonly>
-                        </div>
-                        <div class="col-md-1">
-                            <label for="flete_select" class="form-label">¿Hay flete?</label>
-                            <select id="flete_select" class="form-control" onchange="toggleFleteInput()">
-                                <option value="0">No</option>
-                                <option value="1">Sí</option>
-                            </select>
-                        </div>
-                        <div class="col-md-1" id="flete_input_div" style="display: none;">
-                            <label for="flete_input" class="form-label">Flete:</label>
-                            <input type="number" id="flete_input" class="form-control" oninput="distributeFreight()" step="0.01" min="0">
-                        </div>
-                        <div class="col-md-3">
-                            <a href="{{ route('orders') }}" class="btn btn-secondary me-2">Volver a Órdenes</a>
-                            <a href="#" class="btn btn-warning">Recepcionar</a>
-                        </div>
-                    </div>
-                    <br>
+                        <br>
                     </div>
                     <br>
                     <div class="table-responsive">
@@ -124,9 +124,6 @@
                                                     <th class="col-md-1">Cantidad <br> Recibida</th>
                                                     <th class="col-md-0">Precio Unitario</th>
                                                     <th class="col-md-0">IVA</th>
-                                                    <th class="col-md-1">Subtotal</th>
-                                                    <th class="col-md-1">Flete</th>
-                                                    <th class="col-md-1">Porcentaje <br> de Flete</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="receptionTableBody">
@@ -145,29 +142,9 @@
                                                         <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" min="0" max="{{ number_format($reception->ACMVOINPO, 2) }}" step="0.01" oninput="limitPrecio(this)">
                                                     </td>
                                                     <td>{{ number_format($reception->ACMVOIIVA, 2) }}</td>
-                                                    <td class="subtotal"></td>
-                                                    <td class="flete"></td>
-                                                    <td class="porcentaje-flete"></td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <th colspan="10" class="text-end">Subtotal Total:</th>
-                                                    <th id="totalSubtotal" class="text-end">0.00</th>
-                                                    <th></th>
-                                                </tr>
-                                                <tr>
-                                                    <th colspan="10" class="text-end">Total Flete:</th>
-                                                    <th id="totalFlete" class="text-end">0.00</th>
-                                                    <th></th>
-                                                </tr>
-                                                <tr>
-                                                    <th colspan="10" class="text-end">Porcentaje Total de Flete:</th>
-                                                    <th id="totalPorcentajeFlete" class="text-end">0.00%</th>
-                                                    <th></th>
-                                                </tr>
-                                            </tfoot>
                                         </table>
                                         <br>
                                         <button id="saveButton" class="btn btn-primary" onclick="saveData()">Guardar</button>
@@ -188,7 +165,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/reception.js') }}"></script>
-
 </body>
 
 </html>
