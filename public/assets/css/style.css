@@ -256,7 +256,12 @@
 .acomodo {
     height: 695px;
 }
-
+.list-group-item {
+    cursor: pointer;
+}
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
 .center {
     text-align: center;
 }

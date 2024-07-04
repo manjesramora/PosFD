@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/sb-admin-2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
+
 <body id="page-top">
     <div id="wrapper">
         @include('slidebar')
@@ -22,6 +24,8 @@
                 @include('navbar')
                 <div class="container-fluid">
                     <h1 class="mt-5" style="text-align: center;">Detalles de Recepción</h1>
+                    <br>
+                    <div class="row g-3 align-items-end">
                     <br>
                     <div class="row g-3 align-items-end">
                         <div class="col-md-2">
@@ -101,6 +105,8 @@
                         </div>
                     </div>
                     <br>
+                    </div>
+                    <br>
                     <div class="table-responsive">
                         <div class="container-fluid">
                             <div class="card shadow mb-4">
@@ -125,26 +131,43 @@
                                             </thead>
                                             <tbody id="receptionTableBody">
                                                 @foreach ($receptions as $reception)
-                                                    <tr>
-                                                        <td>{{ number_format($reception->ACMVOILIN) }}</td>
-                                                        <td>{{ $reception->ACMVOIPRID }}</td>
-                                                        <td>{{ $reception->ACMVOIPRDS }}</td>
-                                                        <td>{{ $reception->ACMVOINPAR }}</td>
-                                                        <td>{{ $reception->ACMVOIUMT }}</td>
-                                                        <td>{{ number_format($reception->ACMVOIQTO, 2) }}</td>
-                                                        <td>
-                                                            <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" min="0" max="{{ $reception->ACMVOIQTO }}" oninput="limitCantidad(this)">
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" min="0" max="{{ number_format($reception->ACMVOINPO, 2) }}" step="0.01" oninput="limitPrecio(this)">
-                                                        </td>
-                                                        <td>{{ number_format($reception->ACMVOIIVA, 2) }}</td>
-                                                        <td class="subtotal"></td>
-                                                        <td class="flete"></td>
-                                                        <td class="porcentaje-flete"></td>
-                                                    </tr>
+                                                <tr>
+                                                    <td>{{ number_format($reception->ACMVOILIN) }}</td>
+                                                    <td>{{ $reception->ACMVOIPRID }}</td>
+                                                    <td>{{ $reception->ACMVOIPRDS }}</td>
+                                                    <td>{{ $reception->ACMVOINPAR }}</td>
+                                                    <td>{{ $reception->ACMVOIUMT }}</td>
+                                                    <td>{{ number_format($reception->ACMVOIQTO, 2) }}</td>
+                                                    <td>
+                                                        <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" min="0" max="{{ $reception->ACMVOIQTO }}" oninput="limitCantidad(this)">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" min="0" max="{{ number_format($reception->ACMVOINPO, 2) }}" step="0.01" oninput="limitPrecio(this)">
+                                                    </td>
+                                                    <td>{{ number_format($reception->ACMVOIIVA, 2) }}</td>
+                                                    <td class="subtotal"></td>
+                                                    <td class="flete"></td>
+                                                    <td class="porcentaje-flete"></td>
+                                                </tr>
                                                 @endforeach
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="10" class="text-end">Subtotal Total:</th>
+                                                    <th id="totalSubtotal" class="text-end">0.00</th>
+                                                    <th></th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="10" class="text-end">Total Flete:</th>
+                                                    <th id="totalFlete" class="text-end">0.00</th>
+                                                    <th></th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="10" class="text-end">Porcentaje Total de Flete:</th>
+                                                    <th id="totalPorcentajeFlete" class="text-end">0.00%</th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                         <br>
                                         <button id="saveButton" class="btn btn-primary" onclick="saveData()">Guardar</button>
@@ -157,167 +180,15 @@
             </div>
         </div>
     </div>
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="assets/vendor/chart.js/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
-    <script>
-       function toggleFleteInput() {
-    var selectBox = document.getElementById("flete_select");
-    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-    var fleteInputDiv = document.getElementById("flete_input_div");
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/reception.js') }}"></script>
 
-    if (selectedValue === "1") {
-        fleteInputDiv.style.display = "block";
-    } else {
-        fleteInputDiv.style.display = "none";
-        document.getElementById("flete_input").value = "";
-        distributeFreight();
-    }
-}
-
-// Autocompletado para el campo Número
-$(document).on('click', '#numeroList li', function() {
-    let id = $(this).data('id');
-    let name = $(this).data('name');
-    $('#numero').val(id);
-    $('#fletero').val(name);
-    $('#numeroList').hide();
-});
-
-$('#clearNumero').on('click', function() {
-    $('#numero').val('');
-    $('#fletero').val('');
-    $('#numeroList').hide();
-});
-
-// Autocompletado para el campo Fletero
-$('#fletero').on('input', function() {
-    let query = $(this).val();
-
-    if (query.length >= 3) {
-        $.ajax({
-            url: "/providers/autocomplete",
-            type: "GET",
-            data: {
-                query: query,
-                field: 'CNCDIRNOM'
-            },
-            success: function(data) {
-                let dropdown = $('#fleteroList');
-                dropdown.empty().show();
-
-                data.forEach(item => {
-                    dropdown.append(`<li class="list-group-item" data-id="${item.CNCDIRID}" data-name="${item.CNCDIRNOM}">${item.CNCDIRID} - ${item.CNCDIRNOM}</li>`);
-                });
-            }
-        });
-    } else {
-        $('#fleteroList').hide();
-    }
-});
-
-$(document).on('click', '#fleteroList li', function() {
-    let id = $(this).data('id');
-    let name = $(this).data('name');
-    $('#fletero').val(name);
-    $('#numero').val(id);
-    $('#fleteroList').hide();
-});
-
-$('#clearFletero').on('click', function() {
-    $('#fletero').val('');
-    $('#numero').val('');
-    $('#fleteroList').hide();
-});
-
-
-        function toggleFleteInput() {
-            const fleteSelect = document.getElementById('flete_select');
-            const fleteInputDiv = document.getElementById('flete_input_div');
-            if (fleteSelect.value == '1') {
-                fleteInputDiv.style.display = 'block';
-            } else {
-                fleteInputDiv.style.display = 'none';
-                distributeFreight();
-            }
-        }
-
-        function distributeFreight() {
-            const fleteInput = document.getElementById('flete_input').value;
-            const rows = document.querySelectorAll('#receptionTableBody tr');
-            let totalSubtotal = 0;
-
-            rows.forEach(row => {
-                const subtotalCell = row.querySelector('.subtotal');
-                const cantidadRecibida = parseFloat(row.querySelector('.cantidad-recibida').value) || 0;
-                const precioUnitario = parseFloat(row.querySelector('.precio-unitario').value) || 0;
-                const subtotal = cantidadRecibida * precioUnitario;
-                subtotalCell.textContent = subtotal.toFixed(2);
-                totalSubtotal += subtotal;
-            });
-
-            rows.forEach(row => {
-                const subtotalCell = row.querySelector('.subtotal').textContent;
-                const subtotal = parseFloat(subtotalCell);
-                const porcentajeFlete = totalSubtotal > 0 ? (subtotal / totalSubtotal) * 100 : 0;
-                const flete = (fleteInput * porcentajeFlete / 100).toFixed(2);
-                row.querySelector('.flete').textContent = flete;
-                row.querySelector('.porcentaje-flete').textContent = porcentajeFlete.toFixed(2) + '%';
-            });
-        }
-
-        function limitCantidad(input) {
-            const maxCantidad = parseFloat(input.max);
-            if (parseFloat(input.value) > maxCantidad) {
-                input.value = maxCantidad;
-            }
-        }
-
-        function limitPrecio(input) {
-            const maxPrecio = parseFloat(input.max);
-            if (parseFloat(input.value) > maxPrecio) {
-                input.value = maxPrecio;
-            }
-        }
-
-        function saveData() {
-            const data = {
-                numero: $('#numero').val(),
-                fletero: $('#fletero').val(),
-                tipo_doc: $('#tipo_doc').val(),
-                num_doc: $('#num_doc').val(),
-                nombre_proveedor: $('#nombre_proveedor').val(),
-                referencia: $('#referencia').val(),
-                almacen: $('#almacen').val(),
-                ACMROIREF: $('#ACMROIREF').val(),
-                fecha: $('#fecha').val(),
-                rcn_final: $('#rcn_final').val(),
-                num_rcn_letras: $('#num_rcn_letras').val(),
-                flete: $('#flete_input').val(),
-                items: []
-            };
-
-            $('#receptionTableBody tr').each(function() {
-                const row = $(this);
-                data.items.push({
-                    cantidad_recibida: row.find('.cantidad-recibida').val(),
-                    precio_unitario: row.find('.precio-unitario').val()
-                });
-            });
-
-            $.ajax({
-                url: '/save-data',
-                type: 'POST',
-                data: data,
-                success: function(response) {
-                    alert('Datos guardados exitosamente');
-                },
-                error: function(xhr) {
-                    alert('Hubo un error al guardar los datos');
-                }
-            });
-        }
-    </script>
 </body>
-</html>
 
+</html>
