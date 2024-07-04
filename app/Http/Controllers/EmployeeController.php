@@ -26,38 +26,43 @@ class EmployeeController extends Controller
             return $next($request);
         });
     }
-    // Método para mostrar la lista de empleados
+
     public function employees(Request $request)
     {
         $query = Employee::query();
-    
+
         // Filtro por búsqueda de empleado
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('middle_name', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('middle_name', 'like', "%{$search}%");
             });
         }
-    
+
         // Filtro por estado (activo/inactivo)
         if ($request->filled('status')) {
             $status = $request->input('status');
             $query->where('status', $status);
         }
-    
+
         // Ordenamiento
         $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
         $sortOrder = $request->input('sort_order', 'asc');
-        $query->orderBy($sortBy, $sortOrder);
-    
+
+        if ($sortBy == 'first_name') {
+            $query->orderBy('first_name', $sortOrder)
+                ->orderBy('last_name', $sortOrder)
+                ->orderBy('middle_name', $sortOrder);
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
         $employees = $query->paginate(10)->appends($request->all()); // Asegúrate de pasar todos los parámetros
-    
+
         return view('employees', compact('employees'));
     }
-    
-    
 
     // Método para mostrar los detalles de un empleado
     public function show($id)
@@ -78,7 +83,7 @@ class EmployeeController extends Controller
             'birth' => 'required',
             'status' => 'required|in:0,1',
         ]);
-    
+
         // Crea un nuevo objeto Employee con los datos del formulario
         $employee = new Employee();
         $employee->first_name = strtoupper($request->first_name);
@@ -94,24 +99,24 @@ class EmployeeController extends Controller
         $employee->phone = $request->phone;
         $employee->phone2 = $request->phone2;
         $employee->status = $request->status;
-    
+
         // Formatea la fecha al formato deseado (DD-MM-YYYY)
         $formattedBirth = date('d-m-Y', strtotime($request->birth));
         $employee->birth = $formattedBirth;
-    
+
         // Guarda el empleado en la base de datos
         $employee->save();
-    
+
         // Crear usuario asociado con el mismo estado del empleado
         $user = new User();
         $user->employee_id = $employee->id;
         $user->status = $employee->status;
         $user->save();
-    
+
         // Redirecciona a una ruta adecuada después de guardar el empleado
         return redirect()->route('employees')->with('success', 'Empleado y usuario creados correctamente.');
     }
-    
+
 
     // Método para actualizar un empleado
     public function update(Request $request, $id)
@@ -133,17 +138,17 @@ class EmployeeController extends Controller
             'birth' => 'nullable|date',
             'status' => 'required|in:0,1'
         ]);
-    
+
         // Encontrar el empleado por su ID
         $employee = Employee::findOrFail($id);
-    
+
         // Formatear la fecha al formato d-m-Y
         if ($request->has('birth')) {
             $formattedBirth = date('d-m-Y', strtotime($request->birth));
         } else {
             $formattedBirth = $employee->birth; // Mantener la fecha actual si no se envió una nueva
         }
-    
+
         // Actualizar los datos del empleado
         $employee->update([
             'first_name' => strtoupper($request->first_name),
@@ -161,16 +166,15 @@ class EmployeeController extends Controller
             'birth' => $formattedBirth,
             'status' => $request->status,
         ]);
-    
+
         // Actualizar el estado del usuario asociado
         $user = User::where('employee_id', $employee->id)->first();
         if ($user) {
             $user->status = $employee->status;
             $user->save();
         }
-    
+
         // Redirigir con un mensaje de éxito
         return redirect()->route('employees')->with('success', 'Empleado y usuario actualizados correctamente.');
     }
-    
 }

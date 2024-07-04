@@ -71,7 +71,7 @@
                                 <table class="table table-bordered text-center table-striped" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                        <th class="col-1 sortable">
+                                            <th class="col-1 sortable">
                                                 <a href="{{ route('users', ['sort_by' => 'username', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                     USUARIOS
                                                     @if(request('sort_by') == 'username')

@@ -24,8 +24,8 @@
                 @include('navbar')
                 <div class="container-fluid">
                     <h1 class="mt-5" style="text-align: center;">EMPLEADOS</h1>
-<!-- Filtros y Botón para agregar empleado -->
-<div class="container">
+                    <!-- Filtros y Botón para agregar empleado -->
+                    <div class="container">
                         <form id="filtersForm" method="GET" action="{{ route('employees') }}">
                             <div class="row align-items-center justify-content-center mb-4">
                                 <div class="col-md-2 mb-3">
@@ -60,21 +60,204 @@
                                     <table class="table table-bordered text-center table-striped" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th class="col-1 text-center align-middle sortable">NOMBRE(S)</th>
-                                                <th class="col-1 text-center align-middle sortable">A.PATERNO</th>
-                                                <th class="col-1 text-center align-middle sortable">A.MATERNO</th>
-                                                <th class="col-1 text-center align-middle sortable">CURP</th>
-                                                <th class="col-1 text-center align-middle sortable">RFC</th>
-                                                <th class="col-1 text-center align-middle sortable">COLONIA</th>
-                                                <th class="col-1 text-center align-middle sortable">CALLE</th>
-                                                <th class="col-1 text-center align-middle sortable">NUM EXT</th>
-                                                <th class="col-1 text-center align-middle sortable">NUM INT</th>
-                                                <th class="col-1 text-center align-middle sortable">CP</th>
-                                                <th class="col-1 text-center align-middle sortable">TELEFONO</th>
-                                                <th class="col-1 text-center align-middle sortable">TELEFONO 2</th>
-                                                <th class="col-1 text-center align-middle sortable">FECHA NACIMIENTO</th>
-                                                <th class="col-1 text-center align-middle sortable">ESTADO</th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'first_name', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        NOMBRE(S)
+                                                        @if(request('sort_by') == 'first_name')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'last_name', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        A.PATERNO
+                                                        @if(request('sort_by') == 'last_name')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'middle_name', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        A.MATERNO
+                                                        @if(request('sort_by') == 'middle_name')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'curp', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        CURP
+                                                        @if(request('sort_by') == 'curp')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'rfc', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        RFC
+                                                        @if(request('sort_by') == 'rfc')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'colonia', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        COLONIA
+                                                        @if(request('sort_by') == 'colonia')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'calle', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        CALLE
+                                                        @if(request('sort_by') == 'calle')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'num_ext', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        NUM EXT
+                                                        @if(request('sort_by') == 'num_ext')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'num_int', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        NUM INT
+                                                        @if(request('sort_by') == 'num_int')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'cp', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        CP
+                                                        @if(request('sort_by') == 'cp')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'telefono', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        TELEFONO
+                                                        @if(request('sort_by') == 'telefono')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'telefono2', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        TELEFONO 2
+                                                        @if(request('sort_by') == 'telefono2')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'fecha_nacimiento', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        FECHA NACIMIENTO
+                                                        @if(request('sort_by') == 'fecha_nacimiento')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1 text-center align-middle sortable">
+                                                    <a href="{{ route('employees', ['sort_by' => 'status', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        ESTADO
+                                                        @if(request('sort_by') == 'status')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
                                                 <th class="col-1 text-center align-middle sticky-col">ACCIONES</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -116,8 +299,8 @@
 
                                     </div>
                                     <div class="d-flex justify-content-center mt-3">
-                                    {{ $employees->appends(request()->all())->links() }}
-                                </div>
+                                        {{ $employees->appends(request()->all())->links() }}
+                                    </div>
 
                                 </div>
                             </div>
