@@ -188,3 +188,7 @@ function filterEmployees() {
         }
     }
 }
+
+function limpiarCampos() {
+    $('#searchEmployee').val(''); // Limpiar el campo de búsqueda
+}
