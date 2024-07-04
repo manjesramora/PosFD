@@ -127,7 +127,73 @@
                                                     </button>
                                                 </div>
                                                 <!-- Modal de Edición de Usuario -->
-                                                <!-- ... (Contenido del Modal) ... -->
+                                                <div class="modal fade text-left" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="editUserModalLabel{{ $user->id }}">Editar Usuario</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                            <form id="editUserForm{{ $user->id }}" method="POST" action="{{ route('users.update', $user->id) }}">
+    @csrf
+    @method('PUT')
+
+    <!-- Campos del formulario -->
+    <div class="mb-3">
+        <label for="username" class="form-label">Usuario</label>
+        <input type="text" class="form-control uper" id="username" name="username" value="{{ $user->username }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="employee_name" class="form-label">Empleado</label>
+        <input type="text" class="form-control" id="employee_name" value="{{ $user->employee->first_name }} {{ $user->employee->last_name }} {{ $user->employee->middle_name }}" readonly>
+        <input type="hidden" name="employee_id" value="{{ $user->employee_id }}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Roles</label>
+        <div class="row">
+            @foreach($roles->chunk(4) as $chunk)
+            <div class="col-md-3">
+                @foreach($chunk as $role)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ $role->id }}" id="role{{ $role->id }}" name="roles[]" {{ $user->roles->contains($role->id) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="role{{ $role->id }}">
+                        {{ $role->name }}
+                    </label>
+                </div>
+                @endforeach
+            </div>
+            @endforeach
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Centro de Costo</label>
+        <div class="row">
+            @foreach($centers->chunk(4) as $chunk)
+            <div class="col-md-3">
+                @foreach($chunk as $center)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{ $center->id }}" id="center{{ $center->id }}" name="centers[]" {{ $user->costCenters->contains($center->id) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="center{{ $center->id }}">
+                        {{ $center->cost_center_id }}
+                    </label>
+                </div>
+                @endforeach
+            </div>
+            @endforeach
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </div>
+</form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Fin Modal de Edición de Usuario -->
                                             </td>
                                         </tr>
                                         @endforeach

@@ -135,48 +135,26 @@ class UserController extends Controller
         return redirect()->route('users')->with('success', 'Usuario creado correctamente.');
     }
 
-
     public function update(Request $request, $id)
-    {
-        $validatedData = $request->validate([
-            'username' => 'required|string|max:255',
-            'employee_id' => 'required|exists:employees,id',
-            'roles' => 'nullable|array',
-            'roles.*' => 'exists:roles,id',
-            'centers' => 'nullable|array', // Agregando validación para centros
-            'centers.*' => 'exists:store_cost_centers,id', // Validando cada centro de costo
-            'status' => 'required|boolean',
-            'password' => 'nullable|min:6',
-        ]);
+{
+    $user = User::findOrFail($id);
 
-        $user = User::findOrFail($id);
+    $user->username = $request->input('username');
+    $user->employee_id = $request->input('employee_id');
 
-        $user->update([
-            'username' => $request->username,
-            'employee_id' => $request->employee_id,
-            'status' => $request->status,
-        ]);
+    // Actualizar roles
+    $roles = $request->input('roles', []);
+    $user->roles()->sync($roles);
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
+    // Actualizar centros de costo
+    $centers = $request->input('centers', []);
+    $user->costCenters()->sync($centers);
 
-        $user->save();
+    $user->save();
 
-        if ($request->has('roles')) {
-            $user->roles()->sync($request->roles);
-        } else {
-            $user->roles()->detach();
-        }
-
-        if ($request->has('centers')) {
-            $user->costCenters()->sync($request->centers);
-        } else {
-            $user->costCenters()->detach();
-        }
-
-        return redirect()->route('users')->with('success', 'Usuario actualizado correctamente.');
-    }
+    return redirect()->route('users')->with('success', 'Usuario actualizado exitosamente');
+}
+      
 
     public function resetPassword(User $user)
     {
