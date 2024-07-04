@@ -27,41 +27,41 @@
                     <br>
                     <!-- Formulario de filtro -->
                     <form method="GET" action="{{ route('orders') }}" class="mb-3" id="filterForm">
-    <div class="row g-3 align-items-end">
-        <div class="col-md-2">
-            <label for="ACMROIDOC" class="form-label">NO DE DOC:</label>
-            <input type="text" name="ACMROIDOC" id="ACMROIDOC" class="form-control" value="{{ request('ACMROIDOC') }}" inputmode="numeric">
-        </div>
-        <div class="col-md-2">
-            <label for="CNCDIRID" class="form-label">Proveedor ID:</label>
-            <input type="text" name="CNCDIRID" id="CNCDIRID" class="form-control" value="{{ request('CNCDIRID') }}" inputmode="numeric">
-            <div id="idDropdown" class="dropdown-menu"></div>
-        </div>
-        <div class="col-md-3">
-            <label for="CNCDIRNOM" class="form-label">Proveedor Nombre:</label>
-            <div class="input-group">
-                <input type="text" name="CNCDIRNOM" id="CNCDIRNOM" class="form-control" value="{{ request('CNCDIRNOM') }}">
-                <div id="nameDropdown" class="dropdown-menu"></div>
-                <button class="btn btn-danger" type="button" onclick="limpiarCampos()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <label for="start_date" class="form-label">Fecha de inicio:</label>
-            <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
-        </div>
-        <div class="col-md-2">
-            <label for="end_date" class="form-label">Fecha de fin:</label>
-            <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
-        </div>
-        <div class="col-md-1">
-            <button type="submit" class="btn btn-primary w-100" id="filterButton">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
-    </div>
-</form>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-2">
+                                <label for="ACMROIDOC" class="form-label">NO DE DOC:</label>
+                                <input type="text" name="ACMROIDOC" id="ACMROIDOC" class="form-control" value="{{ request('ACMROIDOC') }}" inputmode="numeric">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="CNCDIRID" class="form-label">Proveedor ID:</label>
+                                <input type="text" name="CNCDIRID" id="CNCDIRID" class="form-control" value="{{ request('CNCDIRID') }}" inputmode="numeric">
+                                <div id="idDropdown" class="dropdown-menu"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="CNCDIRNOM" class="form-label">Proveedor Nombre:</label>
+                                <div class="input-group">
+                                    <input type="text" name="CNCDIRNOM" id="CNCDIRNOM" class="form-control" value="{{ request('CNCDIRNOM') }}">
+                                    <div id="nameDropdown" class="dropdown-menu"></div>
+                                    <button class="btn btn-danger" type="button" onclick="limpiarCampos()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="start_date" class="form-label">Fecha de inicio:</label>
+                                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="end_date" class="form-label">Fecha de fin:</label>
+                                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-primary w-100" id="filterButton">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
 
                     <!-- Tabla de órdenes -->
                     <div class="table-responsive">
@@ -70,47 +70,47 @@
                                 <div class="card-body">
                                     <div class="table-responsive small-font">
                                         <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-    <tr>
-        <th class="col-md-1">
-            T. DOC
-            <button class="btn btn-link p-0" onclick="sortTable('CNTDOCID')">
-                <i class="fas fa-sort"></i>
-            </button>
-        </th>
-        <th class="col-md-1">
-            NO. DOC
-            <button class="btn btn-link p-0" onclick="sortTable('ACMVOIDOC')">
-                <i class="fas fa-sort"></i>
-            </button>
-        </th>
-        <th class="col-md-1">
-            NO. PROV
-            <button class="btn btn-link p-0" onclick="sortTable('CNCDIRID')">
-                <i class="fas fa-sort"></i>
-            </button>
-        </th>
-        <th class="col-md-2">
-            PROVEDOR
-            <button class="btn btn-link p-0" onclick="sortTable('CNCDIRNOM')">
-                <i class="fas fa-sort"></i>
-            </button>
-        </th>
-        <th class="col-md-2">
-            FECHA DE ORDEN
-            <button class="btn btn-link p-0" onclick="sortTable('ACMVOIFDOC')">
-                <i class="fas fa-sort"></i>
-            </button>
-        </th>
-        <th class="col-md-2">
-            ALMACEN
-            <button class="btn btn-link p-0" onclick="sortTable('ACMVOIALID')">
-                <i class="fas fa-sort"></i>
-            </button>
-        </th>
-        <th class="col-md-1">Acciones</th>
-    </tr>
-</thead>
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-md-1">
+                                                        T. DOC
+                                                        <button class="btn btn-link p-0" onclick="sortTable('CNTDOCID')">
+                                                            <i class="fas fa-sort"></i>
+                                                        </button>
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        NO. DOC
+                                                        <button class="btn btn-link p-0" onclick="sortTable('ACMVOIDOC')">
+                                                            <i class="fas fa-sort"></i>
+                                                        </button>
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        NO. PROV
+                                                        <button class="btn btn-link p-0" onclick="sortTable('CNCDIRID')">
+                                                            <i class="fas fa-sort"></i>
+                                                        </button>
+                                                    </th>
+                                                    <th class="col-md-2">
+                                                        PROVEDOR
+                                                        <button class="btn btn-link p-0" onclick="sortTable('CNCDIRNOM')">
+                                                            <i class="fas fa-sort"></i>
+                                                        </button>
+                                                    </th>
+                                                    <th class="col-md-2">
+                                                        FECHA DE ORDEN
+                                                        <button class="btn btn-link p-0" onclick="sortTable('ACMVOIFDOC')">
+                                                            <i class="fas fa-sort"></i>
+                                                        </button>
+                                                    </th>
+                                                    <th class="col-md-2">
+                                                        ALMACEN
+                                                        <button class="btn btn-link p-0" onclick="sortTable('ACMVOIALID')">
+                                                            <i class="fas fa-sort"></i>
+                                                        </button>
+                                                    </th>
+                                                    <th class="col-md-1">Acciones</th>
+                                                </tr>
+                                            </thead>
 
                                             <tbody>
                                                 @foreach ($orders as $order)
@@ -136,8 +136,8 @@
 
                                         </table>
                                         <div class="d-flex justify-content-center">
-    {{ $orders->appends(request()->except('page'))->links() }}
-</div>
+                                            {{ $orders->appends(request()->except('page'))->links() }}
+                                        </div>
 
                                     </div>
                                 </div>
@@ -160,31 +160,31 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/order.js') }}"></script>
     <script>
-    function limpiarCampos() {
-        document.getElementById('ACMROIDOC').value = '';
-        document.getElementById('CNCDIRID').value = '';
-        document.getElementById('CNCDIRNOM').value = '';
-        document.getElementById('start_date').value = '';
-        document.getElementById('end_date').value = '';
-    }
-</script>
-<script>
-    function sortTable(column) {
-        let currentUrl = new URL(window.location.href);
-        let currentSortColumn = currentUrl.searchParams.get('sortColumn');
-        let currentSortDirection = currentUrl.searchParams.get('sortDirection');
-
-        let newSortDirection = 'asc';
-        if (currentSortColumn === column && currentSortDirection === 'asc') {
-            newSortDirection = 'desc';
+        function limpiarCampos() {
+            document.getElementById('ACMROIDOC').value = '';
+            document.getElementById('CNCDIRID').value = '';
+            document.getElementById('CNCDIRNOM').value = '';
+            document.getElementById('start_date').value = '';
+            document.getElementById('end_date').value = '';
         }
+    </script>
+    <script>
+        function sortTable(column) {
+            let currentUrl = new URL(window.location.href);
+            let currentSortColumn = currentUrl.searchParams.get('sortColumn');
+            let currentSortDirection = currentUrl.searchParams.get('sortDirection');
 
-        currentUrl.searchParams.set('sortColumn', column);
-        currentUrl.searchParams.set('sortDirection', newSortDirection);
+            let newSortDirection = 'asc';
+            if (currentSortColumn === column && currentSortDirection === 'asc') {
+                newSortDirection = 'desc';
+            }
 
-        window.location.href = currentUrl.toString();
-    }
-</script>
+            currentUrl.searchParams.set('sortColumn', column);
+            currentUrl.searchParams.set('sortDirection', newSortDirection);
+
+            window.location.href = currentUrl.toString();
+        }
+    </script>
 
 </body>
 

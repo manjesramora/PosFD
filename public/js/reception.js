@@ -34,7 +34,7 @@ if (query.length >= 3) {
         }
     });
 } else {
-    $('#numeroList').hide();
+  
 }
 });
 $(document).on('click', '#numeroList li', function() {
@@ -48,7 +48,7 @@ $(document).on('click', '#numeroList li', function() {
 $('#clearNumero').on('click', function() {
     $('#numero').val('');
     $('#fletero').val('');
-    $('#numeroList').hide();
+   
 });
 
 // Autocompletado para el campo Fletero

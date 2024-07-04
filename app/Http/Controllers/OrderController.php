@@ -27,51 +27,44 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $query = Order::query();
-
-        // Excluir registros que ya existen en la tabla acmroi
-        $query->whereDoesntHave('receptions1');
-
-        // Excluir registros más antiguos que 6 meses
-        $sixMonthsAgo = now()->subMonths(6)->startOfDay();
-        $query->where('ACMVOIFDOC', '>=', $sixMonthsAgo);
-
+    
         // Aplicar filtros
         if ($request->filled('ACMROIDOC')) {
             $query->where('ACMROIDOC', $request->input('ACMROIDOC'));
         }
-
+    
         if ($request->filled('CNCDIRID')) {
             $query->where('CNCDIRID', $request->input('CNCDIRID'));
         }
-
+    
         if ($request->filled('CNCDIRNOM')) {
             $query->whereHas('provider', function ($q) use ($request) {
                 $q->where('CNCDIRNOM', 'like', '%' . $request->input('CNCDIRNOM') . '%');
             });
         }
-
+    
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('ACMVOIFDOC', [$request->input('start_date'), $request->input('end_date')]);
         }
-
+    
         // Aplicar ordenamiento solo para columnas válidas
         $sortableColumns = ['CNTDOCID', 'ACMVOIDOC', 'CNCDIRID', 'ACMVOIFDOC', 'ACMVOIALID'];
         $sortColumn = $request->input('sortColumn', 'CNTDOCID');
         $sortDirection = $request->input('sortDirection', 'asc');
-
+    
         if (in_array($sortColumn, $sortableColumns)) {
             $query->orderBy($sortColumn, $sortDirection);
         } else {
             $query->orderBy('CNTDOCID', 'asc');  // Valor por defecto en caso de columnas inválidas
         }
-
+    
         // Obtener las órdenes paginadas
         $orders = $query->paginate(10);
-
+    
         if ($request->ajax()) {
             return view('orders_table', compact('orders', 'sortColumn', 'sortDirection'))->render();
         }
-
+    
         return view('orders', compact('orders', 'sortColumn', 'sortDirection'));
     }
     
