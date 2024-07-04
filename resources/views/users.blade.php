@@ -71,21 +71,77 @@
                                 <table class="table table-bordered text-center table-striped" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th class="col-1 sortable">
-                                                <a href="{{ route('users', ['sort_by' => 'username', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">USUARIOS</a>
+                                        <th class="col-1 sortable">
+                                                <a href="{{ route('users', ['sort_by' => 'username', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    USUARIOS
+                                                    @if(request('sort_by') == 'username')
+                                                    @if(request('sort_order') == 'asc')
+                                                    <i class="fas fa-sort-up"></i>
+                                                    @else
+                                                    <i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                    @else
+                                                    <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                </a>
                                             </th>
                                             <th class="col-2 sortable">
-                                                <a href="{{ route('users', ['sort_by' => 'employee_name', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">NOMBRE EMPLEADO</a>
+                                                <a href="{{ route('users', ['sort_by' => 'employee_name', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    NOMBRE EMPLEADO
+                                                    @if(request('sort_by') == 'employee_name')
+                                                    @if(request('sort_order') == 'asc')
+                                                    <i class="fas fa-sort-up"></i>
+                                                    @else
+                                                    <i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                    @else
+                                                    <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                </a>
                                             </th>
                                             <th class="col-1 sortable">
-                                                <a href="{{ route('users', ['sort_by' => 'role', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">ROL</a>
+                                                <a href="{{ route('users', ['sort_by' => 'role', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    ROL
+                                                    @if(request('sort_by') == 'role')
+                                                    @if(request('sort_order') == 'asc')
+                                                    <i class="fas fa-sort-up"></i>
+                                                    @else
+                                                    <i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                    @else
+                                                    <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                </a>
                                             </th>
                                             <th class="col-1 sortable">
-                                                <a href="{{ route('users', ['sort_by' => 'status', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">ESTADO</a>
+                                                <a href="{{ route('users', ['sort_by' => 'status', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    ESTADO
+                                                    @if(request('sort_by') == 'status')
+                                                    @if(request('sort_order') == 'asc')
+                                                    <i class="fas fa-sort-up"></i>
+                                                    @else
+                                                    <i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                    @else
+                                                    <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                </a>
                                             </th>
                                             <th class="col-4 sortable">
-                                                <a href="{{ route('users', ['sort_by' => 'cost_center', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">CENTRO DE COSTO</a>
+                                                <a href="{{ route('users', ['sort_by' => 'cost_center', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    CENTRO DE COSTO
+                                                    @if(request('sort_by') == 'cost_center')
+                                                    @if(request('sort_order') == 'asc')
+                                                    <i class="fas fa-sort-up"></i>
+                                                    @else
+                                                    <i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                    @else
+                                                    <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                    @endif
+                                                </a>
                                             </th>
+
                                             <th class="col-1">ACCIONES</th>
                                         </tr>
                                     </thead>
@@ -135,59 +191,59 @@
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
-                                                            <form id="editUserForm{{ $user->id }}" method="POST" action="{{ route('users.update', $user->id) }}">
-    @csrf
-    @method('PUT')
+                                                                <form id="editUserForm{{ $user->id }}" method="POST" action="{{ route('users.update', $user->id) }}">
+                                                                    @csrf
+                                                                    @method('PUT')
 
-    <!-- Campos del formulario -->
-    <div class="mb-3">
-        <label for="username" class="form-label">Usuario</label>
-        <input type="text" class="form-control uper" id="username" name="username" value="{{ $user->username }}" required>
-    </div>
-    <div class="mb-3">
-        <label for="employee_name" class="form-label">Empleado</label>
-        <input type="text" class="form-control" id="employee_name" value="{{ $user->employee->first_name }} {{ $user->employee->last_name }} {{ $user->employee->middle_name }}" readonly>
-        <input type="hidden" name="employee_id" value="{{ $user->employee_id }}">
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Roles</label>
-        <div class="row">
-            @foreach($roles->chunk(4) as $chunk)
-            <div class="col-md-3">
-                @foreach($chunk as $role)
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="{{ $role->id }}" id="role{{ $role->id }}" name="roles[]" {{ $user->roles->contains($role->id) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="role{{ $role->id }}">
-                        {{ $role->name }}
-                    </label>
-                </div>
-                @endforeach
-            </div>
-            @endforeach
-        </div>
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Centro de Costo</label>
-        <div class="row">
-            @foreach($centers->chunk(4) as $chunk)
-            <div class="col-md-3">
-                @foreach($chunk as $center)
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="{{ $center->id }}" id="center{{ $center->id }}" name="centers[]" {{ $user->costCenters->contains($center->id) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="center{{ $center->id }}">
-                        {{ $center->cost_center_id }}
-                    </label>
-                </div>
-                @endforeach
-            </div>
-            @endforeach
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    </div>
-</form>
+                                                                    <!-- Campos del formulario -->
+                                                                    <div class="mb-3">
+                                                                        <label for="username" class="form-label">Usuario</label>
+                                                                        <input type="text" class="form-control uper" id="username" name="username" value="{{ $user->username }}" required>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="employee_name" class="form-label">Empleado</label>
+                                                                        <input type="text" class="form-control" id="employee_name" value="{{ $user->employee->first_name }} {{ $user->employee->last_name }} {{ $user->employee->middle_name }}" readonly>
+                                                                        <input type="hidden" name="employee_id" value="{{ $user->employee_id }}">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Roles</label>
+                                                                        <div class="row">
+                                                                            @foreach($roles->chunk(4) as $chunk)
+                                                                            <div class="col-md-3">
+                                                                                @foreach($chunk as $role)
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox" value="{{ $role->id }}" id="role{{ $role->id }}" name="roles[]" {{ $user->roles->contains($role->id) ? 'checked' : '' }}>
+                                                                                    <label class="form-check-label" for="role{{ $role->id }}">
+                                                                                        {{ $role->name }}
+                                                                                    </label>
+                                                                                </div>
+                                                                                @endforeach
+                                                                            </div>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Centro de Costo</label>
+                                                                        <div class="row">
+                                                                            @foreach($centers->chunk(4) as $chunk)
+                                                                            <div class="col-md-3">
+                                                                                @foreach($chunk as $center)
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox" value="{{ $center->id }}" id="center{{ $center->id }}" name="centers[]" {{ $user->costCenters->contains($center->id) ? 'checked' : '' }}>
+                                                                                    <label class="form-check-label" for="center{{ $center->id }}">
+                                                                                        {{ $center->cost_center_id }}
+                                                                                    </label>
+                                                                                </div>
+                                                                                @endforeach
+                                                                            </div>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                                                    </div>
+                                                                </form>
 
                                                             </div>
                                                         </div>

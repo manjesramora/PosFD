@@ -47,8 +47,8 @@ class UserController extends Controller
             $search = $request->input('search');
             $query->whereHas('employee', function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('middle_name', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('middle_name', 'like', "%{$search}%");
             })->orWhere('username', 'like', "%{$search}%");
         }
     
@@ -64,14 +64,33 @@ class UserController extends Controller
         if ($request->filled('cost_center')) {
             $costCenter = $request->input('cost_center');
             $query->whereHas('costCenters', function ($q) use ($costCenter) {
-                $q->where('cost_center_id', $costCenter);
+                $q->where('center_id', $costCenter);
             });
         }
     
         // Ordenamiento
         $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
         $sortOrder = $request->input('sort_order', 'asc');
-        $query->orderBy($sortBy, $sortOrder);
+    
+        if ($sortBy == 'employee_name') {
+            $query->join('employees', 'users.employee_id', '=', 'employees.id')
+                  ->select('users.*')
+                  ->orderBy('employees.first_name', $sortOrder)
+                  ->orderBy('employees.last_name', $sortOrder)
+                  ->orderBy('employees.middle_name', $sortOrder);
+        } elseif ($sortBy == 'role') {
+            $query->join('users_roles', 'users.id', '=', 'users_roles.user_id')
+                  ->join('roles', 'users_roles.role_id', '=', 'roles.id')
+                  ->select('users.*')
+                  ->orderBy('roles.name', $sortOrder);
+        } elseif ($sortBy == 'cost_center') {
+            $query->join('users_cost_centers', 'users.id', '=', 'users_cost_centers.user_id')
+                  ->join('store_cost_centers', 'users_cost_centers.center_id', '=', 'store_cost_centers.id')
+                  ->select('users.*')
+                  ->orderBy('store_cost_centers.cost_center_id', $sortOrder);
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
     
         $users = $query->paginate(10)->appends($request->all()); // Asegúrate de pasar todos los parámetros
     
@@ -136,25 +155,25 @@ class UserController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $user = User::findOrFail($id);
+    {
+        $user = User::findOrFail($id);
 
-    $user->username = $request->input('username');
-    $user->employee_id = $request->input('employee_id');
+        $user->username = $request->input('username');
+        $user->employee_id = $request->input('employee_id');
 
-    // Actualizar roles
-    $roles = $request->input('roles', []);
-    $user->roles()->sync($roles);
+        // Actualizar roles
+        $roles = $request->input('roles', []);
+        $user->roles()->sync($roles);
 
-    // Actualizar centros de costo
-    $centers = $request->input('centers', []);
-    $user->costCenters()->sync($centers);
+        // Actualizar centros de costo
+        $centers = $request->input('centers', []);
+        $user->costCenters()->sync($centers);
 
-    $user->save();
+        $user->save();
 
-    return redirect()->route('users')->with('success', 'Usuario actualizado exitosamente');
-}
-      
+        return redirect()->route('users')->with('success', 'Usuario actualizado exitosamente');
+    }
+
 
     public function resetPassword(User $user)
     {

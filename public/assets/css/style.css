@@ -419,3 +419,15 @@ body {
     white-space: nowrap;
     cursor: pointer; /* Mostrar el cursor como puntero */
 }
+
+
+.sortable a i {
+    margin-right: -8px; /* Ajustar margen a la derecha del icono */
+    font-size: 0.8em; /* Hacer los iconos más pequeños */
+}
+
+.sortable.both i.fa-sort-down {
+    margin-left: 10x;
+}
+
+
