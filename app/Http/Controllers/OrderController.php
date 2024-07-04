@@ -29,8 +29,8 @@ class OrderController extends Controller
         $query = Order::query();
     
         // Aplicar filtros
-        if ($request->filled('ACMROIDOC')) {
-            $query->where('ACMROIDOC', $request->input('ACMROIDOC'));
+        if ($request->filled('ACMVOIDOC')) {
+            $query->where('ACMVOIDOC', $request->input('ACMVOIDOC'));
         }
     
         if ($request->filled('CNCDIRID')) {
