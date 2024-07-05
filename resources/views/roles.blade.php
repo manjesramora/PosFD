@@ -37,7 +37,14 @@
                             </div>
                             <!-- Filtro buscar nombre -->
                             <div class="col-md-3 mb-3">
-                                <input type="text" class="form-control uper" placeholder="Buscar rol" id="searchRole" onkeyup="filterRoles()" style="margin-top: 32px;">
+                                <form id="searchForm" action="{{ route('roles') }}" method="GET" style="margin-top: 32px;">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control uper" placeholder="Buscar rol" id="searchRole" name="search" value="{{ request('search') }}">
+                                        <button class="btn btn-danger" type="button" onclick="limpiarCampos()">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
 
                         </div>
@@ -54,12 +61,52 @@
                                     <table class="table table-bordered text-center table-striped" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
-                                                <th class="col-1 sortable">Rol</th>
-                                                <th class="col-2 sortable">Descripcion</th>
-                                                <th class="col-3 sortable">Permisos</th>
-                                                <th class="col-1">Actions</th>
+                                                <th class="col-1 sortable">
+                                                    <a href="{{ route('roles', ['sort_by' => 'role_name', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        ROL
+                                                        @if(request('sort_by') == 'role_name')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-2 sortable">
+                                                    <a href="{{ route('roles', ['sort_by' => 'description', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        DESCRIPCION
+                                                        @if(request('sort_by') == 'description')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-3 sortable">
+                                                    <a href="{{ route('roles', ['sort_by' => 'permissions', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                        PERMISOS
+                                                        @if(request('sort_by') == 'permissions')
+                                                        @if(request('sort_order') == 'asc')
+                                                        <i class="fas fa-sort-up"></i>
+                                                        @else
+                                                        <i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                        @else
+                                                        <i class="fas fa-sort-up"></i><i class="fas fa-sort-down"></i>
+                                                        @endif
+                                                    </a>
+                                                </th>
+                                                <th class="col-1">ACCIONES</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
                                             @foreach($roles as $role)
                                             <tr>
