@@ -12,4 +12,10 @@ class StoreCostCenter extends Model
     {
         return $this->hasMany(User::class, 'cost_center_id');
     }
+    // app/Models/User.php
+public function costCenters()
+{
+    return $this->hasMany(StoreCostCenter::class, 'user_id'); // Ajusta 'user_id' según tu estructura de base de datos
+}
+
 }

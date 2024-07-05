@@ -8,6 +8,7 @@ use App\Models\StoreCostCenter;
 use App\Models\Receptions;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; 
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -26,9 +27,28 @@ class OrderController extends Controller
     }
     public function index(Request $request)
     {
+        $user = Auth::user(); // Obtener el usuario autenticado
+        
+        if (!$user) {
+            // Manejo de error si el usuario no está autenticado
+            return redirect()->route('login');
+        }
+    
+        // Obtener los IDs de los centros de costos asociados al usuario
+        $centrosCostosIds = $user->costCenters->pluck('cost_center_id')->toArray();
+    
         $query = Order::query();
     
-        // Aplicar filtros
+        // Filtrar por centros de costos asociados al usuario
+        if (!empty($centrosCostosIds)) {
+            $query->whereIn('ACMVOIALID', $centrosCostosIds);
+        }
+    
+        // Filtrar registros dentro de los últimos 6 meses
+        $sixMonthsAgo = Carbon::now()->subMonths(6);
+        $query->where('ACMVOIFDOC', '>=', $sixMonthsAgo);
+    
+        // Aplicar filtros adicionales
         if ($request->filled('ACMVOIDOC')) {
             $query->where('ACMVOIDOC', $request->input('ACMVOIDOC'));
         }
@@ -49,13 +69,13 @@ class OrderController extends Controller
     
         // Aplicar ordenamiento solo para columnas válidas
         $sortableColumns = ['CNTDOCID', 'ACMVOIDOC', 'CNCDIRID', 'ACMVOIFDOC', 'ACMVOIALID'];
-        $sortColumn = $request->input('sortColumn', 'CNTDOCID');
-        $sortDirection = $request->input('sortDirection', 'asc');
+        $sortColumn = $request->input('sortColumn', 'ACMVOIDOC');
+        $sortDirection = $request->input('sortDirection', 'desc');
     
         if (in_array($sortColumn, $sortableColumns)) {
             $query->orderBy($sortColumn, $sortDirection);
         } else {
-            $query->orderBy('CNTDOCID', 'asc');  // Valor por defecto en caso de columnas inválidas
+            $query->orderBy('ACMVOIDOC', 'desc'); // Valor por defecto en caso de columnas inválidas
         }
     
         // Obtener las órdenes paginadas
@@ -67,10 +87,6 @@ class OrderController extends Controller
     
         return view('orders', compact('orders', 'sortColumn', 'sortDirection'));
     }
-    
-    
-    
-    
     public function autocomplete(Request $request)
 {
     $query = $request->input('query');
