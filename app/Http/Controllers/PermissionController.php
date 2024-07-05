@@ -27,12 +27,33 @@ class PermissionController extends Controller
             return $next($request);
         });
     }
+
+    // Método para mostrar la lista de permisos
     public function permissions(Request $request)
     {
-        // Obtener todos los departamentos
-        $permissions = Permission::all();
+        $query = Permission::query();
 
-        // Pasar los permisos, los departamentos y el departamento seleccionado a la vista
+        // Filtro por nombre o descripción
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+        }
+
+        // Ordenamiento
+        $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
+        $sortOrder = $request->input('sort_order', 'asc');
+
+        if ($sortBy == 'name') {
+            $query->orderBy('name', $sortOrder);
+        } elseif ($sortBy == 'description') {
+            $query->orderBy('description', $sortOrder);
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
+        $permissions = $query->paginate(10)->appends($request->all()); // Asegúrate de pasar todos los parámetros
+
         return view('permissions', compact('permissions'));
     }
 
@@ -41,7 +62,7 @@ class PermissionController extends Controller
         $departments = Department::all();
         return view('permission.create', ['departments' => $departments]);
     }
-    
+
     public function store(Request $request)
     {
         // Validar los datos del formulario
@@ -49,15 +70,15 @@ class PermissionController extends Controller
             'name' => 'required|unique:permissions|max:100',
             'description' => 'required|string|max:255',
         ]);
-    
+
         // Crear un nuevo permiso
         $permission = new Permission();
         $permission->name = strtoupper($request->name);
         $permission->description = $request->description;
-    
+
         // Guardar el permiso en la base de datos
         $permission->save();
-    
+
         // Redirigir a la página de la lista de permisos u otra página apropiada
         return redirect()->route('permissions')->with('success', 'Permiso creado correctamente.');
     }
@@ -69,19 +90,19 @@ class PermissionController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
         ]);
-    
+
         // Encontrar el Permiso por su ID
         $permission = Permission::findOrFail($id);
-    
+
         // Actualizar los datos del usuario
         $permission->update([
             'name' => $request->name,
             'description' => $request->description,
         ]);
-    
+
         // Redirigir con un mensaje de éxito
         return redirect()->route('permissions')->with('success', 'Permiso actualizado correctamente.');
-    }    
+    }
 
     public function destroy($id)
     {
