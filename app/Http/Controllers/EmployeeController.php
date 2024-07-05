@@ -30,7 +30,7 @@ class EmployeeController extends Controller
     public function employees(Request $request)
     {
         $query = Employee::query();
-
+    
         // Filtro por búsqueda de empleado
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -40,30 +40,28 @@ class EmployeeController extends Controller
                     ->orWhere('middle_name', 'like', "%{$search}%");
             });
         }
-
+    
         // Filtro por estado (activo/inactivo)
         if ($request->filled('status')) {
             $status = $request->input('status');
             $query->where('status', $status);
         }
-
+    
         // Ordenamiento
-        $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
+        $sortBy = $request->input('sort_by', 'id');
         $sortOrder = $request->input('sort_order', 'asc');
-
-        if ($sortBy == 'first_name') {
-            $query->orderBy('first_name', $sortOrder)
-                ->orderBy('last_name', $sortOrder)
-                ->orderBy('middle_name', $sortOrder);
+    
+        if ($sortBy == 'colony') {
+            $query->orderBy('colony', $sortOrder);
         } else {
             $query->orderBy($sortBy, $sortOrder);
         }
-
-        $employees = $query->paginate(10)->appends($request->all()); // Asegúrate de pasar todos los parámetros
-
+    
+        $employees = $query->paginate(10)->appends($request->all());
+    
         return view('employees', compact('employees'));
     }
-
+    
     // Método para mostrar los detalles de un empleado
     public function show($id)
     {

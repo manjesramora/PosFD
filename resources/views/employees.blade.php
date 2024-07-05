@@ -136,9 +136,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-1 text-center align-middle sortable">
-                                                    <a href="{{ route('employees', ['sort_by' => 'colonia', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('employees', ['sort_by' => 'colony', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         COLONIA
-                                                        @if(request('sort_by') == 'colonia')
+                                                        @if(request('sort_by') == 'colony')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else
@@ -150,9 +150,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-1 text-center align-middle sortable">
-                                                    <a href="{{ route('employees', ['sort_by' => 'calle', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('employees', ['sort_by' => 'street', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         CALLE
-                                                        @if(request('sort_by') == 'calle')
+                                                        @if(request('sort_by') == 'street')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else
@@ -164,9 +164,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-1 text-center align-middle sortable">
-                                                    <a href="{{ route('employees', ['sort_by' => 'num_ext', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('employees', ['sort_by' => 'external_number', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         NUM EXT
-                                                        @if(request('sort_by') == 'num_ext')
+                                                        @if(request('sort_by') == 'external_number')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else
@@ -178,9 +178,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-1 text-center align-middle sortable">
-                                                    <a href="{{ route('employees', ['sort_by' => 'num_int', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('employees', ['sort_by' => 'internal_number', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         NUM INT
-                                                        @if(request('sort_by') == 'num_int')
+                                                        @if(request('sort_by') == 'internal_number')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else
@@ -192,9 +192,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-1 text-center align-middle sortable">
-                                                    <a href="{{ route('employees', ['sort_by' => 'cp', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('employees', ['sort_by' => 'postal_code', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         CP
-                                                        @if(request('sort_by') == 'cp')
+                                                        @if(request('sort_by') == 'postal_code')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else
@@ -206,9 +206,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-1 text-center align-middle sortable">
-                                                    <a href="{{ route('employees', ['sort_by' => 'telefono', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('employees', ['sort_by' => 'phone', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         TELEFONO
-                                                        @if(request('sort_by') == 'telefono')
+                                                        @if(request('sort_by') == 'phone')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else
@@ -220,9 +220,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-1 text-center align-middle sortable">
-                                                    <a href="{{ route('employees', ['sort_by' => 'telefono2', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('employees', ['sort_by' => 'phone2', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         TELEFONO 2
-                                                        @if(request('sort_by') == 'telefono2')
+                                                        @if(request('sort_by') == 'phone2')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else
@@ -234,9 +234,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-1 text-center align-middle sortable">
-                                                    <a href="{{ route('employees', ['sort_by' => 'fecha_nacimiento', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('employees', ['sort_by' => 'birth', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         FECHA NACIMIENTO
-                                                        @if(request('sort_by') == 'fecha_nacimiento')
+                                                        @if(request('sort_by') == 'birth')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else

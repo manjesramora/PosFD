@@ -90,9 +90,9 @@
                                                     </a>
                                                 </th>
                                                 <th class="col-3 sortable">
-                                                    <a href="{{ route('roles', ['sort_by' => 'permissions', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
+                                                    <a href="{{ route('roles', ['sort_by' => 'name', 'sort_order' => request('sort_order') == 'asc' ? 'desc' : 'asc'] + request()->all()) }}">
                                                         PERMISOS
-                                                        @if(request('sort_by') == 'permissions')
+                                                        @if(request('sort_by') == 'name')
                                                         @if(request('sort_order') == 'asc')
                                                         <i class="fas fa-sort-up"></i>
                                                         @else
