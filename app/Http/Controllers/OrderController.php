@@ -98,7 +98,6 @@ class OrderController extends Controller
 
     return response()->json($results);
 }
-
 public function showReceptions($ACMVOIDOC)
 {
     $order = Order::where('ACMVOIDOC', $ACMVOIDOC)
@@ -108,7 +107,6 @@ public function showReceptions($ACMVOIDOC)
     $receptions = Receptions::where('ACMVOIDOC', $ACMVOIDOC)->get();
     $provider = Providers::where('CNCDIRID', $order->CNCDIRID)->first();
 
-    // Obtener el número de documento de la tabla cntdoc
     $cntdoc = DB::table('cntdoc')
         ->where('cntdocid', 'RCN')
         ->first();
@@ -116,11 +114,9 @@ public function showReceptions($ACMVOIDOC)
     if ($cntdoc && isset($cntdoc->CNTDOCNSIG)) {
         $num_rcn_letras = $cntdoc->CNTDOCNSIG;
 
-        // Incrementar el valor en 1 (si es un número)
         if (is_numeric($num_rcn_letras)) {
             $new_value = intval($num_rcn_letras) + 1;
         } else {
-            // Si es una letra, cambia al siguiente carácter en el alfabeto
             $new_value = chr(ord($num_rcn_letras) + 1);
         }
 
@@ -128,14 +124,41 @@ public function showReceptions($ACMVOIDOC)
             ->where('cntdocid', 'RCN')
             ->update(['CNTDOCNSIG' => $new_value]);
     } else {
-        $num_rcn_letras = 'NUMERO'; // Valor por defecto si no se encuentra el registro
+        $num_rcn_letras = 'NUMERO';
     }
 
-    // Obtener la fecha actual
     $currentDate = now()->toDateString();
 
-    return view('receptions', compact('receptions', 'order', 'provider', 'num_rcn_letras', 'currentDate'));
+    // Obtén todas las partidas de acmvor1 para el documento especificado
+    $partidas = DB::table('acmvor1')
+        ->where('ACMVOIDOC', $ACMVOIDOC)
+        ->get();
+
+    // Filtra las partidas para excluir las que cumplen con las condiciones
+    $filteredPartidas = $partidas->filter(function ($partida) {
+        // Verifica si hay coincidencias en acmroi
+        $acmroi = DB::table('acmroi')
+            ->where('ACMROIDOC', $partida->ACMVOIDOC)
+            ->where('ACMROILIN', $partida->ACMVOILIN)
+            ->first();
+
+        // Excluye la partida si se encuentra un acmroi con ACACTLID != 'CANCELADO' y ACMROIQTTR == ACMVOIQTO
+        if ($acmroi) {
+            // Si ACACTLID no es 'CANCELADO' y las cantidades son iguales
+            if ($acmroi->ACACTLID != 'CANCELADO' && $acmroi->ACMROIQTTR == $partida->ACMVOIQTO) {
+                return false;  // Excluir la partida
+            }
+        }
+
+        // Mantiene la partida si no se cumplen las condiciones de exclusión
+        return true;
+    });
+
+    return view('receptions', compact('receptions', 'order', 'provider', 'num_rcn_letras', 'currentDate', 'filteredPartidas'));
 }
+
+
+
 
 
 
