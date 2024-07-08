@@ -43,7 +43,7 @@
             <div class="form-group position-relative">
                 <input type="password" name="password" class="form-control placeholder-login" id="password" placeholder="CONTRASEÑA" required>
                 <i class="fas fa-lock position-absolute start-0 top-50 translate-middle-y ms-2 icons-color"></i>
-                <i class="fas fa-eye position-absolute end-0 top-50 translate-middle-y me-2 pointer icons-color" id="togglePassword"></i>
+                <i class="fas fa-eye position-absolute end-0 top-50 translate-middle-y me-2 pointer icons-color" id="togglePassword" style="margin-top: 2px;"></i>
             </div>
 
             <br>
@@ -79,7 +79,7 @@
                             <div class="input-with-icon">
                                 <i class="fas fa-lock"></i>
                                 <input type="password" name="password" id="newPassword" class="form-control" placeholder="Contraseña" required>
-                                <i class="fas fa-eye toggle-password" id="toggleNewPassword" style="cursor: pointer; position: absolute; right: 10px; top: 10px;"></i>
+                                <i class="fas fa-eye toggle-password" id="toggleNewPassword" style="margin-left: 200px; margin-top: 2px;"></i>
                             </div>
                         </div>
                         <br>
@@ -87,7 +87,7 @@
                             <div class="input-with-icon">
                                 <i class="fas fa-lock"></i>
                                 <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirmar Contraseña" required>
-                                <i class="fas fa-eye toggle-password" id="toggleConfirmPassword" style="cursor: pointer; position: absolute; right: 10px; top: 10px;"></i>
+                                <i class="fas fa-eye toggle-password" id="toggleConfirmPassword" style="margin-left: 200px; margin-top: 2px;"></i>
                             </div>
                         </div>
 
