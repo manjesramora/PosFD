@@ -39,70 +39,72 @@ class UserController extends Controller
     }
 
     public function index(Request $request)
-    {
-        $query = User::query();
+{
+    $query = User::query();
     
-        // Filtro por usuario o empleado
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->whereHas('employee', function ($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%")
-                    ->orWhere('middle_name', 'like', "%{$search}%");
-            })->orWhere('username', 'like', "%{$search}%");
-        }
-    
-        // Filtro por rol
-        if ($request->filled('role')) {
-            $role = $request->input('role');
-            $query->whereHas('roles', function ($q) use ($role) {
-                $q->where('name', $role);
-            });
-        }
-    
-        // Filtro por centro de costo
-        if ($request->filled('cost_center')) {
-            $costCenter = $request->input('cost_center');
-            $query->whereHas('costCenters', function ($q) use ($costCenter) {
-                $q->where('center_id', $costCenter);
-            });
-        }
-    
-        // Filtro por estado
-        if ($request->filled('status')) {
-            $status = $request->input('status');
-            $query->where('status', $status);
-        }
-    
-        // Ordenamiento
-        $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
-        $sortOrder = $request->input('sort_order', 'asc');
-    
-        if ($sortBy == 'employee_name') {
-            $query->join('employees', 'users.employee_id', '=', 'employees.id')
-                  ->select('users.*')
-                  ->orderBy('employees.first_name', $sortOrder)
-                  ->orderBy('employees.last_name', $sortOrder)
-                  ->orderBy('employees.middle_name', $sortOrder);
-        } elseif ($sortBy == 'role') {
-            $query->join('users_roles', 'users.id', '=', 'users_roles.user_id')
-                  ->join('roles', 'users_roles.role_id', '=', 'roles.id')
-                  ->select('users.*')
-                  ->orderBy('roles.name', $sortOrder);
-        } elseif ($sortBy == 'cost_center') {
-            // No hacer join para evitar duplicados
-            $query->with('costCenters')->orderBy('id', $sortOrder);
-        } else {
-            $query->orderBy($sortBy, $sortOrder);
-        }
-    
-        $users = $query->paginate(10)->appends($request->all()); // Asegúrate de pasar todos los parámetros
-    
-        $roles = Role::all();
-        $centers = StoreCostCenter::all();
-    
-        return view('users', compact('users', 'roles', 'centers'));
+    // Filtro por usuario o empleado
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->whereHas('employee', function ($q) use ($search) {
+            $q->where('first_name', 'like', "%{$search}%")
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('middle_name', 'like', "%{$search}%");
+        })->orWhere('username', 'like', "%{$search}%");
     }
+    
+    // Filtro por rol
+    if ($request->filled('role')) {
+        $role = $request->input('role');
+        $query->whereHas('roles', function ($q) use ($role) {
+            $q->where('name', $role);
+        });
+    }
+    
+    // Filtro por centro de costo
+    if ($request->filled('cost_center')) {
+        $costCenter = $request->input('cost_center');
+        $query->whereHas('costCenters', function ($q) use ($costCenter) {
+            $q->where('center_id', $costCenter);
+        });
+    }
+    
+    // Filtro por estado
+    if ($request->filled('status')) {
+        $status = $request->input('status');
+        $query->where('status', $status);
+    }
+    
+    // Ordenamiento
+    $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
+    $sortOrder = $request->input('sort_order', 'asc');
+    
+    if ($sortBy == 'employee_name') {
+        $query->join('employees', 'users.employee_id', '=', 'employees.id')
+              ->select('users.*')
+              ->orderBy('employees.first_name', $sortOrder)
+              ->orderBy('employees.last_name', $sortOrder)
+              ->orderBy('employees.middle_name', $sortOrder);
+    } elseif ($sortBy == 'role') {
+        $query->join('users_roles', 'users.id', '=', 'users_roles.user_id')
+              ->join('roles', 'users_roles.role_id', '=', 'roles.id')
+              ->select('users.*')
+              ->groupBy('users.id', 'users.username', 'users.password', 'users.employee_id', 'users.status', 'users.failed_login_attempts', 'users.locked', 'users.created_at', 'users.updated_at')
+              ->orderByRaw("MIN(roles.name) {$sortOrder}");
+    } elseif ($sortBy == 'cost_center') {
+        // No hacer join para evitar duplicados
+        $query->with('costCenters')->orderBy('id', $sortOrder);
+    } else {
+        $query->orderBy($sortBy, $sortOrder);
+    }
+    
+    $users = $query->paginate(10)->appends($request->all()); // Asegúrate de pasar todos los parámetros
+    
+    $roles = Role::all();
+    $centers = StoreCostCenter::all();
+    
+    return view('users', compact('users', 'roles', 'centers'));
+}
+
     
     public function createUserForm()
     {
