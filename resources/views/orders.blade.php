@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/sb-admin-2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
-
 <body id="page-top">
     <div id="wrapper">
         @include('slidebar') <!-- Asegúrate de tener un archivo sidebar.blade.php en resources/views -->
@@ -62,7 +61,6 @@
                             </div>
                         </div>
                     </form>
-
                     <!-- Tabla de órdenes -->
                     <div class="table-responsive">
                         <div class="container-fluid">
@@ -70,74 +68,71 @@
                                 <div class="card-body">
                                     <div class="table-responsive small-font">
                                         <table class="table table-bordered table-centered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-    <tr>
-        <th class="col-md-1">
-            <a href="{{ route('orders', ['sortColumn' => 'CNTDOCID', 'sortDirection' => ($sortColumn == 'CNTDOCID' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
-                T. DOC
-                @if($sortColumn == 'CNTDOCID')
-                    <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                @else
-                    <i class="fas fa-sort"></i>
-                @endif
-            </a>
-        </th>
-        <th class="col-md-1">
-            <a href="{{ route('orders', ['sortColumn' => 'ACMVOIDOC', 'sortDirection' => ($sortColumn == 'ACMVOIDOC' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
-                NO. DOC
-                @if($sortColumn == 'ACMVOIDOC')
-                    <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                @else
-                    <i class="fas fa-sort"></i>
-                @endif
-            </a>
-        </th>
-        <th class="col-md-1">
-            <a href="{{ route('orders', ['sortColumn' => 'CNCDIRID', 'sortDirection' => ($sortColumn == 'CNCDIRID' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
-                NO. PROV
-                @if($sortColumn == 'CNCDIRID')
-                    <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                @else
-                    <i class="fas fa-sort"></i>
-                @endif
-            </a>
-        </th>
-        <th class="col-md-2">
-            <a href="{{ route('orders', ['sortColumn' => 'CNCDIRNOM', 'sortDirection' => ($sortColumn == 'CNCDIRNOM' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
-                PROVEDOR
-                @if($sortColumn == 'CNCDIRNOM')
-                    <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                @else
-                    <i class="fas fa-sort"></i>
-                @endif
-            </a>
-        </th>
-        <th class="col-md-2">
-            <a href="{{ route('orders', ['sortColumn' => 'ACMVOIFDOC', 'sortDirection' => ($sortColumn == 'ACMVOIFDOC' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
-                FECHA DE ORDEN
-                @if($sortColumn == 'ACMVOIFDOC')
-                    <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                @else
-                    <i class="fas fa-sort"></i>
-                @endif
-            </a>
-        </th>
-        <th class="col-md-2">
-            <a href="{{ route('orders', ['sortColumn' => 'ACMVOIALID', 'sortDirection' => ($sortColumn == 'ACMVOIALID' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
-                ALMACEN
-                @if($sortColumn == 'ACMVOIALID')
-                    <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
-                @else
-                    <i class="fas fa-sort"></i>
-                @endif
-            </a>
-        </th>
-        <th class="col-md-1">Acciones</th>
-    </tr>
-</thead>
-
-
-
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-md-1">
+                                                        <a href="{{ route('orders', ['sortColumn' => 'CNTDOCID', 'sortDirection' => ($sortColumn == 'CNTDOCID' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
+                                                            T. DOC
+                                                            @if($sortColumn == 'CNTDOCID')
+                                                            <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
+                                                            @else
+                                                            <i class="fas fa-sort"></i>
+                                                            @endif
+                                                        </a>
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        <a href="{{ route('orders', ['sortColumn' => 'ACMVOIDOC', 'sortDirection' => ($sortColumn == 'ACMVOIDOC' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
+                                                            NO. DOC
+                                                            @if($sortColumn == 'ACMVOIDOC')
+                                                            <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
+                                                            @else
+                                                            <i class="fas fa-sort"></i>
+                                                            @endif
+                                                        </a>
+                                                    </th>
+                                                    <th class="col-md-1">
+                                                        <a href="{{ route('orders', ['sortColumn' => 'CNCDIRID', 'sortDirection' => ($sortColumn == 'CNCDIRID' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
+                                                            NO. PROV
+                                                            @if($sortColumn == 'CNCDIRID')
+                                                            <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
+                                                            @else
+                                                            <i class="fas fa-sort"></i>
+                                                            @endif
+                                                        </a>
+                                                    </th>
+                                                    <th class="col-md-2">
+                                                        <a href="{{ route('orders', ['sortColumn' => 'CNCDIRNOM', 'sortDirection' => ($sortColumn == 'CNCDIRNOM' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
+                                                            PROVEDOR
+                                                            @if($sortColumn == 'CNCDIRNOM')
+                                                            <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
+                                                            @else
+                                                            <i class="fas fa-sort"></i>
+                                                            @endif
+                                                        </a>
+                                                    </th>
+                                                    <th class="col-md-2">
+                                                        <a href="{{ route('orders', ['sortColumn' => 'ACMVOIFDOC', 'sortDirection' => ($sortColumn == 'ACMVOIFDOC' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
+                                                            FECHA DE ORDEN
+                                                            @if($sortColumn == 'ACMVOIFDOC')
+                                                            <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
+                                                            @else
+                                                            <i class="fas fa-sort"></i>
+                                                            @endif
+                                                        </a>
+                                                    </th>
+                                                    <th class="col-md-2">
+                                                        <a href="{{ route('orders', ['sortColumn' => 'ACMVOIALID', 'sortDirection' => ($sortColumn == 'ACMVOIALID' && $sortDirection == 'asc') ? 'desc' : 'asc'] + request()->query()) }}" class="btn btn-link p-0">
+                                                            ALMACEN
+                                                            @if($sortColumn == 'ACMVOIALID')
+                                                            <i class="fas {{ $sortDirection == 'asc' ? 'fa-sort-up' : 'fa-sort-down' }}"></i>
+                                                            @else
+                                                            <i class="fas fa-sort"></i>
+                                                            @endif
+                                                        </a>
+                                                    </th>
+                                                    <th class="col-md-1">Acciones</th>
+                                                </tr>
+                                            </thead>
                                             <tbody>
                                                 @foreach ($orders as $order)
                                                 <tr>
@@ -150,12 +145,10 @@
 
                                                     <td>{{ $order->ACMVOIALID }}</td>
                                                     <td>
-                                                        <a href="{{ route('receptions.show', $order->ACMVOIDOC) }}" class="btn btn-info">
+                                                        <a href="{{ route('receptions.show', $order->ACMVOIDOC) }}" class="btn btn-primary">
                                                             <i class="fas fa-truck"></i>
                                                         </a>
                                                     </td>
-
-
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -168,14 +161,12 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Coloca esto al inicio de tu archivo head -->
     <!-- Coloca esto al final del body -->
     <script src="assets/vendor/jquery/jquery.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -185,33 +176,5 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/order.js') }}"></script>
-    <script>
-        function limpiarCampos() {
-            document.getElementById('ACMROIDOC').value = '';
-            document.getElementById('CNCDIRID').value = '';
-            document.getElementById('CNCDIRNOM').value = '';
-            document.getElementById('start_date').value = '';
-            document.getElementById('end_date').value = '';
-        }
-    </script>
-    <script>
-        function sortTable(column) {
-            let currentUrl = new URL(window.location.href);
-            let currentSortColumn = currentUrl.searchParams.get('sortColumn');
-            let currentSortDirection = currentUrl.searchParams.get('sortDirection');
-
-            let newSortDirection = 'asc';
-            if (currentSortColumn === column && currentSortDirection === 'asc') {
-                newSortDirection = 'desc';
-            }
-
-            currentUrl.searchParams.set('sortColumn', column);
-            currentUrl.searchParams.set('sortDirection', newSortDirection);
-
-            window.location.href = currentUrl.toString();
-        }
-    </script>
-
 </body>
-
 </html>

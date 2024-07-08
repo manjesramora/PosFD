@@ -93,14 +93,14 @@
                                     <option value="1">Con Flete</option>
                                 </select>
                             </div>
-                            <div id="flete_input_div" class="col-md-3" style="display: none;">
+                            <div id="flete_input_div" class="col-md-1" style="display: none;">
                                 <label for="flete" class="form-label">Flete:</label>
-                                <input type="number" id="flete" class="form-control" placeholder="Ingrese el monto del flete" step="0.01">
-                                <button class="btn btn-primary mt-2" type="button" onclick="distributeFreight()">Distribuir</button>
+                                <input type="number" id="flete" class="form-control" placeholder="Ingrese el monto del flete" step="0.0">
                             </div>
-                            <br>
-                            <div class="d-flex justify-content-between">
+                            <div class="col-md-2">
                                 <a href="{{ route('orders') }}" class="btn btn-secondary me-2">Volver a Órdenes</a>
+                            </div>
+                            <div class="col-md-1">
                                 <a href="#" class="btn btn-warning">Recepcionar</a>
                             </div>
                         </div>
@@ -146,8 +146,6 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        <br>
-                                        <button id="saveButton" class="btn btn-primary" onclick="saveData()">Guardar</button>
                                     </div>
                                 </div>
                             </div>
@@ -157,6 +155,10 @@
             </div>
         </div>
     </div>
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="assets/vendor/chart.js/Chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
