@@ -318,7 +318,6 @@
         </div>
     </div>
 
-    <!-- Modales fuera del contenedor principal para evitar problemas de z-index -->
     @foreach($employees as $employee)
     <!-- Modal de Edición de Empleado -->
     <div class="modal fade text-left" id="editEmployeeModal{{ $employee->id }}" tabindex="-1" aria-labelledby="editEmployeeModalLabel{{ $employee->id }}" aria-hidden="true">
@@ -468,6 +467,7 @@
                                 <div class="mb-3">
                                     <label for="first_name" class="form-label">Nombre</label>
                                     <input type="text" class="form-control uper" id="first_name" name="first_name" required maxlength="50">
+                                    <span class="error mensaje" aria-live="polite"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
