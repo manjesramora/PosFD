@@ -98,6 +98,7 @@ class OrderController extends Controller
 
     return response()->json($results);
 }
+
 public function showReceptions($ACMVOIDOC)
 {
     $order = Order::where('ACMVOIDOC', $ACMVOIDOC)
@@ -129,35 +130,23 @@ public function showReceptions($ACMVOIDOC)
 
     $currentDate = now()->toDateString();
 
-    // Obtén todas las partidas de acmvor1 para el documento especificado
+    // Excluir las partidas que ya están en la tabla `acmroi`
     $partidas = DB::table('acmvor1')
-        ->where('ACMVOIDOC', $ACMVOIDOC)
+        ->leftJoin('acmroi', function($join) {
+            $join->on('acmvor1.ACMVOIDOC', '=', 'acmroi.ACMROIDOC')
+                ->on('acmvor1.ACMVOILIN', '=', 'acmroi.ACMROILIN');
+        })
+        ->where('acmvor1.ACMVOIDOC', $ACMVOIDOC)
+        ->where(function ($query) {
+            $query->whereNull('acmroi.ACACTLID')
+                  ->orWhere('acmroi.ACACTLID', '!=', 'CANCELADO');
+        })
+        ->whereNull('acmroi.ACACTLID')  // Excluir partidas que están en `acmroi`
+        ->select('acmvor1.ACMVOILIN', 'acmvor1.ACMVOIPRID', 'acmvor1.ACMVOIPRDS', 'acmvor1.ACMVOINPAR', 'acmvor1.ACMVOIUMT', 'acmvor1.ACMVOIQTO', 'acmvor1.ACMVOINPO', 'acmvor1.ACMVOIIVA')
         ->get();
 
-    // Filtra las partidas para excluir las que cumplen con las condiciones
-    $filteredPartidas = $partidas->filter(function ($partida) {
-        // Verifica si hay coincidencias en acmroi
-        $acmroi = DB::table('acmroi')
-            ->where('ACMROIDOC', $partida->ACMVOIDOC)
-            ->where('ACMROILIN', $partida->ACMVOILIN)
-            ->first();
-
-        // Excluye la partida si se encuentra un acmroi con ACACTLID != 'CANCELADO' y ACMROIQTTR == ACMVOIQTO
-        if ($acmroi) {
-            // Si ACACTLID no es 'CANCELADO' y las cantidades son iguales
-            if ($acmroi->ACACTLID != 'CANCELADO' && $acmroi->ACMROIQTTR == $partida->ACMVOIQTO) {
-                return false;  // Excluir la partida
-            }
-        }
-
-        // Mantiene la partida si no se cumplen las condiciones de exclusión
-        return true;
-    });
-
-    return view('receptions', compact('receptions', 'order', 'provider', 'num_rcn_letras', 'currentDate', 'filteredPartidas'));
+    return view('receptions', compact('receptions', 'order', 'provider', 'num_rcn_letras', 'currentDate', 'partidas'));
 }
-
-
 
 
 

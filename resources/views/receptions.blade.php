@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,7 +14,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/sb-admin-2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
-
 <body id="page-top">
     <div id="wrapper">
         @include('slidebar')
@@ -23,7 +21,7 @@
             <div id="content">
                 @include('navbar')
                 <div class="container-fluid">
-                    <h1 class="mt-5" style="text-align: center;">Detalles de Recepción</h1>
+                    <h1 class="mt-5 text-center">Detalles de Recepción</h1>
                     <br>
                     <div class="row g-3 align-items-end">
                         <br>
@@ -58,7 +56,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="nombre_proveedor" class="form-label">Nombre del Proveedor:</label>
-                                <input type="text" id="nombre_proveedor" class="form-control" value="{{ $order->provider->CNCDIRNOM }}" readonly>
+                                <input type="text" id="nombre_proveedor" class="form-control" value="{{ $provider ? $provider->CNCDIRNOM : 'No disponible' }}" readonly>
                             </div>
                             <div class="col-md-1">
                                 <label for="referencia" class="form-label">Referencia:</label>
@@ -89,17 +87,19 @@
                                 <input type="text" id="num_rcn_letras" class="form-control" value="{{ $num_rcn_letras }}" readonly>
                             </div>
                             <div class="col-md-1">
-                                <label for="flete_select" class="form-label">¿Hay flete?</label>
+                                <label for="flete_select" class="form-label">Flete:</label>
                                 <select id="flete_select" class="form-control" onchange="toggleFleteInput()">
-                                    <option value="0">No</option>
-                                    <option value="1">Sí</option>
+                                    <option value="0">Sin Flete</option>
+                                    <option value="1">Con Flete</option>
                                 </select>
                             </div>
-                            <div class="col-md-1" id="flete_input_div" style="display: none;">
-                                <label for="flete_input" class="form-label">Flete:</label>
-                                <input type="number" id="flete_input" class="form-control" oninput="distributeFreight()" step="0.01" min="0">
+                            <div id="flete_input_div" class="col-md-3" style="display: none;">
+                                <label for="flete" class="form-label">Flete:</label>
+                                <input type="number" id="flete" class="form-control" placeholder="Ingrese el monto del flete" step="0.01">
+                                <button class="btn btn-primary mt-2" type="button" onclick="distributeFreight()">Distribuir</button>
                             </div>
-                            <div class="col-md-3">
+                            <br>
+                            <div class="d-flex justify-content-between">
                                 <a href="{{ route('orders') }}" class="btn btn-secondary me-2">Volver a Órdenes</a>
                                 <a href="#" class="btn btn-warning">Recepcionar</a>
                             </div>
@@ -127,21 +127,21 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="receptionTableBody">
-                                                @foreach ($receptions as $reception)
+                                                @foreach ($partidas as $partida)
                                                 <tr>
-                                                    <td>{{ number_format($reception->ACMVOILIN) }}</td>
-                                                    <td>{{ $reception->ACMVOIPRID }}</td>
-                                                    <td>{{ $reception->ACMVOIPRDS }}</td>
-                                                    <td>{{ $reception->ACMVOINPAR }}</td>
-                                                    <td>{{ $reception->ACMVOIUMT }}</td>
-                                                    <td>{{ number_format($reception->ACMVOIQTO, 2) }}</td>
+                                                    <td>{{ number_format($partida->ACMVOILIN) }}</td>
+                                                    <td>{{ $partida->ACMVOIPRID }}</td>
+                                                    <td>{{ $partida->ACMVOIPRDS }}</td>
+                                                    <td>{{ $partida->ACMVOINPAR }}</td>
+                                                    <td>{{ $partida->ACMVOIUMT }}</td>
+                                                    <td>{{ number_format($partida->ACMVOIQTO, 2) }}</td>
                                                     <td>
-                                                        <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" min="0" max="{{ $reception->ACMVOIQTO }}" oninput="limitCantidad(this)">
+                                                        <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" min="0" max="{{ $partida->ACMVOIQTO }}" oninput="limitCantidad(this)">
                                                     </td>
                                                     <td>
-                                                        <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($reception->ACMVOINPO, 2) }}" min="0" max="{{ number_format($reception->ACMVOINPO, 2) }}" step="0.01" oninput="limitPrecio(this)">
+                                                        <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($partida->ACMVOINPO, 2) }}" min="0" max="{{ number_format($partida->ACMVOINPO, 2) }}" step="0.01" oninput="limitPrecio(this)">
                                                     </td>
-                                                    <td>{{ number_format($reception->ACMVOIIVA, 2) }}</td>
+                                                    <td>{{ number_format($partida->ACMVOIIVA, 2) }}</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -157,14 +157,9 @@
             </div>
         </div>
     </div>
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="assets/vendor/chart.js/Chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/reception.js') }}"></script>
 </body>
-
 </html>
