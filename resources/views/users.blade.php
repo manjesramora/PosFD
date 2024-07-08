@@ -69,6 +69,16 @@
                                         @endforeach
                                     </select>
                                 </div>
+
+                                <!-- Filtro activos/inactivos -->
+                                <div class="col-md-2 mb-3">
+                                    <label for="statusFilter" class="form-label">Estado</label>
+                                    <select id="statusFilter" class="form-select" name="status" onchange="document.getElementById('filtersForm').submit()">
+                                        <option value="">Todos</option>
+                                        <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Activos</option>
+                                        <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Inactivos</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </form>

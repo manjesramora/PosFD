@@ -151,44 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-function filterEmployees() {
-    const searchInput = document
-        .getElementById("searchEmployee")
-        .value.toLowerCase();
-    const statusFilter = document.getElementById("statusFilter").value;
-    const table = document.getElementById("dataTable");
-    const rows = table.getElementsByTagName("tr");
-
-    for (let i = 1; i < rows.length; i++) {
-        // i = 1 para saltar el encabezado
-        const nameCell = rows[i].getElementsByTagName("td")[0]; // Columna de NOMBRE(S)
-        const lastNameCell = rows[i].getElementsByTagName("td")[1]; // Columna de APELLIDO PATERNO
-        const middleNameCell = rows[i].getElementsByTagName("td")[2]; // Columna de APELLIDO MATERNO
-        const statusCell = rows[i].getElementsByTagName("td")[13]; // Columna de ESTADO
-
-        if (nameCell && lastNameCell && middleNameCell && statusCell) {
-            const name = nameCell.textContent.toLowerCase();
-            const lastName = lastNameCell.textContent.toLowerCase();
-            const middleName = middleNameCell.textContent.toLowerCase();
-            const status = statusCell.textContent.trim().toLowerCase();
-
-            const fullName = `${name} ${lastName} ${middleName}`;
-
-            const matchesName = fullName.includes(searchInput);
-            const matchesStatus =
-                statusFilter === "" ||
-                (statusFilter === "1" && status === "activo") ||
-                (statusFilter === "0" && status === "inactivo");
-
-            if (matchesName && matchesStatus) {
-                rows[i].style.display = ""; // Mostrar la fila
-            } else {
-                rows[i].style.display = "none"; // Ocultar la fila
-            }
-        }
-    }
-}
-
 function limpiarCampos() {
     $('#searchEmployee').val(''); // Limpiar el campo de búsqueda
+    document.getElementById("filtersForm").submit();
 }

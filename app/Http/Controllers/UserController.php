@@ -68,6 +68,12 @@ class UserController extends Controller
             });
         }
     
+        // Filtro por estado
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            $query->where('status', $status);
+        }
+    
         // Ordenamiento
         $sortBy = $request->input('sort_by', 'id'); // Ajusta el valor predeterminado según sea necesario
         $sortOrder = $request->input('sort_order', 'asc');
@@ -84,10 +90,8 @@ class UserController extends Controller
                   ->select('users.*')
                   ->orderBy('roles.name', $sortOrder);
         } elseif ($sortBy == 'cost_center') {
-            $query->join('users_cost_centers', 'users.id', '=', 'users_cost_centers.user_id')
-                  ->join('store_cost_centers', 'users_cost_centers.center_id', '=', 'store_cost_centers.id')
-                  ->select('users.*')
-                  ->orderBy('store_cost_centers.cost_center_id', $sortOrder);
+            // No hacer join para evitar duplicados
+            $query->with('costCenters')->orderBy('id', $sortOrder);
         } else {
             $query->orderBy($sortBy, $sortOrder);
         }
@@ -100,7 +104,6 @@ class UserController extends Controller
         return view('users', compact('users', 'roles', 'centers'));
     }
     
-
     public function createUserForm()
     {
         $employees = Employee::all();

@@ -118,41 +118,10 @@ $(document).on("click", ".reset-password", function () {
     resetPassword(userId);
 });
 
-// Filtra los usuarios en la tabla según la búsqueda y el filtro de estado
-function filterUsers() {
-    const searchInput = document.getElementById('searchUser').value.toLowerCase().trim();
-    const roleFilter = document.getElementById('roleFilter').value.toLowerCase().trim();
-    const costCenterFilter = document.getElementById('costCenterFilter').value.toLowerCase().trim();
-    const table = document.getElementById('dataTable');
-    const rows = table.getElementsByTagName('tr');
-
-    for (let i = 1; i < rows.length; i++) { // i = 1 para saltar el encabezado
-        const usernameCell = rows[i].getElementsByTagName('td')[0]; // Columna de USUARIOS
-        const employeeNameCell = rows[i].getElementsByTagName('td')[1]; // Columna de NOMBRE EMPLEADO
-        const roleCell = rows[i].getElementsByTagName('td')[2]; // Columna de ROL
-        const costCenterCell = rows[i].getElementsByTagName('td')[4]; // Columna de CENTRO DE COSTO
-
-        if (usernameCell && employeeNameCell && roleCell && costCenterCell) {
-            const username = usernameCell.textContent.toLowerCase().trim();
-            const employeeName = employeeNameCell.textContent.toLowerCase().replace(/\s+/g, ' ').trim();
-            const roles = roleCell.textContent.toLowerCase().trim();
-            const costCenters = costCenterCell.textContent.toLowerCase().trim();
-
-            const matchesName = username.includes(searchInput) || employeeName.includes(searchInput);
-            const matchesRole = roleFilter === "" || roles.includes(roleFilter);
-            const matchesCostCenter = costCenterFilter === "" || costCenters.includes(costCenterFilter);
-
-            if (matchesName && matchesRole && matchesCostCenter) {
-                rows[i].style.display = ""; // Mostrar la fila
-            } else {
-                rows[i].style.display = "none"; // Ocultar la fila
-            }
-        }
-    }
-}
 
 function limpiarCampos() {
     $('#searchUser').val(''); // Limpiar el campo de búsqueda
+    document.getElementById("filtersForm").submit();
 }
 
 
