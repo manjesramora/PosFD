@@ -94,7 +94,6 @@
         $("#fleteroList").hide();
     });
 
-
     function limitCantidad(input) {
         const max = parseFloat(input.getAttribute("max"));
         const value = parseFloat(input.value);
@@ -113,3 +112,22 @@
         distributeFreight();
     }
 
+     // Función para formatear el número con separadores de miles
+     function formatNumberWithCommas(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Función para actualizar el valor formateado
+    function updateFormattedValue() {
+        let input = document.getElementById('flete');
+        let value = input.value.replace(/[^\d.]/g, ''); // Eliminar caracteres no numéricos excepto puntos
+        let parts = value.split('.'); // Dividir por el punto decimal
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Formatear parte entera con comas
+        
+        // Volver a unir los valores con el punto decimal
+        input.value = parts.length > 1 ? parts.join('.') : parts[0];
+    }
+
+    // Escuchar cambios en el input y actualizar el valor formateado
+    let input = document.getElementById('flete');
+    input.addEventListener('input', updateFormattedValue);

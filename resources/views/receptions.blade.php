@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,6 +15,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/sb-admin-2.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
+
 <body id="page-top">
     <div id="wrapper">
         @include('slidebar')
@@ -88,14 +90,14 @@
                             </div>
                             <div class="col-md-1">
                                 <label for="flete_select" class="form-label">Flete:</label>
-                                <select id="flete_select" class="form-control" onchange="toggleFleteInput()">
+                                <select id="flete_select" class="form-select" onchange="toggleFleteInput()">
                                     <option value="0">Sin Flete</option>
                                     <option value="1">Con Flete</option>
                                 </select>
                             </div>
                             <div id="flete_input_div" class="col-md-1" style="display: none;">
                                 <label for="flete" class="form-label">Flete:</label>
-                                <input type="number" id="flete" class="form-control" placeholder="Ingrese el monto del flete" step="0.0">
+                                <input type="text" id="flete" class="form-control" placeholder="Monto">
                             </div>
                             <div class="col-md-2">
                                 <a href="{{ route('orders') }}" class="btn btn-secondary me-2">Volver a Órdenes</a>
@@ -136,7 +138,7 @@
                                                     <td>{{ $partida->ACMVOIUMT }}</td>
                                                     <td>{{ number_format($partida->ACMVOIQTO, 2) }}</td>
                                                     <td>
-                                                        <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="0.01" min="0" max="{{ $partida->ACMVOIQTO }}" oninput="limitCantidad(this)">
+                                                        <input type="number" class="form-control cantidad-recibida" name="cantidad_recibida[]" value="" step="1" min="0" max="{{ $partida->ACMVOIQTO }}" oninput="limitCantidad(this)" onkeydown="return event.key !== '.' && event.key !== 'e' && event.key !== '+' && event.key !== '-';">
                                                     </td>
                                                     <td>
                                                         <input type="number" class="form-control precio-unitario" name="precio_unitario[]" value="{{ number_format($partida->ACMVOINPO, 2) }}" min="0" max="{{ number_format($partida->ACMVOINPO, 2) }}" step="0.01" oninput="limitPrecio(this)">
@@ -155,13 +157,14 @@
             </div>
         </div>
     </div>
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="assets/vendor/chart.js/Chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Carga de jQuery, Bootstrap y otros scripts desde CDN -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="{{ asset('js/reception.js') }}"></script>
 </body>
+
 </html>
