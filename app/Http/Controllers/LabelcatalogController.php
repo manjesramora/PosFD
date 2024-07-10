@@ -1,22 +1,21 @@
 <?php
 
-// app/Http/Controllers/LabelcatalogController.php
 namespace App\Http\Controllers;
 
-use App\Models\Insdos; // Importa el modelo Insdos (aunque no se usa en este controlador)
-use App\Models\LabelCatalog; // Importa el modelo LabelCatalog (aunque no se usa en este controlador)
-use Illuminate\Http\Request; // Importa la clase Request para manejar las solicitudes HTTP
-use Illuminate\Support\Facades\Auth; // Importa la clase Auth para la autenticación de usuarios
-use Picqer\Barcode\BarcodeGeneratorHTML; // Importa la clase BarcodeGeneratorHTML para generar códigos de barras en formato HTML
-use Barryvdh\DomPDF\Facade\Pdf; // Importa la clase Pdf para generar archivos PDF
-use Illuminate\Support\Facades\DB; // Importa la clase DB para realizar consultas a la base de datos
+use App\Models\Insdos;
+use App\Models\LabelCatalog;
+use App\Models\AVPREC;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Picqer\Barcode\BarcodeGeneratorHTML;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LabelcatalogController extends Controller
 {
-    // Constructor del controlador
     public function __construct()
     {
-        // Middleware para compartir los roles del usuario en las vistas
         $this->middleware(function ($request, $next) {
             $user = Auth::user();
 
@@ -29,133 +28,204 @@ class LabelcatalogController extends Controller
         });
     }
 
-    // Método para manejar la lógica de la vista del catálogo de etiquetas
     public function labelscatalog(Request $request)
-    {
-        $productIdFilter = $request->input('productId');
-        $skuFilter = $request->input('sku');
-        $nameFilter = $request->input('name');
-        $lineaFilter = $request->input('linea');
-        $sublineaFilter = $request->input('sublinea');
-        $departamentoFilter = $request->input('departamento');
-        $activoFilter = $request->input('activo');
-        $sortColumn = $request->input('sort', 'INPROD.INPRODID'); // Columna por defecto
-        $sortDirection = $request->input('direction', 'asc'); // Dirección por defecto
+{
+    $productIdFilter = $request->input('productId');
+    $skuFilter = $request->input('sku');
+    $nameFilter = $request->input('name');
+    $lineaFilter = $request->input('linea');
+    $sublineaFilter = $request->input('sublinea');
+    $departamentoFilter = $request->input('departamento');
+    $activoFilter = $request->input('activo');
+    $sortColumn = $request->input('sort', 'INPROD.INPRODID');
+    $sortDirection = $request->input('direction', 'asc');
 
-        // Obtener el usuario actual
-        $user = Auth::user();
+    $user = Auth::user();
+    $centrosCostosIds = $user->costCenters->pluck('cost_center_id');
 
-        // Obtener los centros de costos asignados al usuario
-        $centrosCostosIds = $user->costCenters->pluck('cost_center_id');
+    // Subconsulta para obtener el precio base más reciente para cada producto donde ALMACEN es NULL o vacío
+    $subQueryGeneral = DB::table('AVPREC')
+        ->select('AVPRECPRO', DB::raw('MAX(AVPREFIPB) as max_fecha'))
+        ->whereNull('AVPRECALM')
+        ->orWhere('AVPRECALM', '')
+        ->groupBy('AVPRECPRO');
 
-        // Construir la consulta base
-        $query = DB::table('INSDOS')
-            ->join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
-            ->leftJoin('INALPR', function($join) {
-                $join->on('INSDOS.INPRODID', '=', 'INALPR.INPRODID')
-                     ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
-            })
-            ->select(
-                'INPROD.INPRODID',
-                'INPROD.INPRODDSC',
-                'INPROD.INPRODDS2',
-                'INPROD.INPRODDS3',
-                'INPROD.INPRODI2',
-                'INPROD.INPRODI3',
-                'INPROD.INTPCMID',
-                'INPROD.INPR02ID',
-                'INPROD.INPR03ID',
-                'INPROD.INPR04ID',
-                'INPROD.INPRODCBR',
-                'INPROD.INTPALID',
-                DB::raw('ROUND(INSDOS.INSDOSQDS, 2) as Existencia'), // Formatear a 2 decimales
-                'INSDOS.INALMNID as CentroCostos',
-                'INALPR.INAPR17ID as TipoStock'
-            )
-            // Condiciones para INPRODDSC
-            ->whereNotNull('INPROD.INPRODDSC')
-            ->where('INPROD.INPRODDSC', '<>', '')
-            ->where('INPROD.INPRODDSC', '<>', '.')
-            ->where('INPROD.INPRODDSC', '<>', '*')
-            ->where('INPROD.INPRODDSC', '<>', '..')
-            ->where('INPROD.INPRODDSC', '<>', '...')
-            ->where('INPROD.INPRODDSC', '<>', '....')
-            // Condición para Tipo de Stock no vacío
-            ->whereNotNull('INALPR.INAPR17ID')
-            ->where('INALPR.INAPR17ID', '<>', '')
-            ->where('INALPR.INAPR17ID', '<>', '-1')
-            // Condiciones para Tipo de Almacenamiento
-            ->whereNotIn('INPROD.INTPALID', ['O', 'D'])
-            ->whereRaw('ISNUMERIC(INPROD.INTPALID) = 0') // Excluir valores numéricos en Tipo de Almacenamiento
-            // Condición para la longitud de SKU
-            ->whereRaw('LEN(INPROD.INPRODI2) >= 7')
-            // Aplicar ordenamiento
-            ->orderBy($sortColumn, $sortDirection);
+    // Subconsulta para obtener el precio base más reciente para cada producto y centro de costos específico
+    $subQueryCentroCosto = DB::table('AVPREC')
+        ->select('AVPRECPRO', 'AVPRECALM', DB::raw('MAX(AVPREFIPB) as max_fecha'))
+        ->whereIn('AVPRECALM', $centrosCostosIds)
+        ->groupBy('AVPRECPRO', 'AVPRECALM');
 
-        // Añadir filtros basados en los inputs del usuario
-        if (!empty($productIdFilter)) {
-            $query->where('INPROD.INPRODID', 'like', $productIdFilter . '%');
-        }
-        if (!empty($skuFilter)) {
-            $query->where('INPROD.INPRODI2', 'like', $skuFilter . '%');
-        }
-        if (!empty($nameFilter)) {
-            $query->where('INPROD.INPRODDSC', 'like', $nameFilter . '%');
-        }
-        if (!empty($lineaFilter) && $lineaFilter !== 'LN') {
-            $query->where('INPROD.INPR03ID', 'like', 'LN' + $lineaFilter + '%');
-        }
-        if (!empty($sublineaFilter) && $sublineaFilter !== 'SB') {
-            $query->where('INPROD.INPR04ID', 'like', 'SB' + $sublineaFilter + '%');
-        }
-        if (!empty($departamentoFilter)) {
-            $query->where('INPROD.INPR02ID', 'like', $departamentoFilter . '%');
-        }
-        if ($activoFilter === 'activos') {
-            $query->where('INALPR.INAPR17ID', '<>', 'X');
-        }
+    $query = DB::table('INSDOS')
+        ->join('INPROD', 'INSDOS.INPRODID', '=', 'INPROD.INPRODID')
+        ->leftJoin('INALPR', function($join) {
+            $join->on('INSDOS.INPRODID', '=', 'INALPR.INPRODID')
+                 ->on('INSDOS.INALMNID', '=', 'INALPR.INALMNID');
+        })
+        // Join con subconsulta de precios generales
+        ->leftJoinSub($subQueryGeneral, 'latest_general_prices', function($join) {
+            $join->on('INPROD.INPRODID', '=', 'latest_general_prices.AVPRECPRO');
+        })
+        // Join con subconsulta de precios por centro de costo
+        ->leftJoinSub($subQueryCentroCosto, 'latest_cc_prices', function($join) {
+            $join->on('INPROD.INPRODID', '=', 'latest_cc_prices.AVPRECPRO')
+                 ->on('INSDOS.INALMNID', '=', 'latest_cc_prices.AVPRECALM');
+        })
+        // Join final para traer los precios correctos
+        ->leftJoin('AVPREC as general_price', function($join) {
+            $join->on('INPROD.INPRODID', '=', 'general_price.AVPRECPRO')
+                 ->on('latest_general_prices.max_fecha', '=', 'general_price.AVPREFIPB')
+                 ->where(function($query) {
+                     $query->whereNull('general_price.AVPRECALM')
+                           ->orWhere('general_price.AVPRECALM', '');
+                 });
+        })
+        ->leftJoin('AVPREC as cc_price', function($join) {
+            $join->on('INPROD.INPRODID', '=', 'cc_price.AVPRECPRO')
+                 ->on('latest_cc_prices.max_fecha', '=', 'cc_price.AVPREFIPB')
+                 ->whereColumn('INSDOS.INALMNID', 'cc_price.AVPRECALM');
+        })
+        ->select(
+            'INPROD.INPRODID',
+            'INPROD.INPRODDSC',
+            'INPROD.INPRODDS2',
+            'INPROD.INPRODDS3',
+            'INPROD.INPRODI2',
+            'INPROD.INPRODI3',
+            'INPROD.INTPCMID',
+            'INPROD.INPR02ID',
+            'INPROD.INPR03ID',
+            'INPROD.INPR04ID',
+            'INPROD.INPRODCBR',
+            'INPROD.INTPALID',
+            DB::raw('ROUND(INSDOS.INSDOSQDS, 2) as Existencia'),
+            'INSDOS.INALMNID as CentroCostos',
+            'INALPR.INAPR17ID as TipoStock',
+            // Seleccionar el precio del centro de costos si existe, sino el general
+            DB::raw('COALESCE(cc_price.AVPRECBAS, general_price.AVPRECBAS) as PrecioBase'),
+            DB::raw('COALESCE(cc_price.AVPRECALM, CASE WHEN general_price.AVPRECALM IS NULL OR general_price.AVPRECALM = \'\' THEN \'Global\' ELSE general_price.AVPRECALM END) as AlmacenPrecio')
+        )
+        ->whereNotNull('INPROD.INPRODDSC')
+        ->where('INPROD.INPRODDSC', '<>', '')
+        ->where('INPROD.INPRODDSC', '<>', '.')
+        ->where('INPROD.INPRODDSC', '<>', '*')
+        ->where('INPROD.INPRODDSC', '<>', '..')
+        ->where('INPROD.INPRODDSC', '<>', '...')
+        ->where('INPROD.INPRODDSC', '<>', '....')
+        ->whereNotNull('INALPR.INAPR17ID')
+        ->where('INALPR.INAPR17ID', '<>', '')
+        ->where('INALPR.INAPR17ID', '<>', '-1')
+        ->whereNotIn('INPROD.INTPALID', ['O', 'D'])
+        ->whereRaw('ISNUMERIC(INPROD.INTPALID) = 0')
+        ->whereRaw('LEN(INPROD.INPRODI2) >= 7')
+        ->whereIn('INSDOS.INALMNID', $centrosCostosIds)
+        ->orderBy($sortColumn, $sortDirection);
 
-        // Añadir filtro para los centros de costos asignados al usuario
-        $query->whereIn('INSDOS.INALMNID', $centrosCostosIds);
-
-        // Paginación de los resultados
-        $labels = $query->paginate(20)->appends($request->query());
-
-        return view('etiquetascatalogo', compact('labels'));
+    if (!empty($productIdFilter)) {
+        $query->where('INPROD.INPRODID', 'like', $productIdFilter . '%');
+    }
+    if (!empty($skuFilter)) {
+        $query->where('INPROD.INPRODI2', 'like', $skuFilter . '%');
+    }
+    if (!empty($nameFilter)) {
+        $query->where('INPROD.INPRODDSC', 'like', $nameFilter . '%');
+    }
+    if (!empty($lineaFilter) && $lineaFilter !== 'LN') {
+        $query->where('INPR03ID', 'like', $lineaFilter . '%'); // Ajusta el campo 'LINEA' según el nombre real en tu base de datos
+    }
+    if (!empty($sublineaFilter) && $sublineaFilter !== 'SB') {
+        $query->where('INPR04ID', 'like', $sublineaFilter . '%'); // Ajusta el campo 'SUBLINEA' según el nombre real en tu base de datos
+    }
+    if (!empty($departamentoFilter)) {
+        $query->where('INPROD.INPR02ID', 'like', $departamentoFilter . '%');
+    }
+    if ($activoFilter === 'activos') {
+        $query->where('INALPR.INAPR17ID', '<>', 'X');
     }
 
-    // Método para imprimir la etiqueta
+    $labels = $query->paginate(20)->appends($request->query());
+
+    return view('etiquetascatalogo', compact('labels'));
+}
+
+
+
+
+
     public function printLabel(Request $request)
+    {
+        $sku = $request->input('sku');
+        $description = $request->input('description');
+        $quantity = $request->input('quantity', 1);
+
+        $generator = new BarcodeGeneratorHTML();
+        $barcodeHtml = $generator->getBarcode($sku, $generator::TYPE_CODE_128);
+
+        $data = [
+            'sku' => $sku,
+            'description' => $description,
+            'barcode' => $barcodeHtml
+        ];
+
+        $labels = array_fill(0, $quantity, $data);
+
+        $pdf = Pdf::loadView('label', ['labels' => $labels]);
+
+        $pdfOutput = $pdf->output();
+        $filename = 'labels.pdf';
+        file_put_contents(public_path($filename), $pdfOutput);
+
+        return response()->json(['url' => asset($filename)]);
+    }
+
+    public function printLabelWithPrice(Request $request)
 {
-    // Obtener inputs de la solicitud
-    $sku = $request->input('sku');
-    $description = $request->input('description');
-    $quantity = $request->input('quantity', 1);
+    try {
+        Log::info('Datos recibidos en printLabelWithPrice:', $request->all());
 
-    // Generar el código de barras en formato HTML
-    $generator = new BarcodeGeneratorHTML();
-    $barcodeHtml = $generator->getBarcode($sku, $generator::TYPE_CODE_128);
+        $sku = $request->input('sku');
+        $description = $request->input('description');
+        $quantity = $request->input('quantity', 1);
+        $precioBase = $request->input('precioBase');
 
-    // Preparar los datos para la etiqueta
-    $data = [
-        'sku' => $sku,
-        'description' => $description,
-        'barcode' => $barcodeHtml
-    ];
+        if (empty($sku) || empty($description)) {
+            throw new \Exception('Datos incompletos');
+        }
 
-    // Crear un array de etiquetas con la cantidad especificada
-    $labels = array_fill(0, $quantity, $data);
+        if (is_null($precioBase) || $precioBase === '') {
+            $precioBase = '0.00';
+        }
 
-    // Generar el PDF con las etiquetas
-    $pdf = Pdf::loadView('label', ['labels' => $labels]);
+        if (!is_numeric($precioBase)) {
+            throw new \Exception('Precio base no es un número válido');
+        }
 
-    // Guardar el PDF temporalmente
-    $pdfOutput = $pdf->output();
-    $filename = 'labels.pdf';
-    file_put_contents(public_path($filename), $pdfOutput);
+        // Formatear precio base a dos decimales sin redondear
+        $precioBaseFormatted = number_format((float)$precioBase, 2, '.', '');
 
-    // Retornar la ruta del PDF temporal
-    return response()->json(['url' => asset($filename)]);
+        $generator = new BarcodeGeneratorHTML();
+        $barcodeHtml = $generator->getBarcode($sku, $generator::TYPE_CODE_128);
+
+        $data = [
+            'sku' => $sku,
+            'description' => $description,
+            'barcode' => $barcodeHtml,
+            'precioBase' => $precioBaseFormatted
+        ];
+
+        $labels = array_fill(0, $quantity, $data);
+
+        $pdf = Pdf::loadView('label_with_price', ['labels' => $labels]);
+
+        $pdfOutput = $pdf->output();
+        $filename = 'labels_with_price.pdf';
+        file_put_contents(public_path($filename), $pdfOutput);
+
+        return response()->json(['url' => asset($filename)]);
+    } catch (\Exception $e) {
+        Log::error('Error generando el PDF: ' . $e->getMessage());
+        return response()->json(['error' => 'Error generando el PDF: ' . $e->getMessage()], 500);
+    }
 }
 
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\InsdosController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\AVPRECController;
 Route::get('/', function () {
     return view('login');
 })->name('home');
@@ -57,8 +58,8 @@ Route::middleware(['auth'])->group(function () {
     
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-    Route::get('providers/autocomplete', [ProviderController::class, 'autocomplete'])->name('providers.autocomplete')->middleware('permission:ORDENES');;
-    Route::get('/receptions/{ACMVOIDOC}', [OrderController::class, 'showReceptions'])->name('receptions.show');
+    Route::get('providers/autocomplete', [ProviderController::class, 'autocomplete'])->name('providers.autocomplete')->middleware('permission:ORDENES');
+    Route::get('/receptions/{ACMVOIDOC}', [OrderController::class, 'showReceptions'])->name('receptions.show')->middleware('permission:RECEPCIONES');
 
 
     Route::get('/check-username', [UserController::class, 'checkUsername'])->name('check-username');
@@ -75,8 +76,12 @@ Route::get('/etiquetascatalogo', [LabelcatalogController::class, 'labelscatalog'
 
 //Rutas Relacionadas con Imprimir Etiquetas
 Route::post('/print-label', [LabelcatalogController::class, 'printLabel'])->name('print.label');
-
-
+// Ruta para imprimir etiqueta con SKU y Precio
+Route::post('/print-label-with-price', [LabelcatalogController::class, 'printLabelWithPrice'])->name('print.label.with.price');
 
 
 Route::get('/insdos', [InsdosController::class, 'index']);
+
+// Ruta para mostrar los datos de AVPREC
+Route::get('/avprec/show', [AVPRECController::class, 'show']);
+
