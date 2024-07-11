@@ -81,97 +81,86 @@
                     </div>
                 </div>
 
-                <!-- Tabla de datos -->
-                <div class="card shadow mb-4">
-                    <div class="card-body">
-                        <div class="table-responsive small-font">
-                            <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        @php
-                                        $columns = [
-                                        'INPROD.INPRODID' => 'PRODUCTO',
-                                        'INPROD.INPRODDSC' => 'DESCRIPCIÓN',
-                                        'INPROD.INPRODI2' => 'SKU',
-                                        'INSDOS.INSDOSQDS' => 'EXI',
-                                        'INPROD.INPR02ID' => 'DPTO',
-                                        'INPROD.INPRODCBR' => 'CODIGO BARRAS',
-                                        'INPROD.INPR03ID' => 'LINEA',
-                                        'INPROD.INPR04ID' => 'SUBLINEA',
-                                        'INSDOS.INALMNID' => 'ALMACÉN',
-                                        //'INALPR.INAPR17ID' => 'TS',//
-                                        //'INPROD.INTPALID' => 'TA',//
-                                        'AVPREC.AVPRECBAS' => 'PRECIO BASE', // Añadir columna PRECIO BASE
-                                        'AVPREC.AVPRECALM' => 'A/P' // Añadir columna ALMACÉN PRECIO
-                                        ];
-                                        @endphp
-                                        @foreach ($columns as $column => $label)
-                                        <th>
-                                            <a href="{{ route('labelscatalog', array_merge(request()->query(), ['sort' => $column, 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sortable-column">
-                                                {{ $label }}
-                                                @if (request('sort') === $column)
-                                                @if (request('direction') === 'asc')
-                                                <i class="sort-icon fas fa-sort-up"></i>
-                                                @else
-                                                <i class="sort-icon fas fa-sort-down"></i>
-                                                @endif
-                                                @else
-                                                <i class="sort-icon fas fa-sort"></i>
-                                                @endif
-                                            </a>
-                                        </th>
+                                <!-- Tabla de datos -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div class="table-responsive small-font">
+                                <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            @php
+                                            $columns = [
+                                                'INPROD.INPRODID' => 'PRODUCTO',
+                                                'INPROD.INPRODDSC' => 'DESCRIPCIÓN',
+                                                'INPROD.INPRODI2' => 'SKU',
+                                                'INSDOS.INSDOSQDS' => 'EXI',
+                                                'INPROD.INPR02ID' => 'DPTO',
+                                                'INPROD.INPRODCBR' => 'CODIGO BARRAS',
+                                                'INPROD.INPR03ID' => 'LINEA',
+                                                'INPROD.INPR04ID' => 'SUBLINEA',
+                                                'INSDOS.INALMNID' => 'ALMACÉN',
+                                                'PrecioBase' => 'PRECIO BASE',
+                                                'AlmacenPrecio' => 'A/P'
+                                            ];
+                                            @endphp
+                                            @foreach ($columns as $column => $label)
+                                            <th>
+                                                <a href="{{ route('labelscatalog', array_merge(request()->query(), ['sort' => $column, 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sortable-column">
+                                                    {{ $label }}
+                                                    @if (request('sort') === $column)
+                                                    @if (request('direction') === 'asc')
+                                                    <i class="sort-icon fas fa-sort-up"></i>
+                                                    @else
+                                                    <i class="sort-icon fas fa-sort-down"></i>
+                                                    @endif
+                                                    @else
+                                                    <i class="sort-icon fas fa-sort"></i>
+                                                    @endif
+                                                </a>
+                                            </th>
+                                            @endforeach
+                                            <th>ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="proveedorTable">
+                                        @foreach($labels as $label)
+                                        <tr>
+                                            <td>{{ $label->INPRODID }}</td>
+                                            <td>{{ $label->INPRODDSC }}</td>
+                                            <td>{{ $label->INPRODI2 }}</td>
+                                            <td>{{ number_format($label->Existencia, 2) }}</td>
+                                            <td>{{ $label->INPR02ID }}</td>
+                                            <td>{{ $label->INPRODCBR }}</td>
+                                            <td>{{ $label->INPR03ID }}</td>
+                                            <td>{{ $label->INPR04ID }}</td>
+                                            <td>{{ $label->CentroCostos }}</td>
+                                            <td>{{ $label->PrecioBase }}</td>
+                                            <td>{{ $label->AlmacenPrecio }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group" aria-label="Acciones">
+                                                    <button class="btn btn-secondary" onclick="showPrintModal('{{ $label->INPRODI2 }}', '{{ $label->INPRODDSC }}')" style="margin-right: 10px;">SKU
+                                                        <i class="fas fa-barcode"></i>
+                                                    </button>
+                                                    <button class="btn btn-primary" onclick="showPrintModalWithPrice('{{ $label->INPRODI2 }}', '{{ $label->INPRODDSC }}', '{{ $label->PrecioBase }}')">SKU Y PRECIO
+                                                        <i class="fas fa-tag"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
                                         @endforeach
-                                        <th>ACCIONES</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="proveedorTable">
-                                    @foreach($labels as $label)
-                                    <tr>
-                                        <td>{{ $label->INPRODID }}</td>
-                                        <td>{{ $label->INPRODDSC }}</td>
-                                        <td>{{ $label->INPRODI2 }}</td>
-                                        <td>{{ number_format($label->Existencia, 2) }}</td>
-                                        <td>{{ $label->INPR02ID }}</td>
-                                        <td>{{ $label->INPRODCBR }}</td>
-                                        <td>{{ $label->INPR03ID }}</td>
-                                        <td>{{ $label->INPR04ID }}</td>
-                                        <td>{{ $label->CentroCostos }}</td>
-                                        <!--<td>{{ $label->TipoStock }}</td>-->
-                                        <!--<td>{{ $label->INTPALID }}</td>-->
-                                        <td>{{ $label->PrecioBase }}</td> <!-- Mostrar PRECIO BASE -->
-                                        <td>{{ $label->AlmacenPrecio }}</td> <!-- Mostrar ALMACÉN PRECIO -->
-                                        <td>
-                                        <div class="btn-group" role="group" aria-label="Acciones">
-                                            <button class="btn btn-secondary" onclick="showPrintModal('{{ $label->INPRODI2 }}', '{{ $label->INPRODDSC }}')" style="margin-right: 10px;">SKU
-                                                <i class="fas fa-barcode"></i>
-                                            </button>
-                                            <button class="btn btn-primary" onclick="showPrintModalWithPrice('{{ $label->INPRODI2 }}', '{{ $label->INPRODDSC }}', '{{ $label->PrecioBase }}')">SKU Y PRECIO
-                                                <i class="fas fa-tag"></i>
-                                            </button>
-                                        </div>
-
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <div class="d-flex justify-content-center">
-                                <div id="pagination-links">
-                                    @if ($labels instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                                    {{ $labels->appends(request()->query())->links() }}
-                                    @endif
+                                    </tbody>
+                                </table>
+                                <div class="d-flex justify-content-center">
+                                    <div id="pagination-links">
+                                        @if ($labels instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                        {{ $labels->appends(request()->query())->links() }}
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-        </div>
-    </div>
-    </div>
-    </div>
-    </div>
 
     <!-- Modal para seleccionar la cantidad de etiquetas a imprimir -->
 
