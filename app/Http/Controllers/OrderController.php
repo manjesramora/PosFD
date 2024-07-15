@@ -24,6 +24,7 @@ class OrderController extends Controller
             return $next($request);
         });
     }
+
     public function index(Request $request)
     {
         $user = Auth::user(); // Obtener el usuario autenticado
@@ -165,5 +166,59 @@ class OrderController extends Controller
             ->get();
 
         return view('receptions', compact('receptions', 'order', 'provider', 'num_rcn_letras', 'currentDate', 'partidas'));
+    }
+
+    public function receiptOrder(Request $request, $ACMVOIDOC)
+    {
+        $order = Order::where('ACMVOIDOC', $ACMVOIDOC)->first();
+        $provider = Providers::where('CNCDIRID', $order->CNCDIRID)->first();
+
+        if (!$order || !$provider) {
+            return redirect()->route('orders')->with('error', 'Orden o proveedor no encontrado.');
+        }
+
+        // Validación de todos los campos del formulario
+        $validatedData = $request->validate([
+            'carrier_number' => 'required|string',
+            'carrier_name' => 'required|string',
+            'document_type' => 'required|string',
+            'document_number' => 'required|string',
+            'supplier_name' => 'required|string',
+            'reference_type' => 'required|string',
+            'store' => 'required|string',
+            'reference' => 'required|string',
+            'reception_date' => 'required|date',
+            'document_type1' => 'required|string',
+            'document_number1' => 'required|string',
+            'cost' => 'nullable|string',
+        ]);
+
+        // Subfunción para manejar la inserción cuando hay flete
+        if ($request->input('flete_select') == 1) {
+            $this->insertFreight($validatedData, $provider);
+        }
+
+        // Redirección después de procesar los datos
+        return redirect()->route('orders')->with('success', 'Recepción registrada correctamente.');
+    }
+
+    private function insertFreight($validatedData, $provider)
+    {
+        // Inserción de todos los campos en la tabla Freights
+        DB::table('Freights')->insert([
+            'document_type' => $validatedData['document_type'],
+            'document_number' => $validatedData['document_number'],
+            'document_type1' => $validatedData['document_type1'],
+            'document_number1' => $validatedData['document_number1'],
+            'cost' => $validatedData['cost'] ?? 0.0, // Valor predeterminado si no está presente
+            'supplier_number' => $provider->CNCDIRID,
+            'carrier_number' => $validatedData['carrier_number'],
+            'carrier_name' => $validatedData['carrier_name'],
+            'supplier_name' => $validatedData['supplier_name'],
+            'reference_type' => $validatedData['reference_type'],
+            'store' => $validatedData['store'],
+            'reference' => $validatedData['reference'],
+            'reception_date' => $validatedData['reception_date'],
+        ]);
     }
 }

@@ -131,3 +131,5 @@
     // Escuchar cambios en el input y actualizar el valor formateado
     let input = document.getElementById('flete');
     input.addEventListener('input', updateFormattedValue);
+
+    
